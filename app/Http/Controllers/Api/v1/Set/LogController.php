@@ -21,6 +21,7 @@ class LogController extends Controller
                 'action' => 'test',
                 'meta' => [
                     'tag' => $tag,
+                    "name" => "测试日志",
                 ]
             ],
             'hello' => [

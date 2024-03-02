@@ -21,3 +21,5 @@ yarn-error.log
 docker/mysql*
 docker/redis
 
+rr
+.rr.yaml

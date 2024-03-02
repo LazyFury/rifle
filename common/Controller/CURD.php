@@ -3,6 +3,7 @@
 namespace Common\Controller;
 
 use Common\Model\BaseModel;
+use Common\Service\Service;
 use Common\Utils\ApiJsonResponse;
 use Common\Utils\OpenApiParam;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +15,7 @@ class CURD extends Controller
     use Pageable;
     // models
     protected BaseModel $model;
+    protected Service $service;
 
     protected $rules = [];
     protected $messages = [];
@@ -27,6 +29,7 @@ class CURD extends Controller
     public function __construct(BaseModel $model)
     {
         $this->model = $model;
+        $this->service = new Service($model);
         $this->middleware('auth:sanctum')->except($this->auth_except);
         $this->define_middleware();
     }
@@ -111,13 +114,39 @@ class CURD extends Controller
                 "desc" => "create data",
                 "auth" => true,
                 "tag" => $tag,
-                "body" => []
+                "parameters"=>[
+                    new OpenApiParam(
+                        "name",
+                        "query",
+                        "name",
+                        required: true,
+                        schema: [
+                            "type" => "string",
+                            "description" => "name",
+                            "example" => "test"
+                        ],
+                        example: "test"
+                    ),
+                ]
             ],
             "detail" => [
                 "name" => "detail",
                 "desc" => "detail data",
                 "auth" => true,
                 "tag" => $tag,
+                "params"=>[
+                    new OpenApiParam(
+                        "id",
+                        "query",
+                        "id",
+                        required: true,
+                        schema: [
+                            "type" => "integer",
+                            "format" => "int32",
+                        ],
+                        example: 1
+                    ),
+                ]
             ],
             "update" => [
                 "name" => "update",
@@ -130,6 +159,19 @@ class CURD extends Controller
                 "desc" => "delete data",
                 "auth" => true,
                 "tag" => $tag,
+                "params"=>[
+                    new OpenApiParam(
+                        "id",
+                        "query",
+                        "id",
+                        required: true,
+                        schema: [
+                            "type" => "integer",
+                            "format" => "int32",
+                        ],
+                        example: 1
+                    ),
+                ]
             ]
         ];
     }
@@ -184,7 +226,7 @@ class CURD extends Controller
         }
 
         $query = $data["query"];
-        $query = $this->model->scopeSearch($query, request()->all());
+        $query = $this->service->scopeSearch($query, request()->all());
         return $this->pageableResponse($query, $data['page'], $data['limit'], $data['offset']);
     }
 

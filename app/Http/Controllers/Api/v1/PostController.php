@@ -57,6 +57,7 @@ class PostController extends CURD
                 'action' => 'searchable',
                 'meta'=>[
                     'tag'=> $tag,
+                    "name" => "可搜索字段",
                 ]
             ],
         ] + parent::routers();
@@ -65,14 +66,14 @@ class PostController extends CURD
     // fillable
     public function fillable()
     {
-        return ApiJsonResponse::success($this->model->get_fillable());
+        return ApiJsonResponse::success($this->service->get_fillable());
     }
 
     // columns
     public function columns()
     {
         return ApiJsonResponse::success([
-            'columns'=>$this->model->columns(),
+            'columns'=>$this->service->get_columns(),
         ]);
     }
 

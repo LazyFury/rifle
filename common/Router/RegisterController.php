@@ -157,7 +157,8 @@ class RegisterController
                         "200" => [
                             "description" => "successful operation"
                         ]
-                        ],
+                    ],
+                    // "requestBody" => $route['meta']['requestBody'] ?? "",//openapi 3.0 不太方便
                 ];
 
                 $default_params = $doc_default['v1']['parameters'] ?? [];
@@ -172,19 +173,10 @@ class RegisterController
             // tags remove duplicate to arrat
             $tags = array_values(array_unique($tags, SORT_REGULAR));
             $doc = [
-                "swagger" => "2.0",
-                "info" => [
-                    "version" => "1.0.0",
-                    "title" => "API",
-                    "description" => "使用 Apifox 支持按照目录的方式查看 API 文档",
-                ],
+
                 "paths" => $paths,
                 "tags" => $tags,
                 "definitions" => $schemas,
-                "schemas" => [
-                    "http",
-                    "https"
-                ],
 
             ];
 
