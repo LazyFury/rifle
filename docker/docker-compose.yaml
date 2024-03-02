@@ -1,0 +1,24 @@
+version: '3.1'
+name: rifle
+services:
+  mysql8:
+    image: mysql:8
+    container_name: mysql8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: rifle
+      MYSQL_USER: rifle
+      MYSQL_PASSWORD: rifle
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql8:/var/lib/mysql
+    restart: always
+  redis:
+    image: redis:6
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis:/data
+    restart: always
