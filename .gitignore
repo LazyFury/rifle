@@ -23,3 +23,5 @@ docker/redis
 
 rr
 .rr.yaml
+
+.DS_Store
