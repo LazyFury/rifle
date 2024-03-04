@@ -6,6 +6,7 @@ use Common\Model\BaseModel;
 use Common\Service\Service;
 use Common\Utils\ApiJsonResponse;
 use Common\Utils\OpenApiParam;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -42,7 +43,7 @@ class CURD extends Controller
         foreach ($permissions as $key => $value) {
             // if $key in $this->auth_except:
             // auth 权限优先级高于 permission,如果是 auth_except 中的路由，那么不需要 permission 中间件
-            if(in_array($key,$this->auth_except)){
+            if (in_array($key, $this->auth_except)) {
                 continue;
             }
             $this->middleware('permission:' . $value, ['only' => $key]);
@@ -82,7 +83,7 @@ class CURD extends Controller
                 "name" => "list",
                 "desc" => "list all data",
                 "tag" => $tag,
-                "parameters"=>[
+                "parameters" => [
                     new OpenApiParam(
                         "page",
                         "query",
@@ -114,7 +115,7 @@ class CURD extends Controller
                 "desc" => "create data",
                 "auth" => true,
                 "tag" => $tag,
-                "parameters"=>[
+                "parameters" => [
                     new OpenApiParam(
                         "name",
                         "query",
@@ -134,7 +135,7 @@ class CURD extends Controller
                 "desc" => "detail data",
                 "auth" => true,
                 "tag" => $tag,
-                "params"=>[
+                "params" => [
                     new OpenApiParam(
                         "id",
                         "query",
@@ -159,7 +160,7 @@ class CURD extends Controller
                 "desc" => "delete data",
                 "auth" => true,
                 "tag" => $tag,
-                "params"=>[
+                "params" => [
                     new OpenApiParam(
                         "id",
                         "query",
@@ -215,23 +216,20 @@ class CURD extends Controller
     }
 
     // index
-    public function index()
+    public function index(Request $request)
     {
         $query = $this->model->query();
-        $data = $this->query($query);
-
         // extra filter
-        if (method_exists($this, 'filter')) {
-            $data["query"] = $this->filter($data["query"]);
-        }
+        // dump($query->toSql());
+        $dict = $request->all();
 
-        $query = $data["query"];
-        $query = $this->service->scopeSearch($query, request()->all());
-        return $this->pageableResponse($query, $data['page'], $data['limit'], $data['offset']);
+        $query = $this->service->scopeSearch($query, $dict);
+        $query = $this->filter($query);
+        return $this->pagination($query, $request);
     }
 
     // filter
-    public function filter($query)
+    public function filter(Builder $query)
     {
         return $query;
     }
@@ -241,7 +239,7 @@ class CURD extends Controller
     {
         $valid = \Validator::make($request->all(), $this->rules, $this->messages);
         if ($valid->fails()) {
-            return ApiJsonResponse::error($valid->errors()->first(), 400,data: $valid->errors());
+            return ApiJsonResponse::error($valid->errors()->first(), 400, data: $valid->errors());
         }
         return $this->model->create($valid->validated());
     }
@@ -269,7 +267,7 @@ class CURD extends Controller
         if ($errors) {
             return ApiJsonResponse::error($errors->first(), 400, data: $errors);
         }
-        $result = $this->model->scopeGetOne($id,must_auth:false)->first();
+        $result = $this->model->scopeGetOne($id, must_auth: false)->first();
         if ($result) {
             return ApiJsonResponse::success($result);
         }
@@ -286,12 +284,12 @@ class CURD extends Controller
         }
 
         $model = $this->model->scopeGetOne($id)->first();
-        if(!$model){
+        if (!$model) {
             return ApiJsonResponse::error("Not Found!", 404);//not able to update other's data
         }
         $valid = \Validator::make($request->all(), $this->rules, $this->messages);
         if ($valid->fails()) {
-            return ApiJsonResponse::error($valid->errors()->first(), 400,data: $valid->errors());
+            return ApiJsonResponse::error($valid->errors()->first(), 400, data: $valid->errors());
         }
         $model->update($valid->validated());
         return $model;
@@ -306,7 +304,7 @@ class CURD extends Controller
             return ApiJsonResponse::error($errors->first(), 400, data: $errors);
         }
         $model = $this->model->scopeGetOne($id)->first();
-        if(!$model){
+        if (!$model) {
             return ApiJsonResponse::success("删除成功!");//trick
         }
         $model->delete();

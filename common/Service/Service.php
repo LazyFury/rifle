@@ -13,6 +13,21 @@ class Service
     protected bool $use_default_query = true; //使用默认的查询
 
 
+    protected $search_modes = [
+        "__gt",
+        "__lt",
+        "__gte",
+        "__lte",
+        "__like",
+        "__in",
+        "__not_in",
+        "__or",
+        "__eq",
+        "__fk",
+        "__desc",
+        "__asc"
+    ];
+
     public function __construct(Model $model)
     {
         $this->model = $model;
@@ -21,9 +36,13 @@ class Service
     // columns
     public function get_columns()
     {
-        $cache_columns = Cache::remember('columns_' . $this->model->getTable(), 1, function () {
-            return $this->model->getConnection()->getSchemaBuilder()->getColumns($this->model->getTable());
-        });
+        $cache_columns = Cache::remember(
+            'columns_' . $this->model->getTable(),
+            new \DateInterval("PT5M"),
+            function () {
+                return $this->model->getConnection()->getSchemaBuilder()->getColumns($this->model->getTable());
+            }
+        );
         return $cache_columns;
     }
 
@@ -118,12 +137,13 @@ class Service
                 }
 
                 // desc
-                if ($type == '__desc' and ($value == 1)) {
+                if ($type == '__desc' and ($value == "1")) {
                     $query->orderBy($key, 'desc');
                 }
 
+
                 // asc
-                if ($type == '__asc' and ($value == 1)) {
+                if ($type == '__asc' && ($value == 1)) {
                     $query->orderBy($key, 'asc');
                 }
 
@@ -146,36 +166,44 @@ class Service
         }
     }
 
-    // base columns search
-    public function scopeSearch($query, $search)
+    public function defaultOrderBy(array $dict)
     {
+        if (!isset($dict['id__desc']) and !isset($dict['id__asc'])) {
+            $dict['id__desc'] = 1;
+        }
+        if (!isset($dict['created_at__desc']) and !isset($dict['created_at__asc'])) {
+            $dict['created_at__desc'] = 1;
+        }
+        return $dict;
+    }
+
+    // base columns search
+    public function scopeSearch(Builder $query, $search)
+    {
+
         if (!$this->use_default_query)
             return $query;
 
+        $search = $this->defaultOrderBy($search);
 
         $searchable = $this->get_searchable();
+
         if ($search && $this->use_default_query) {
-            $query->where(function ($query) use ($search, $searchable) {
-                foreach ($search as $key => $value) {
-                    $arr = [
-                        "__gt",
-                        "__lt",
-                        "__gte",
-                        "__lte",
-                        "__like",
-                        "__in",
-                        "__not_in",
-                        "__or",
-                        "__eq",
-                        "__fk",
-                        "__desc",
-                        "__asc"
-                    ];
-                    foreach ($arr as $type) {
+            foreach ($search as $key => $value) {
+                // $type is split with __ 
+                $arr = preg_split("/__/", $key);
+
+                // dump($arr);
+                $len = count($arr);
+                if ($len > 1) {
+                    $type = "__" . $arr[1];
+                    if (in_array($type, $this->search_modes)) {
                         $this->addQuery($query, $key, $value, $type, $searchable);
                     }
+                } else {
+                    $this->addQuery($query, $key, $value, "__eq", $searchable);
                 }
-            });
+            }
         }
         // dump($query->toSql());
 

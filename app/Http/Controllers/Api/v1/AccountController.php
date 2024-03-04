@@ -12,50 +12,52 @@ class AccountController extends Controller
     // static tag
     public static function tag()
     {
-        return "账户管理";
+        return '账户登录注册';
     }
+
     // routers
     public static function routers()
     {
         $tag = self::tag();
+
         return [
             'login' => [
                 'method' => 'post',
                 'uri' => 'login',
                 'action' => 'login',
-                "meta" => [
-                    "name" => "login",
-                    "desc" => "login",
-                    "tag" => $tag,
-                    "params"=>[
+                'meta' => [
+                    'name' => 'login',
+                    'desc' => 'login',
+                    'tag' => $tag,
+                    'params' => [
                         new OpenApiParam(
-                            "body",
-                            "body",
-                            "",
+                            'body',
+                            'body',
+                            '',
                             required: true,
                             schema: [
-                                "\$ref" => "#/definitions/login"
+                                '$ref' => '#/definitions/login',
                             ],
-                            example: "admin"
+                            example: 'admin'
                         ),
                     ],
-                    "schemas" => [
-                        "login" => [
-                            "type" => "object",
-                            "properties" => [
-                                "username" => [
-                                    "type" => "string",
-                                    "description" => "用户名或者邮箱",
-                                    "example" => "admin"
+                    'schemas' => [
+                        'login' => [
+                            'type' => 'object',
+                            'properties' => [
+                                'username' => [
+                                    'type' => 'string',
+                                    'description' => '用户名或者邮箱',
+                                    'example' => 'admin',
                                 ],
-                                "password" => [
-                                    "type" => "string",
-                                    "description" => "密码",
-                                    "example" => "123456"
-                                ]
+                                'password' => [
+                                    'type' => 'string',
+                                    'description' => '密码',
+                                    'example' => '123456',
+                                ],
                             ],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
 
             ],
@@ -63,25 +65,23 @@ class AccountController extends Controller
                 'method' => 'post',
                 'uri' => 'logout',
                 'action' => 'logout',
-                "meta" => [
-                    "name" => "logout",
-                    "desc" => "logout",
-                    "tag" => $tag,
-                ]
+                'meta' => [
+                    'name' => 'logout',
+                    'desc' => 'logout',
+                    'tag' => $tag,
+                ],
             ],
             'register' => [
                 'method' => 'post',
                 'uri' => 'register',
                 'action' => 'register',
-                "meta" => [
-                    "tag" => $tag,
-                ]
+                'meta' => [
+                    'tag' => $tag,
+                ],
             ],
         ];
     }
 
-
-    // login
     public function login(Request $request)
     {
         $username = $request->input('username');
@@ -99,8 +99,8 @@ class AccountController extends Controller
         $token = $user->createToken('token-name')->plainTextToken;
 
         return ApiJsonResponse::success([
-            "user" => $user,
-            "token" => $token,
+            'user' => $user,
+            'token' => $token,
         ]);
     }
 }

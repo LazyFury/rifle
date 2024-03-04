@@ -1,9 +1,12 @@
 <?php
 
 namespace Common\Controller;
+
 use Common\Utils\ApiJsonResponse;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Grammar;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 trait Pageable
 {
@@ -13,33 +16,22 @@ trait Pageable
 
     /**
      * 基础查询 分页 排序
-     * @param Builder $query
+     * @param Request $request
      * @return array
      */
-    public function query(Builder $query)
+    public function params(Request $request)
     {
         $page = request()->input('page', $this->defaultPage);
-        $page_int = (int)$page;
+        $page_int = (int) $page;
         $limit = request()->input('limit', $this->defaultLimit);
-        $limit_int = (int)$limit;
+        $limit_int = (int) $limit;
         $offset = ($page_int - 1) * $limit_int;
-
         $no_page = request()->input('no_page', false);
-
-        $query = $query->orderBy('id', 'desc')->orderBy('created_at', 'desc');
-        // copy new
-        $base_query = clone $query;
-
-        if(!$no_page){
-            $query->offset($offset)->limit($limit);
-        }
-
         return [
-            "query"=>$query,
-            "base_query"=>$base_query,
-            "page"=>$page_int,
-            "limit"=>$limit_int,
-            "offset"=>$offset,
+            "page" => $page_int,
+            "limit" => $limit_int,
+            "offset" => $offset,
+            "no_page" => $no_page,
         ];
     }
 
@@ -51,10 +43,32 @@ trait Pageable
      * @param $offset
      * @return \Illuminate\Http\JsonResponse
      */
-    public function pageableResponse($query, $page, $limit, $offset)
+    public function pagination($query, Request $request)
     {
-        $total = $query->count();
+        $data = $this->params($request);
+        $limit = $data["limit"];
+        $offset = $data["offset"];
+        $page = $data["page"];
+        $no_page = $data['no_page'] ?? false;
+
+        $total = Cache::remember(
+            'total_' . $query->toSql(),
+            new \DateInterval("PT5M"),
+            function () use ($query) {
+                return (clone $query)->count();
+            }
+        );
+
+        if (!$no_page) {
+            $query->offset($offset)->limit($limit);
+        } else {
+            //do nothing
+        }
+
+        // $data = $query->get();
         $data = $query->get();
+
+        // dump($query->toSql());
         return ApiJsonResponse::success([
             'pageable' => [
                 'page' => $page,
