@@ -25,3 +25,5 @@ rr
 .rr.yaml
 
 .DS_Store
+
+tmp/*

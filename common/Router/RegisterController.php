@@ -26,6 +26,15 @@ class RegisterController
     }
 
 
+    /**
+     * register
+     * @param $api_dir api dir
+     * @param $namespace_prefix namespace prefix
+     * @param string $split_symbol split symbol
+     * @param bool $dir_keep_slash keep slash in dir
+     * @param string $route_prefix "v1" path will be /api/v1/xxx,register route and openapi doc will use it
+     * @param string $route_group "api" path will be /api/xxx ,only for openapi doc
+     */
     public static function register($api_dir, $namespace_prefix, $split_symbol = '.', $dir_keep_slash = true, $route_prefix = "", $route_group = "api")
     {
         $files = self::list_all_files($api_dir);
@@ -73,6 +82,7 @@ class RegisterController
                     $extra_methods = $controller::routers();
                     // dump($extra_methods);
                 }
+
                 Route::group([
                     "prefix" => $route_prefix,
                 ], function () use ($controller, $extra_methods, $route_alias, $split_symbol) {

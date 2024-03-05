@@ -12,7 +12,6 @@ class Service
     protected Model $model;
     protected bool $use_default_query = true; //使用默认的查询
 
-
     protected $search_modes = [
         "__gt",
         "__lt",

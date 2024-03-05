@@ -6,7 +6,6 @@ use Common\Utils\ApiJsonResponse;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Grammar;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 
 trait Pageable
 {
@@ -51,9 +50,16 @@ trait Pageable
         $page = $data["page"];
         $no_page = $data['no_page'] ?? false;
 
-        $total = Cache::remember(
-            'total_' . $query->toSql(),
+        $total = \Common\Utils\Cache::rememberSql(
+            $query,
+            [
+                'page' => $page,
+                'limit' => $limit,
+                'offset' => $offset,
+                'no_page' => $no_page,
+            ],
             new \DateInterval("PT5M"),
+            "count_",
             function () use ($query) {
                 return (clone $query)->count();
             }
@@ -70,6 +76,7 @@ trait Pageable
 
         // dump($query->toSql());
         return ApiJsonResponse::success([
+            "sql" => $query->toSql(),
             'pageable' => [
                 'page' => $page,
                 'limit' => $limit,

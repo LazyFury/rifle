@@ -16,4 +16,7 @@ class ExampleTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    // test /api/v1/post.list returns a successful response
+
 }
