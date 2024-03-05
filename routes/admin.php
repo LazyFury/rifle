@@ -2,8 +2,6 @@
 use Common\Router\RegisterController;
 use Common\Utils\ApiJsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
-
 
 
 $api_dir = app_path('Http/Controllers/Admin');

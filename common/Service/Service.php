@@ -2,6 +2,7 @@
 
 namespace Common\Service;
 
+use Common\Model\BaseModel;
 use Common\Repository\Repository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\Cache;
 
 class Service
 {
-    protected Model $model;
+    protected BaseModel $model;
     protected bool $use_default_query = true; //使用默认的查询
 
     protected $search_modes = [
@@ -21,13 +22,14 @@ class Service
         "__in",
         "__not_in",
         "__or",
+        "__or_like",//简单实现多字段模糊查询
         "__eq",
-        "__fk",
-        "__desc",
-        "__asc"
+        "__fk", //外键查询, 例如 author__fk__name 仅支持 eq 模式
+        "__desc", //排序
+        "__asc", //排序
     ];
 
-    public function __construct(Model $model)
+    public function __construct(BaseModel $model)
     {
         $this->model = $model;
     }
@@ -67,6 +69,16 @@ class Service
         foreach ($columns as $column) {
             $searchable[] = $column['name'];
         }
+
+        $searchable = array_merge($searchable, $this->model->get_searchable());
+        // reindex 
+        $searchable = array_values(array_unique($searchable));
+
+        for ($i = 0; $i < count($searchable); $i++) {
+            if (in_array($searchable[$i], $this->model->get_searchable_exclude())) {
+                unset($searchable[$i]);
+            }
+        }
         return $searchable;
     }
 
@@ -88,6 +100,7 @@ class Service
             $key = str_replace($type, '', $key);
 
             if ($type == '__fk') {
+                // 处理外键查询，例如 author__fk__name，移除__fk 后按照 __ 分割，arr[0] 为外键名，arr[1] 为字段名
                 // sample key like : author__fk__name
                 $key = str_replace($type, '', $key);
                 $key = explode('__', $key);
@@ -131,6 +144,11 @@ class Service
                     $query->orWhere(str_replace($type, '', $key), $value);
                 }
 
+                // __or_like 
+                if ($type == '__or_like') {
+                    $query->orWhere(str_replace($type, '', $key), 'like', '%' . $value . '%');
+                }
+
                 if ($type == '__eq') {
                     $query->where($key, $value);
                 }
@@ -150,15 +168,21 @@ class Service
                     // dump("fk:",$key);
                     $query->whereHas($fk, function ($query) use ($fk_key, $fk, $value) {
                         $model = $query->getModel();
+                        $server = new Service($model);
                         // $table_name = $model->getTable();
                         $key = $fk_key;
                         // dump("fk:" . $key . "=" . $value);
-                        // has methods searchable
-                        if (method_exists($model, 'searchable') and is_callable([$model, 'searchable'])) {
-                            $searchable = $model->searchable();
-                            $this->addQuery($query, $key, $value, "__eq", $searchable);
+                        // dump($key, $value);
+                        // if still has fk 
+                        if (strpos($key, '__fk')) {
+                            throw new \Exception("yyy__fk__xxx__fk is not supported");
                         }
-                        // dump($query->toSql());
+
+                        $searchable = $server->get_searchable();
+                        if (in_array($key, $searchable)) {
+                            $query->where($key, $value);
+                        }
+
                     });
                 }
             }
@@ -196,6 +220,7 @@ class Service
                 $len = count($arr);
                 if ($len > 1) {
                     $type = "__" . $arr[1];
+                    // dump($type);
                     if (in_array($type, $this->search_modes)) {
                         $this->addQuery($query, $key, $value, $type, $searchable);
                     }

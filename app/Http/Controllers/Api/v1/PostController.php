@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Models\Post;
+use App\Service\PostService;
 use Common\Controller\CURD;
 use Common\Utils\ApiJsonResponse;
 
@@ -19,9 +20,10 @@ class PostController extends CURD
         'create',
     ];
 
-    public function __construct(Post $model)
+    public function __construct(Post $model, PostService $service)
     {
         parent::__construct($model);
+        $this->service = $service;
     }
 
     // static tag
@@ -35,28 +37,28 @@ class PostController extends CURD
     {
         $tag = self::tag();
         return [
-            "fillable"=>[
+            "fillable" => [
                 'method' => 'get',
                 'uri' => 'fillable',
                 'action' => 'fillable',
-                'meta'=>[
-                    'tag'=> $tag,
+                'meta' => [
+                    'tag' => $tag,
                 ]
             ],
-            'columns'=>[
+            'columns' => [
                 'method' => 'get',
                 'uri' => 'columns',
                 'action' => 'columns',
-                'meta'=>[
-                    'tag'=> $tag,
+                'meta' => [
+                    'tag' => $tag,
                 ]
             ],
-            'searchable'=>[
+            'searchable' => [
                 'method' => 'get',
                 'uri' => 'searchable',
                 'action' => 'searchable',
-                'meta'=>[
-                    'tag'=> $tag,
+                'meta' => [
+                    'tag' => $tag,
                     "name" => "可搜索字段",
                 ]
             ],
@@ -73,7 +75,7 @@ class PostController extends CURD
     public function columns()
     {
         return ApiJsonResponse::success([
-            'columns'=>$this->service->get_columns(),
+            'columns' => $this->service->get_columns(),
         ]);
     }
 
@@ -81,7 +83,7 @@ class PostController extends CURD
     public function searchable()
     {
         return ApiJsonResponse::success([
-            'searchable'=>$this->model->searchable(),
+            'searchable' => $this->model->searchable(),
         ]);
     }
 }

@@ -5,10 +5,11 @@ namespace App\Models;
 use Common\Model\BaseModel;
 use Common\Model\UsePersonalTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Cache;
 
 class Post extends BaseModel
 {
-    use HasFactory,UsePersonalTrait;
+    use HasFactory, UsePersonalTrait;
 
     public function __construct(array $attributes = [])
     {
@@ -23,21 +24,49 @@ class Post extends BaseModel
         'content',
     ];
 
-    public function searchable()
+    // add to json 
+    protected $appends = [
+        'author',
+        'author_name',
+        'author_avatar',
+    ];
+
+
+    public function get_searchable()
     {
-        $arr = parent::searchable();
-        // merge
-        $arr = array_merge($arr, [
-            'title',
-            'content',
-        ]);
-        // dump($arr);
-        return $arr;
+        return [
+            'author'
+        ];
+    }
+
+    public function get_searchable_exclude()
+    {
+        return [];
     }
 
     // author
     public function author()
     {
-        return $this->belongsTo(User::class, 'author', 'id');
+        return $this->belongsTo(UserModel::class, 'author_id', 'id');
+    }
+
+    public function getAuthorAttribute()
+    {
+        $key = "post_author_" . $this->id;
+        return Cache::remember($key, new \DateInterval("PT5M"), function () {
+            return $this->author()->first();
+        });
+    }
+
+    // author_name 
+    public function getAuthorNameAttribute()
+    {
+        return $this->getAuthorAttribute()['name'];
+    }
+
+    // author_avatar 
+    public function getAuthorAvatarAttribute()
+    {
+        return $this->getAuthorAttribute()['avatar'] ?? '';
     }
 }
