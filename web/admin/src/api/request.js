@@ -4,7 +4,7 @@ import { ElMessage } from 'element-plus';
 import router from '../router';
 import NProgress from 'nprogress'
 
-const createAxiosInstance = (baseURL,opt={}) => {
+const createAxiosInstance = (baseURL, opt = {}) => {
     const instance = axios.create({
         baseURL: baseURL,
         timeout: 30000,
@@ -12,7 +12,7 @@ const createAxiosInstance = (baseURL,opt={}) => {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
         },
-        binary:false,
+        binary: false,
         ...opt
     });
 
@@ -20,15 +20,16 @@ const createAxiosInstance = (baseURL,opt={}) => {
         let token = localStorage.getItem('token')
         if (token) {
             config.headers.Token = '' + token
+            config.headers.Authorization = "Bearer " + token
         }
-        console.log("请求参数：",config)
+        console.log("请求参数：", config)
         NProgress.start()
         return config;
     })
 
     instance.interceptors.response.use(function (response) {
         NProgress.done()
-        if(response.config.binary){
+        if (response.config.binary) {
             return response
         }
         // Do something with response data
@@ -41,16 +42,16 @@ const createAxiosInstance = (baseURL,opt={}) => {
         return response;
     }, function (error) {
         NProgress.done()
-        if(error?.config?.binary){
+        if (error?.config?.binary) {
             return Promise.reject(error)
         }
         // Do something with response error
         console.log(error)
         let resp = error.response
-        if(!resp) throw new Error("网络错误")
+        if (!resp) throw new Error("网络错误")
         let msg = resp.data?.message || resp.data?.msg || '未知错误'
         let code = resp.data?.code || resp.status || -1
-        if(!resp.config?.noMsgAlert){
+        if (!resp.config?.noMsgAlert) {
             ElMessage.error(msg || error.message)
         }
         if (code === 1007) {
@@ -59,7 +60,7 @@ const createAxiosInstance = (baseURL,opt={}) => {
             }, 100);
         }
 
-        
+
 
         return Promise.reject(error);
     });

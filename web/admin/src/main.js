@@ -47,8 +47,8 @@ app.use(function (vm) {
     vm.config.globalProperties.$numeral = numeral
 
     vm.config.globalProperties.$img = (url) => {
-        console.log(url)    
-        const target =  config.url.IMG_URL + url
+        console.log(url)
+        const target = config.url.IMG_URL + url
         console.log(target)
         return target
     }
@@ -64,11 +64,11 @@ app.use(function (vm) {
         const serverData = {
             "zh-cn": {
                 "AdminTitle": "Element Vite Admin ｜ EVA",
-                "首页":"控制台",
-                "welcome.documentation":"欢迎 {user} 使用文档",
+                "首页": "控制台",
+                "welcome.documentation": "欢迎 {user} 使用文档",
             },
         }
-        translateStore.setMessages("zh-cn",{
+        translateStore.setMessages("zh-cn", {
             ...zhCN,
             ...(serverData["zh-cn"] || {})
         })
@@ -87,8 +87,8 @@ const getComponents = () => {
     return components
 }
 
-const components = getComponents()  
-console.log("components",components)
+const components = getComponents()
+console.log("components", components)
 
 const registerRoute = (menu) => {
     if (menu.component) {
@@ -98,20 +98,20 @@ const registerRoute = (menu) => {
             path: menu.path,
             name: menu.key,
             component: component,
-            meta:{
-                title:menu.title,
-                key:menu.key,
-                api:menu.api || "",
+            meta: {
+                title: menu.title,
+                key: menu.key,
+                api: menu.api || "",
                 ...(menu.meta || {})
             }
         }
-        if(!menu.parent){
+        if (!menu.parent) {
             menu.parent = 'layout' //default layout
         }
-        if(menu.parent){
+        if (menu.parent) {
             const parentRoute = router.getRoutes().find(el => el.name === menu.parent)
-            if(parentRoute){
-                if(!parentRoute.children){
+            if (parentRoute) {
+                if (!parentRoute.children) {
                     parentRoute.children = []
                 }
                 parentRoute.children.push(route)
@@ -126,16 +126,16 @@ const registerRoute = (menu) => {
     }
 }
 
-request.get('/menus',{
-    noMsgAlert:true
+request.get('/menu.all', {
+    noMsgAlert: true
 }).then(async res => {
     let menus = res.data.data?.menus || []
     for (let i = 0; i < menus.length; i++) {
         let el = menus[i]
         registerRoute(el)
     }
-    
-}).finally(()=>{
+
+}).finally(() => {
     app.use(router)
     app.mount('#app')
 })

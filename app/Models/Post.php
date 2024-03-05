@@ -52,10 +52,10 @@ class Post extends BaseModel
 
     public function getAuthorAttribute()
     {
-        $key = "post_author_" . $this->id;
-        return Cache::remember($key, new \DateInterval("PT5M"), function () {
-            return $this->author()->first();
-        });
+        return $this->author()->first() ?: [
+            'name' => 'unknown',
+            'avatar' => ''
+        ];
     }
 
     // author_name 

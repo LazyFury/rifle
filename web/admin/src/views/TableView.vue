@@ -171,7 +171,7 @@ export default {
     watch: {},
     computed: {
         api() {
-            return this.meta.api || this.meta.api_url
+            return this.meta.api || this.meta.api_url || this.meta.list_api
         },
         searchFormFields() {
             return this.meta.searchForm?.fields || this.meta.search_form_fields || []
@@ -316,7 +316,7 @@ export default {
                 }
             }).then(res => {
                 let data = res.data.data || {}
-                this.tableData = data?.list || []
+                this.tableData = data?.data || []
                 let { size, page, total } = data?.pageable
                 this.pagination = {
                     pageSize: size,
@@ -427,7 +427,7 @@ export default {
                 return
             }
 
-            request.post(this.api + ".create", form).then(res => {
+            request.post(this.meta.create_api || this.api + ".create", form).then(res => {
                 if (res.data?.code == 200) {
                     this.$message.success("添加成功")
                     this.editModal = false

@@ -9,7 +9,7 @@ const prod = {
 
 const dev = {
     url: {
-        API_URL: 'http://localhost:8000/api',
+        API_URL: 'http://localhost:8000/admin',
         BASE_URL: 'http://localhost:8000',
         IMG_URL: 'http://localhost:8000/',
     }
