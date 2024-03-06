@@ -15,8 +15,12 @@ class Menu extends BaseModel
         "path",
         "icon",
         "component",
-        "meta",
+        "meta_id",
         "desciption"
+    ];
+
+    protected $appends = [
+        "meta"
     ];
 
     protected $rules = [
@@ -40,5 +44,16 @@ class Menu extends BaseModel
     public function get_deleteable()
     {
         return $this->deleteable;
+    }
+
+    // get meta 
+    public function meta()
+    {
+        return $this->belongsTo(ApiManage::class, "meta_id", "id");
+    }
+
+    public function getMetaAttribute()
+    {
+        return $this->meta()->first();
     }
 }

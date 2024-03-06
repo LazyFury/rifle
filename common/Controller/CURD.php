@@ -371,6 +371,4 @@ class CURD extends Controller
         return $this->service->toXlsx($columns, $result);
     }
 
-
-
 }

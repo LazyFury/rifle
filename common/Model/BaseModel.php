@@ -19,8 +19,4 @@ class BaseModel extends Model
         return $this->messages;
     }
 
-
-
-
-
 }
