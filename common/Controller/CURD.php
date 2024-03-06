@@ -343,6 +343,13 @@ class CURD extends Controller
     // export 
     public function export(Request $request)
     {
+
+        $type = $request->get('type', 'xlsx');
+        // support xlsx csv
+        if (!in_array($type, ['csv', 'xlsx'])) {
+            return ApiJsonResponse::error("不支持的导出类型", 400);
+        }
+
         $query = $this->model->query();
         $query = $this->service->scopeSearch($query, $request->all());
         $query = $this->filter($query);
@@ -357,39 +364,13 @@ class CURD extends Controller
         }
         // loop data json_encode not string 
 
-        return $this->toXlsx($columns, $result);
-    }
-
-    // toXlsx
-    public function toXlsx(array $column_names, array $data)
-    {
-        $workbook = new Spreadsheet();
-        // global font size 
-        $workbook->getDefaultStyle()->getFont()->setSize(12);
-        $sheet = $workbook->getActiveSheet();
-        // set sheet name
-        $sheet->setTitle('Sheet1');
-
-
-        $sheet->fromArray($column_names, null, 'A1');
-        // set auto witdh with a1 character length 
-        foreach (range('A', 'Z') as $columnID) {
-            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        if ($type == 'csv') {
+            return $this->service->toCsv($columns, $result);
         }
-        // a1 style gray background 
-        $sheet->getStyle('A1:Z1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFDDDDDD');
-        // a1 style with border
-        $sheet->getStyle('A1:Z1')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-        // lineheight = 20;
-        $sheet->getRowDimension(1)->setRowHeight(20);
-        $sheet->fromArray($data, null, 'A2');
-        // a2 lineheight 
-        $sheet->getRowDimension(2)->setRowHeight(20);
 
-        $writer = new Xlsx($workbook);
-        $filename = tempnam(sys_get_temp_dir(), 'export_') . '.xlsx';
-        $writer->save($filename);
-        return response()->download($filename);
+        return $this->service->toXlsx($columns, $result);
     }
+
+
 
 }

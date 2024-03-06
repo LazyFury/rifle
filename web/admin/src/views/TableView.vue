@@ -405,22 +405,34 @@ export default {
         },
         exportDataApi() {
             console.log('export')
+            let type = 'xlsx'
+            let contentType = {
+                xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                xls: 'application/vnd.ms-excel'
+            }[type]
+
+            let fileExt = {
+                xlsx: '.xlsx',
+                xls: '.xls'
+            }[type]
+            
             request({
                 url: this.export_api,
                 method: 'get',
                 responseType: 'blob',
                 params: {
-                    ...this.searchForm
+                    ...this.searchForm,
+                    type
                 },
                 binary: true
             }).then(res => {
-                let blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+                let blob = new Blob([res.data], { type: contentType })
                 let url = window.URL.createObjectURL(blob)
                 let link = document.createElement('a')
                 link.style.display = 'none'
                 link.href = url
                 let filename = `${this.meta.title}-导出-${this.$dayjs().format('YYYYMMDDHHmmss')}`
-                link.setAttribute('download', `${filename}.xlsx`)
+                link.setAttribute('download', `${filename}.${fileExt}`)
                 document.body.appendChild(link)
                 link.click()
                 document.body.removeChild(link)

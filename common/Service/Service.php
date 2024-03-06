@@ -7,6 +7,8 @@ use Common\Repository\Repository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class Service
 {
@@ -299,6 +301,52 @@ class Service
         }
 
         return $arr;
+    }
+
+
+    // toXlsx
+    public function toXlsx(array $column_names, array $data)
+    {
+        $workbook = new Spreadsheet();
+        // global font size 
+        $workbook->getDefaultStyle()->getFont()->setSize(12);
+        $sheet = $workbook->getActiveSheet();
+        // set sheet name
+        $sheet->setTitle('Sheet1');
+
+
+        $sheet->fromArray($column_names, null, 'A1');
+        // set auto witdh with a1 character length 
+        foreach (range('A', 'Z') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+        // a1 style gray background 
+        $sheet->getStyle('A1:Z1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFDDDDDD');
+        // a1 style with border
+        $sheet->getStyle('A1:Z1')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        // lineheight = 20;
+        $sheet->getRowDimension(1)->setRowHeight(20);
+        $sheet->fromArray($data, null, 'A2');
+        // a2 lineheight 
+        $sheet->getRowDimension(2)->setRowHeight(20);
+
+        $writer = new Xlsx($workbook);
+        $filename = tempnam(sys_get_temp_dir(), 'export_') . '.xlsx';
+        $writer->save($filename);
+        return response()->download($filename);
+    }
+
+    // toCsv
+    public function toCsv(array $column_names, array $data)
+    {
+        $filename = tempnam(sys_get_temp_dir(), 'export_') . '.csv';
+        $file = fopen($filename, 'w');
+        fputcsv($file, $column_names);
+        foreach ($data as $row) {
+            fputcsv($file, $row);
+        }
+        fclose($file);
+        return response()->download($filename);
     }
 
 }
