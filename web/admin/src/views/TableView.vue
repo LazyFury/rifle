@@ -127,7 +127,7 @@
                 <ElPagination small layout="total,sizes, prev, pager, next, jumper" background
                     :hide-on-single-page="false"
                     v-model:current-page="pagination.currentPage" v-model:page-size="pagination.pageSize"
-                    :page-sizes="[5, 10, 20, 50, 100]" :total="pagination.total" @current-change="handleCurrentPageChange"
+                    :page-sizes="[5,8, 10, 20, 50, 100]" :total="pagination.total" @current-change="handleCurrentPageChange"
                     @size-change="handlePageSizeChange"></ElPagination>
             </div>
         </ElCard>

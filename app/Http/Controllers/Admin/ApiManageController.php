@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Common\Controller\CURD;
 use Illuminate\Http\Request;
 
-class ApiManage extends CURD
+class ApiManageController extends CURD
 {
     // //
     // protected $rules = [
