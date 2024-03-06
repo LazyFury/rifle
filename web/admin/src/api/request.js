@@ -54,7 +54,7 @@ const createAxiosInstance = (baseURL, opt = {}) => {
         if (!resp.config?.noMsgAlert) {
             ElMessage.error(msg || error.message)
         }
-        if (code === 1007) {
+        if (code === 401) {
             setTimeout(() => {
                 router.push('/login')
             }, 100);

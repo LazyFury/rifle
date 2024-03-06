@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Common\Utils\ApiJsonResponse;
 use Illuminate\Http\Request;
 
-class Auth extends Controller
+class AuthController extends Controller
 {
 
     // static routes 

@@ -29,10 +29,11 @@ class Post extends BaseModel
         'author',
         'author_name',
         'author_avatar',
+        'content_cut',
     ];
 
     protected $rules = [
-        'author_id' => 'required|integer',
+        'author_id' => '',
         'title' => 'required|string',
         'content' => 'required|string',
     ];
@@ -83,5 +84,11 @@ class Post extends BaseModel
     public function getAuthorAvatarAttribute()
     {
         return $this->getAuthorAttribute()['avatar'] ?? '';
+    }
+
+    // content cut 16
+    public function getContentCutAttribute()
+    {
+        return mb_substr($this->content, 0, 16) . '...';
     }
 }

@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ApiManage;
 use Common\Controller\CURD;
 use Common\Utils\ApiJsonResponse;
 use Illuminate\Http\Request;
 
-class Menu extends CURD
+class MenuController extends CURD
 {
 
     public function __construct(\App\Models\Menu $model)
@@ -36,6 +37,7 @@ class Menu extends CURD
 
     public function all(Request $request)
     {
+        $menus = \App\Models\Menu::all();
         return ApiJsonResponse::success([
             "menus" => [
                 [
@@ -44,6 +46,15 @@ class Menu extends CURD
                     "path" => "/overview",
                     "icon" => "ant-design:home-outlined",
                     "component" => "HomeView"
+                ],
+                ...$menus->toArray(),
+                [
+                    "title" => "文章管理",
+                    "key" => "article",
+                    "path" => "/article",
+                    "icon" => "ant-design:file-outlined",
+                    "component" => "TableView",
+                    "meta" => ApiManage::where("key", "article")->first()
                 ],
                 [
                     // dev mode 
@@ -56,9 +67,7 @@ class Menu extends CURD
                             "key" => "menu",
                             "path" => "/dev/menu",
                             "component" => "TableView",
-                            "meta" => [
-                                "api" => "/menu.list"
-                            ]
+                            "meta" => ApiManage::where("key", "menu-manager")->first()
                         ],
                         [
                             "title" => "Api 表格管理",

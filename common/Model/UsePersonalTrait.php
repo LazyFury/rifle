@@ -1,17 +1,23 @@
 <?php
 
 namespace Common\Model;
+
 use Illuminate\Auth\AuthenticationException;
 
-trait UsePersonalTrait {
+trait UsePersonalTrait
+{
     // $user_id_column 属性
     protected string $user_id_column;
 
     // 是否必须登录才能使用
     protected bool $must_auth = true;
 
-    public function scopeUsePersonal($query, $user_id = null, $must_auth = true)
+    public function scopeUsePersonal($query, $user_id = null, $must_auth = true, $is_superuser = false)
     {
+        if ($is_superuser) {
+            return $query;
+        }
+
         if ($user_id == null) {
             $user_id = auth()->id();
         }

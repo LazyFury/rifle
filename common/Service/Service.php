@@ -13,6 +13,8 @@ class Service
     protected BaseModel $model;
     protected bool $use_default_query = true; //使用默认的查询
 
+    protected bool $is_superuser = false;
+
     protected $search_modes = [
         "__gt",
         "__lt",
@@ -29,9 +31,16 @@ class Service
         "__asc", //排序
     ];
 
-    public function __construct(BaseModel $model)
+    public function __construct(BaseModel $model, bool $is_superuser = false)
     {
         $this->model = $model;
+        $this->is_superuser = $is_superuser;
+    }
+
+    // setIsSuperUser 
+    public function setIsSuperUser(bool $is_superuser)
+    {
+        $this->is_superuser = $is_superuser;
     }
 
     // columns
@@ -231,7 +240,7 @@ class Service
         }
         // dump($query->toSql());
 
-        $query = $this->model->scopeUsePersonal($query, must_auth: false);
+        $query = $this->model->scopeUsePersonal($query, must_auth: false, is_superuser: $this->is_superuser);
 
         return $query;
     }
@@ -245,7 +254,7 @@ class Service
             $column => $id,
         ])->where($search);
 
-        $query = $this->model->scopeUsePersonal($query, must_auth: $must_auth);
+        $query = $this->model->scopeUsePersonal($query, must_auth: $must_auth, is_superuser: $this->is_superuser);
 
         return $query;
     }

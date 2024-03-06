@@ -324,7 +324,7 @@ export default {
                 method: 'get',
                 params: {
                     page: this.pagination.currentPage,
-                    size: this.pagination.pageSize,
+                    limit: this.pagination.pageSize,
                     ...this.searchForm
                 }
             }).then(res => {

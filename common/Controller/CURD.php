@@ -23,11 +23,13 @@ class CURD extends Controller
 
     protected $auth_except = [];
 
+    protected $is_superuser = false; // 是否是超级管理员
+
     // constructor
     public function __construct(BaseModel $model)
     {
         $this->model = $model;
-        $this->service = new Service($model);
+        $this->service = new Service($model, $this->is_superuser);
 
         $this->middleware('auth:sanctum')->except($this->auth_except);
         $this->define_middleware();
