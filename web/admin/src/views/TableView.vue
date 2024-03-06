@@ -464,7 +464,7 @@ export default {
     created() { },
     mounted() {
         this.handleQueryToSearchForm(this.$route.query)
-        this.load()
+        // this.load()
     }
 };
 </script>
