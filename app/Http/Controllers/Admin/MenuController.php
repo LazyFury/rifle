@@ -150,6 +150,12 @@ class MenuController extends CURD
                                             "label" => "创建API",
                                             "name" => "create_api",
                                             "placeholder" => "请输入创建API"
+                                        ],
+                                        // export_api
+                                        [
+                                            "label" => "导出API",
+                                            "name" => "export_api",
+                                            "placeholder" => "请输入导出API"
                                         ]
                                     ],
                                     [

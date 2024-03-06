@@ -22,6 +22,7 @@ class ApiManage extends BaseModel
         "create_api",
         "update_api",
         "delete_api",
+        "export_api",
         "columns",
         "add_form_fields",
         "search_form_fields",
@@ -34,6 +35,7 @@ class ApiManage extends BaseModel
         "create_api" => "required",
         "update_api" => "required",
         "delete_api" => "required",
+        "export_api" => "required",
         "columns" => "required",
         "add_form_fields" => "required",
         "search_form_fields" => "required",
@@ -50,6 +52,7 @@ class ApiManage extends BaseModel
         "create_api.required" => "create_api不能为空",
         "update_api.required" => "update_api不能为空",
         "delete_api.required" => "delete_api不能为空",
+        "export_api.required" => "export_api不能为空",
     ];
 
     public function get_deleteable()
