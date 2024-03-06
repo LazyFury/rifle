@@ -21,10 +21,7 @@ class CURD extends Controller
     protected BaseModel $model;
     protected Service $service;
 
-    protected $auth_except = [
-        'index',
-        'show',
-    ];
+    protected $auth_except = [];
 
     // constructor
     public function __construct(BaseModel $model)
