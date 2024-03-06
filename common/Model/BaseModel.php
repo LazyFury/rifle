@@ -8,4 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class BaseModel extends Model
 {
     use UseTimeFormatTairt, UsePersonalFakeTrait, UseSearchable;
+
+    public function rules()
+    {
+        return $this->rules;
+    }
+
+    public function messages()
+    {
+        return $this->messages;
+    }
 }

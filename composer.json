@@ -12,6 +12,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/telescope": "^4.17",
         "laravel/tinker": "^2.8",
+        "phpoffice/phpspreadsheet": "^2.0",
         "predis/predis": "*",
         "spatie/laravel-ignition": "^2.4",
         "spatie/laravel-permission": "^6.4",

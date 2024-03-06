@@ -241,7 +241,7 @@ class Service
     {
         $query = $this->model->query();
 
-        $query = $query->search([
+        $query = $query->where([
             $column => $id,
         ])->where($search);
 

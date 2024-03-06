@@ -9,10 +9,6 @@ use Common\Utils\ApiJsonResponse;
 
 class PostController extends CURD
 {
-    protected $rules = [
-        'title' => 'required',
-        'content' => 'required',
-    ];
 
     protected $auth_except = [
         'index',

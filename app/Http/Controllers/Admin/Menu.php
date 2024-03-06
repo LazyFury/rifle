@@ -70,11 +70,37 @@ class Menu extends CURD
                                 "create_api" => "/api_manage.create",
                                 "update_api" => "/api_manage.update",
                                 "delete_api" => "/api_manage.delete",
+                                "export_api" => "/api_manage.export",
                                 "columns" => [
                                     [
                                         "title" => "名称",
                                         "dataIndex" => "title",
                                         "key" => "title"
+                                    ],
+                                    [
+                                        "title" => "key",
+                                        "dataIndex" => "key",
+                                        "key" => "key"
+                                    ],
+                                    [
+                                        "title" => "API",
+                                        "dataIndex" => "api",
+                                        "key" => "api"
+                                    ],
+                                    [
+                                        "title" => "删除API",
+                                        "dataIndex" => "del_api",
+                                        "key" => "del_api"
+                                    ],
+                                    [
+                                        "title" => "更新API",
+                                        "dataIndex" => "update_api",
+                                        "key" => "update_api"
+                                    ],
+                                    [
+                                        "title" => "创建API",
+                                        "dataIndex" => "add_api",
+                                        "key" => "add_api"
                                     ]
                                 ],
                                 "add_form_fields" => [

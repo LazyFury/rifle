@@ -31,6 +31,21 @@ class Post extends BaseModel
         'author_avatar',
     ];
 
+    protected $rules = [
+        'author_id' => 'required|integer',
+        'title' => 'required|string',
+        'content' => 'required|string',
+    ];
+
+    protected $messages = [
+        'author_id.required' => 'author_id不能为空',
+        'author_id.integer' => 'author_id必须是整数',
+        'title.required' => 'title不能为空',
+        'title.string' => 'title必须是字符串',
+        'content.required' => 'content不能为空',
+        'content.string' => 'content必须是字符串',
+    ];
+
 
     public function get_searchable()
     {

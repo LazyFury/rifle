@@ -45,10 +45,25 @@ trait Pageable
     public function pagination($query, Request $request)
     {
         $data = $this->params($request);
-        $limit = $data["limit"];
-        $offset = $data["offset"];
-        $page = $data["page"];
-        $no_page = $data['no_page'] ?? false;
+
+
+        $validator = \Validator::make($data, [
+            'page' => 'required|integer|min:1',
+            'limit' => 'required|integer|min:1',
+            'offset' => 'required|integer|min:0',
+            'no_page' => 'boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return ApiJsonResponse::error($validator->errors()->first());
+        }
+
+        $valid = $validator->validated();
+
+        $limit = $valid["limit"];
+        $offset = $valid["offset"];
+        $page = $valid["page"];
+        $no_page = $valid['no_page'] ?? false;
 
         $total = \Common\Utils\Cache::rememberSql(
             $query,
@@ -79,9 +94,9 @@ trait Pageable
             "sql" => $query->toSql(),
             'pageable' => [
                 'page' => $page,
-                'limit' => $limit,
+                'size' => $limit,
                 'offset' => $offset,
-                'total' => $total,
+                'total' => (int) ($total),
                 'total_page' => ceil($total / $limit)
             ],
             'data' => $data,

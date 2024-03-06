@@ -124,7 +124,8 @@
             </div>
             <!-- pagination  -->
             <div class="flex mt-2">
-                <ElPagination small layout="total,sizes, prev, pager, next, jumper" background :hide-on-single-page="false"
+                <ElPagination small layout="total,sizes, prev, pager, next, jumper" background
+                    :hide-on-single-page="false"
                     v-model:current-page="pagination.currentPage" v-model:page-size="pagination.pageSize"
                     :page-sizes="[5, 10, 20, 50, 100]" :total="pagination.total" @current-change="handleCurrentPageChange"
                     @size-change="handlePageSizeChange"></ElPagination>
@@ -161,7 +162,7 @@ export default {
             pagination: {
                 currentPage: 1,
                 pageSize: this.$route.meta?.table?.pageSize || 10,
-                total: 1000
+                total: 0
             },
             tableData: [],
             loading: false,
@@ -172,6 +173,18 @@ export default {
     computed: {
         api() {
             return this.meta.api || this.meta.api_url || this.meta.list_api
+        },
+        create_api(){
+            return this.meta.create_api || this.meta.api + ".create"
+        },
+        update_api(){
+            return this.meta.update_api || this.meta.api + ".update"
+        },
+        delete_api(){
+            return this.meta.delete_api || this.meta.api + ".delete"
+        },
+        export_api(){
+            return this.meta.export_api || this.meta.api + ".export"
         },
         searchFormFields() {
             return this.meta.searchForm?.fields || this.meta.search_form_fields || []
@@ -359,7 +372,7 @@ export default {
                 type: 'warning'
             }).then(() => {
                 console.log(ids)
-                request.delete(this.api + ".delete", {
+                request.delete(this.delete_api, {
                     data: {
                         ids
                     },
@@ -393,7 +406,7 @@ export default {
         exportDataApi() {
             console.log('export')
             request({
-                url: this.api + '.export',
+                url: this.export_api,
                 method: 'get',
                 responseType: 'blob',
                 params: {
@@ -407,7 +420,7 @@ export default {
                 link.style.display = 'none'
                 link.href = url
                 let filename = `${this.meta.title}-导出-${this.$dayjs().format('YYYYMMDDHHmmss')}`
-                link.setAttribute('download', `${filename}.csv`)
+                link.setAttribute('download', `${filename}.xlsx`)
                 document.body.appendChild(link)
                 link.click()
                 document.body.removeChild(link)
@@ -417,7 +430,7 @@ export default {
         handleAddSubmit(form) {
             console.log(form)
             if (form.id) {
-                request.put(this.api + ".update", form).then(res => {
+                request.put(this.update_api, form).then(res => {
                     if (res.data?.code == 200) {
                         this.$message.success("修改成功")
                         this.editModal = false
@@ -427,7 +440,7 @@ export default {
                 return
             }
 
-            request.post(this.meta.create_api || this.api + ".create", form).then(res => {
+            request.post(this.create_api, form).then(res => {
                 if (res.data?.code == 200) {
                     this.$message.success("添加成功")
                     this.editModal = false
