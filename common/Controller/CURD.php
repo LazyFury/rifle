@@ -339,6 +339,7 @@ class CURD extends Controller
         return ApiJsonResponse::success("删除成功!");
     }
 
+
     // export 
     public function export(Request $request)
     {
@@ -346,42 +347,42 @@ class CURD extends Controller
         $query = $this->service->scopeSearch($query, $request->all());
         $query = $this->filter($query);
         $data = $query->get();
+        $service = clone $this->service;
+        $columns = $service->export_column_names();
 
-        // loop data json_encode not string 
-        for ($i = 0; $i < count($data); $i++) {
-            $arr = $data[$i]->toArray();
-            foreach ($arr as $key => $value) {
-                if (!is_string($value)) {
-                    $data[$i][$key] = json_encode($value);
-                }
-            }
+        $result = [];
+        foreach ($data as $key => $item) {
+            $service->setModel($item);
+            $result[] = $service->export_serialize();
         }
+        // loop data json_encode not string 
 
-        return $this->toXlsx($data);
+        return $this->toXlsx($columns, $result);
     }
 
     // toXlsx
-    public function toXlsx($data)
+    public function toXlsx(array $column_names, array $data)
     {
         $workbook = new Spreadsheet();
         // global font size 
         $workbook->getDefaultStyle()->getFont()->setSize(12);
         $sheet = $workbook->getActiveSheet();
+        // set sheet name
+        $sheet->setTitle('Sheet1');
 
-        $columns = $this->service->get_columns();
-        $column_names = [];
-        foreach ($columns as $column) {
-            $column_names[] = $column['name'];
-        }
 
         $sheet->fromArray($column_names, null, 'A1');
+        // set auto witdh with a1 character length 
+        foreach (range('A', 'Z') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
         // a1 style gray background 
         $sheet->getStyle('A1:Z1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFDDDDDD');
         // a1 style with border
         $sheet->getStyle('A1:Z1')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
         // lineheight = 20;
         $sheet->getRowDimension(1)->setRowHeight(20);
-        $sheet->fromArray($data->toArray(), null, 'A2');
+        $sheet->fromArray($data, null, 'A2');
         // a2 lineheight 
         $sheet->getRowDimension(2)->setRowHeight(20);
 
@@ -391,22 +392,4 @@ class CURD extends Controller
         return response()->download($filename);
     }
 
-    // toCsv 
-    public function toCsv($data)
-    {
-        $csv = "";
-        $columns = $this->model->getFillable();
-        $csv .= implode(",", $columns) . "\n";
-        foreach ($data as $item) {
-            foreach ($columns as $column) {
-                if (!is_string($item->$column)) {
-                    $item->$column = "Not Support";// json_encode($item->$column);
-                }
-                $csv .= $item->$column . ",";
-            }
-            $csv .= "\n";
-        }
-        $csv .= "";
-        return $csv;
-    }
 }

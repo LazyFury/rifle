@@ -10,7 +10,9 @@ use Common\Utils\ApiJsonResponse;
 class PostController extends CURD
 {
 
-    protected $auth_except = [];
+    protected $auth_except = [
+        "export"
+    ];
     protected $is_superuser = true;
 
     public function __construct(Post $model, PostService $service)

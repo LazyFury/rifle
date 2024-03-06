@@ -38,6 +38,13 @@ class Post extends BaseModel
         'content' => 'required|string',
     ];
 
+    protected $casts = [
+        'author_id' => 'integer',
+        'title' => 'string',
+        'content' => 'string',
+        'author' => 'array',
+    ];
+
     protected $messages = [
         'author_id.required' => 'author_id不能为空',
         'author_id.integer' => 'author_id必须是整数',
@@ -69,7 +76,7 @@ class Post extends BaseModel
     public function getAuthorAttribute()
     {
         return $this->author()->first() ?: [
-            'name' => 'unknown',
+            'name' => '-',
             'avatar' => ''
         ];
     }
@@ -91,4 +98,12 @@ class Post extends BaseModel
     {
         return mb_substr($this->content, 0, 16) . '...';
     }
+
+    public function export_serialize()
+    {
+        $result = parent::export_serialize();
+        $result['author'] = "author";
+        return $result;
+    }
+
 }

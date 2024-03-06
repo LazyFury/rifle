@@ -259,4 +259,46 @@ class Service
         return $query;
     }
 
+    // setModel
+    public function setModel(BaseModel $model)
+    {
+        $this->model = $model;
+    }
+
+    // export_column_names
+    public function export_column_names()
+    {
+        $columns = $this->get_columns();
+        $arr = [];
+        foreach ($columns as $column) {
+            $arr[] = $column['comment'] ?: $column['name'];
+        }
+        return $arr;
+    }
+
+    // export serialize()
+    public function export_serialize()
+    {
+        $arr = $this->model->toArray();
+        foreach ($this->model->getAppends() as $key) {
+            unset($arr[$key]);
+        }
+
+        foreach ($arr as $key => $value) {
+            if (is_array($value)) {
+                $arr[$key] = json_encode($value, JSON_UNESCAPED_UNICODE);
+            }
+            // bool
+            if (is_bool($value)) {
+                $arr[$key] = $value ? "是" : "否";
+            }
+            // empty 
+            if ($value == null) {
+                $arr[$key] = "/";
+            }
+        }
+
+        return $arr;
+    }
+
 }
