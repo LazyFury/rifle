@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BaseModel extends Model
 {
-    use UseTimeFormatTairt, UsePersonalFakeTrait, UseSearchable;
+    use UseTimeFormatTairt, UsePersonalFakeTrait, UseSearchable, UseDisableDelete;
 
     public function rules()
     {

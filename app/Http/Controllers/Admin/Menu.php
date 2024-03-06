@@ -85,12 +85,12 @@ class Menu extends CURD
                                     [
                                         "title" => "API",
                                         "dataIndex" => "api",
-                                        "key" => "api"
+                                        "key" => "list_api"
                                     ],
                                     [
                                         "title" => "删除API",
                                         "dataIndex" => "del_api",
-                                        "key" => "del_api"
+                                        "key" => "delete_api"
                                     ],
                                     [
                                         "title" => "更新API",
@@ -100,7 +100,7 @@ class Menu extends CURD
                                     [
                                         "title" => "创建API",
                                         "dataIndex" => "add_api",
-                                        "key" => "add_api"
+                                        "key" => "create_api"
                                     ]
                                 ],
                                 "add_form_fields" => [
@@ -121,13 +121,13 @@ class Menu extends CURD
                                         // apis 
                                         [
                                             "label" => "API",
-                                            "name" => "api",
+                                            "name" => "list_api",
                                             "placeholder" => "请输入API"
                                         ],
                                         // del_api 
                                         [
                                             "label" => "删除API",
-                                            "name" => "del_api",
+                                            "name" => "delete_api",
                                             "placeholder" => "请输入删除API"
                                         ],
                                         // update_api 
@@ -139,7 +139,7 @@ class Menu extends CURD
                                         // create_api
                                         [
                                             "label" => "创建API",
-                                            "name" => "add_api",
+                                            "name" => "create_api",
                                             "placeholder" => "请输入创建API"
                                         ]
                                     ],

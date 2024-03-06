@@ -18,22 +18,22 @@ class ApiManage extends BaseModel
     protected $fillable = [
         "title",
         "key",
-        "api",
-        "add_api",
+        "list_api",
+        "create_api",
         "update_api",
-        "del_api",
+        "delete_api",
         "columns",
         "add_form_fields",
         "search_form_fields",
-        "desciption"
+        "desciption",
     ];
 
     protected $rules = [
         "title" => "required",
-        "api" => "required",
-        "add_api" => "required",
+        "list_api" => "required",
+        "create_api" => "required",
         "update_api" => "required",
-        "del_api" => "required",
+        "delete_api" => "required",
         "columns" => "required",
         "add_form_fields" => "required",
         "search_form_fields" => "required",
@@ -43,12 +43,17 @@ class ApiManage extends BaseModel
 
     protected $messages = [
         "title.required" => "标题不能为空",
-        "api.required" => "api不能为空",
-        "add_api.required" => "add_api不能为空",
-        "update_api.required" => "update_api不能为空",
-        "del_api.required" => "del_api不能为空",
         "columns.required" => "columns不能为空",
         "add_form_fields.required" => "add_form_fields不能为空",
         "search_form_fields.required" => "search_form_fields不能为空",
+        "list_api.required" => "list_api不能为空",
+        "create_api.required" => "create_api不能为空",
+        "update_api.required" => "update_api不能为空",
+        "delete_api.required" => "delete_api不能为空",
     ];
+
+    public function get_deleteable()
+    {
+        return $this->deleteable;
+    }
 }

@@ -311,6 +311,9 @@ class CURD extends Controller
     // destroy
     public function destroy(Request $request)
     {
+
+
+
         $valid = Validator::make($request->all(), [
             'ids' => 'required|array'
         ], [
@@ -321,6 +324,15 @@ class CURD extends Controller
             return ApiJsonResponse::error($valid->errors()->first(), 400, data: $valid->errors());
         }
         $ids = $valid->validated()['ids'];
+        for ($i = 0; $i < count($ids); $i++) {
+            $model = $this->service->scopeGetOne($ids[$i])->first();
+            if (!$model) {
+                return ApiJsonResponse::error("Not Found!", 404);//not able to delete other's data
+            }
+            if (!$model->get_deleteable()) {
+                return ApiJsonResponse::error("禁止删除!", 403);//not able to delete other's data
+            }
+        }
         $this->model->destroy($ids);
         return ApiJsonResponse::success("删除成功!");
     }
