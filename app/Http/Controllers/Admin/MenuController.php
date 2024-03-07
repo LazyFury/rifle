@@ -17,7 +17,7 @@ class MenuController extends CURD
     }
 
     protected $auth_except = [
-        "all"
+        // "all"
     ];
 
     //

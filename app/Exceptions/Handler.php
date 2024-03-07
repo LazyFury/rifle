@@ -31,10 +31,10 @@ class Handler extends ExceptionHandler
 
         $this->renderable(function (AuthenticationException $e) {
             $str = $e->getMessage();
-            if($str == "Unauthenticated."){
+            if ($str == "Unauthenticated.") {
                 $str = null;
             }
-            return ApiJsonResponse::unauthenticated($str ?? "handle exception: Unauthenticated.");
+            return ApiJsonResponse::unauthenticated($str ?? "handle exception: Auth middleware.");
         });
 
         // $this->renderable(function (Throwable $e) {

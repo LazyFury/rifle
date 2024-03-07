@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 class AuthController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->except('login');
+    }
     // static routes 
     public static function routers()
     {
@@ -17,6 +21,16 @@ class AuthController extends Controller
                 "method" => "post",
                 "uri" => "login",
                 "action" => "login"
+            ],
+            "logout" => [
+                "method" => "post",
+                "uri" => "logout",
+                "action" => "logout"
+            ],
+            "profile" => [
+                "method" => "get",
+                "uri" => "profile",
+                "action" => "profile"
             ]
         ];
     }
@@ -46,14 +60,15 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        auth()->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
+        $request->user()->currentAccessToken()->delete();
         return response()->json([
             'message' => 'Logout success'
         ]);
+    }
+
+    public function profile(Request $request)
+    {
+        $user = auth()->user();
+        return ApiJsonResponse::success($user);
     }
 }

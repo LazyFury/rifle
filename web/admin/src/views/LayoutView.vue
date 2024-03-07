@@ -19,8 +19,8 @@ onMounted(()=>{
             return el
         })
     })
-
-    // profileStore.refreshProfile()
+    let token = localStorage.getItem('token')
+    if(token)profileStore.refreshProfile()
 })
 
 const logout = () => {
@@ -30,8 +30,9 @@ const logout = () => {
         cancelButtonText: 'Cancel',
         type: 'warning',
     }).then(() => {
-        request.post('/logout').then(res=>{
+        request.post('/auth.logout').then(res=>{
             location.href = '/'
+            localStorage.removeItem('token')
         })
     }).catch(() => {
         // cancel
@@ -66,7 +67,7 @@ const logout = () => {
                     </UIButton>
                     <UIButton class="flex-row-btn" @click="logout">
                         <Icon icon="ant-design:login-outlined"></Icon>
-                        <span>{{profileStore.profile.username}}</span>
+                        <span>{{profileStore.profile.name}}</span>
                     </UIButton>
                     <UIButton>
                         <ElAvatar :src="$img(profileStore.profile.avatar)" />
