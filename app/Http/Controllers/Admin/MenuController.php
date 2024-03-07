@@ -35,9 +35,31 @@ class MenuController extends CURD
         return array_merge($arr, parent::routers());
     }
 
+    public function filter(\Illuminate\Database\Eloquent\Builder $query)
+    {
+        return $query->where("parent_id", null);
+    }
+
+    public function create(Request $request)
+    {
+        $data = $request->all();
+        $data["parent_id"] = $data["parent_id"] ?? null;
+        return parent::create($request);
+    }
+
+    public function update(Request $request)
+    {
+        $data = $request->all();
+        if (isset($data["parent_id"]) && isset($data["id"]) && $data["parent_id"] == $data["id"]) {
+            return ApiJsonResponse::error("不能选择自己作为父级菜单");
+        }
+        $data["parent_id"] = $data["parent_id"] ?? null;
+        return parent::update($request);
+    }
+
     public function all(Request $request)
     {
-        $menus = \App\Models\Menu::all();
+        $menus = \App\Models\Menu::where("parent_id", null)->get();
         return ApiJsonResponse::success([
             "menus" => [
                 [

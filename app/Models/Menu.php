@@ -16,11 +16,13 @@ class Menu extends BaseModel
         "icon",
         "component",
         "meta_id",
-        "desciption"
+        "desciption",
+        "parent_id",
     ];
 
     protected $appends = [
-        "meta"
+        "meta",
+        "children",
     ];
 
     protected $rules = [
@@ -31,6 +33,7 @@ class Menu extends BaseModel
         "component" => "required",
         "meta_id" => "",
         "desciption" => "",
+        "parent_id" => "",
     ];
 
     protected $messages = [
@@ -55,5 +58,16 @@ class Menu extends BaseModel
     public function getMetaAttribute()
     {
         return $this->meta()->first();
+    }
+
+    // children 
+    public function children()
+    {
+        return $this->hasMany(Menu::class, "parent_id", "id");
+    }
+
+    public function getChildrenAttribute()
+    {
+        return $this->children()->get();
     }
 }
