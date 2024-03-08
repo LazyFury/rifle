@@ -321,15 +321,38 @@ class Service
 
 
         $sheet->fromArray($column_names, null, 'A1');
-        // set auto witdh with a1 character length 
-        foreach (range('A', 'Z') as $columnID) {
-            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+
+        // set header style [gary background, bold, center,border,padding]  with $column_names length 
+        $sheet->getStyle('A1:' . chr(65 + count($column_names) - 1) . '1')->applyFromArray([
+            'font' => [
+                'bold' => true,
+            ],
+            'alignment' => [
+                // 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+            ],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => [
+                    'rgb' => 'f2f2f2',
+                ],
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+            ],
+            'padding' => [
+                'top' => 5,
+                'bottom' => 5,
+            ],
+        ]);
+
+        // set column width
+        foreach (range('A', chr(65 + count($column_names) - 1)) as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
         }
-        // a1 style gray background 
-        $sheet->getStyle('A1:Z1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFDDDDDD');
-        // a1 style with border
-        $sheet->getStyle('A1:Z1')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-        // lineheight = 20;
+
+
         $sheet->getRowDimension(1)->setRowHeight(20);
         $sheet->fromArray($data, null, 'A2');
         // a2 lineheight 
