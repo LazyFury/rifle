@@ -296,7 +296,12 @@ class Service
             }
             // empty 
             if ($value == null) {
-                $arr[$key] = "/";
+                $arr[$key] = "";
+            }
+
+            // is datetime 
+            if ($value instanceof \Carbon\Carbon) {
+                $arr[$key] = $value->format('Y-m-d H:i:s');
             }
         }
 

@@ -110,6 +110,11 @@ export default {
         { key: 'type', label: 'type' },
         { key: 'key', label: 'key' },
         { key: 'placeholder', label: 'placeholder', width: '200px' },
+        { key: 'width', label: 'width'},
+        // remoteapi 
+        { key: 'remoteDataApi', label: 'remoteDataApi'},
+        // elInputType
+        { key: 'elInputType', label: 'elInputType'},
       ],
       table_columns_attrs: [
         { key: 'title', label: 'title' },

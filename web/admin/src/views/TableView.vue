@@ -467,6 +467,10 @@ export default {
         handleQueryToSearchForm(query) {
             for (let key in query) {
                 if (this.searchFormFields.find(v => v.name === key)) {
+                    // if num try 
+                    if (query[key] && !isNaN(query[key])) {
+                        query[key] = Number(query[key])
+                    }
                     this.searchForm[key] = query[key]
                 }
             }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Common\Model\BaseModel;
+use Common\Model\UseTimeFormatTairt;
 
 
 /**
@@ -10,6 +11,7 @@ use Common\Model\BaseModel;
  */
 class UserModel extends BaseModel
 {
+    use UseTimeFormatTairt;
     // tablename
     protected $table = 'users';
 
@@ -33,7 +35,6 @@ class UserModel extends BaseModel
     ];
 
     protected $casts = [
-        'email_verified_at' => 'datetime',
     ];
 
     protected $appends = [

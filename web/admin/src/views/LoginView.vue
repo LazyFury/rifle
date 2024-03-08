@@ -11,7 +11,7 @@
                     <ElInput v-model="loginForm.email" type="text" placeholder="email"></ElInput>
                 </ElFormItem>
                 <ElFormItem label="Password" prop="password" key="password">
-                    <ElInput v-model="loginForm.password" type="password" placeholder="Password"></ElInput>
+                    <ElInput v-model="loginForm.password" show-password type="password" placeholder="Password"></ElInput>
                 </ElFormItem>
                 <ElFormItem>
                     <ElButton type="primary" class="w-full" size="large" @click="submitLogin">Login</ElButton>
@@ -53,8 +53,8 @@ export default {
   data() {
     return {
         loginForm: {
-            email: "",
-            password: ""
+            email: "admin@mail.com",
+            password: "123456"
         },
         loginFormRules: {
             email:[

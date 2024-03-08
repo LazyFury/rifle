@@ -20,7 +20,6 @@ class UserService extends Service
     public function export_serialize()
     {
         $arr = parent::export_serialize();
-        $arr["email"] = $this->model->get_email();
         return $arr;
     }
 }

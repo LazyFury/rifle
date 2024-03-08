@@ -22,6 +22,7 @@ class Post extends BaseModel
         'author_id',
         'title',
         'content',
+        "category_id"
     ];
 
     // add to json 
@@ -30,12 +31,14 @@ class Post extends BaseModel
         'author_name',
         'author_avatar',
         'content_cut',
+        'category_name'
     ];
 
     protected $rules = [
         'author_id' => '',
         'title' => 'required|string',
         'content' => 'required|string',
+        'category_id' => 'integer|nullable'
     ];
 
     protected $casts = [
@@ -52,6 +55,7 @@ class Post extends BaseModel
         'title.string' => 'title必须是字符串',
         'content.required' => 'content不能为空',
         'content.string' => 'content必须是字符串',
+        'category_id.integer' => 'category_id必须是整数',
     ];
 
 
@@ -99,11 +103,22 @@ class Post extends BaseModel
         return mb_substr($this->content, 0, 16) . '...';
     }
 
-    public function export_serialize()
+    // category_name
+    public function category()
     {
-        $result = parent::export_serialize();
-        $result['author'] = "author";
-        return $result;
+        return $this->belongsTo(PostCategory::class, 'category_id', 'id');
+    }
+
+    public function getCategoryAttribute()
+    {
+        return $this->category()->first() ?: [
+            'name' => '-'
+        ];
+    }
+
+    public function getCategoryNameAttribute()
+    {
+        return $this->getCategoryAttribute()['name'];
     }
 
 }
