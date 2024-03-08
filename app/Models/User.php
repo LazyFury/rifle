@@ -13,7 +13,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable,HasRoles,HasPermissions;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasPermissions;
 
     /**
      * The attributes that are mass assignable.
@@ -50,15 +50,13 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function searchable(){
+    public function searchable()
+    {
         return [
             'id',
             'name',
             'email',
         ];
     }
-
-
-
 
 }

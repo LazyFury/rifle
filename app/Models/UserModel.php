@@ -16,10 +16,31 @@ class UserModel extends BaseModel
     protected $hidden = [
         'password',
         'remember_token',
-        'id'
     ];
 
-    public function getEmailAttribute($value)
+    protected $rules = [
+        "name" => "required|string|max:20",
+    ];
+
+    protected $messages = [
+        "name.required" => "用户名不能为空",
+        "name.string" => "用户名必须是字符串",
+        "name.max" => "用户名最大长度为20",
+    ];
+
+    protected $fillable = [
+        "name",
+    ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
+
+    protected $appends = [
+        'hidden_email'
+    ];
+
+    public function getHiddenEmailAttribute($value)
     {
         // hidden some
         return substr($value, 0, 3) . '****' . substr($value, -3);

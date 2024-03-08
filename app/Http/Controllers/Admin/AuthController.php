@@ -3,14 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Service\AuthService;
 use Common\Utils\ApiJsonResponse;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
 
-    public function __construct()
+    protected AuthService $service;
+    public function __construct(AuthService $service)
     {
+        $this->service = $service;
         $this->middleware('auth:sanctum')->except('login');
     }
     // static routes 
@@ -37,38 +40,30 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-
-        $request->validate([
-            'name' => 'required',
-            'password' => 'required'
-        ]);
-
-        $credentials = $request->only('name', 'password');
-
-        if (auth()->attempt($credentials)) {
-            $user = auth()->user();
-            $token = $user->createToken('authToken')->plainTextToken;
-
-            return ApiJsonResponse::success([
-                "user" => $user,
-                "token" => $token
-            ]);
+        $result = $this->service->login($request);
+        if (is_string($result)) {
+            return ApiJsonResponse::error($result);
         }
-
-        return ApiJsonResponse::error("账号密码错误", 400);
+        return ApiJsonResponse::success($result);
     }
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
-        return response()->json([
-            'message' => 'Logout success'
-        ]);
+        $this->service->logout();
+        return ApiJsonResponse::success(null);
     }
 
     public function profile(Request $request)
     {
-        $user = auth()->user();
-        return ApiJsonResponse::success($user);
+        return ApiJsonResponse::success($this->service->profile());
+    }
+
+    public function register(Request $request)
+    {
+        $result = $this->service->register($request);
+        if (is_string($result)) {
+            return ApiJsonResponse::error($result);
+        }
+        return ApiJsonResponse::success($result);
     }
 }

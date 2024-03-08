@@ -7,8 +7,8 @@
             </div>
 
             <ElForm size="large" @submit.native.prevent="handleSubmit" :model="loginForm" :rules="loginFormRules" ref="loginFormRef" label-position="top" class="mt-4">
-                <ElFormItem label="Username" prop="username" key="username">
-                    <ElInput v-model="loginForm.username" type="text" placeholder="Username"></ElInput>
+                <ElFormItem label="email" prop="email" key="email">
+                    <ElInput v-model="loginForm.email" type="text" placeholder="email"></ElInput>
                 </ElFormItem>
                 <ElFormItem label="Password" prop="password" key="password">
                     <ElInput v-model="loginForm.password" type="password" placeholder="Password"></ElInput>
@@ -53,12 +53,13 @@ export default {
   data() {
     return {
         loginForm: {
-            username: "",
+            email: "",
             password: ""
         },
         loginFormRules: {
-            username: [
-            { required: true, message: "Please input username", trigger: "blur" }
+            email:[
+            { required: true, message: "Please input email", trigger: "blur" },
+            { type: "email", message: "Please input correct email", trigger: "blur" }
             ],
             password: [
             { required: true, message: "Please input password", trigger: "blur" }
@@ -74,7 +75,7 @@ export default {
             if (valid) {
                 // this.$router.push({ path: '/dashboard' })
                 request.post('/auth.login', {
-                    name: this.loginForm.username,
+                    email: this.loginForm.email,
                     password: this.loginForm.password
                 }).then(res=>{
                     if(res.data.code === 200){

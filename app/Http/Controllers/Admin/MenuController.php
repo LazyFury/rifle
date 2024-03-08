@@ -70,14 +70,14 @@ class MenuController extends CURD
                     "component" => "HomeView"
                 ],
                 ...$menus->toArray(),
-                [
-                    "title" => "文章管理",
-                    "key" => "article",
-                    "path" => "/article",
-                    "icon" => "ant-design:file-outlined",
-                    "component" => "TableView",
-                    "meta" => ApiManage::where("key", "article")->first()
-                ],
+                // [
+                //     "title" => "文章管理",
+                //     "key" => "article",
+                //     "path" => "/article",
+                //     "icon" => "ant-design:file-outlined",
+                //     "component" => "TableView",
+                //     "meta" => ApiManage::where("key", "article")->first()
+                // ],
                 [
                     // dev mode 
                     "title" => "开发人员系统维护",
