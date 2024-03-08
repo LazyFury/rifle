@@ -301,7 +301,7 @@ class CURD extends Controller
             return ApiJsonResponse::error("Not Found!", 404);//not able to update other's data
         }
 
-        $valid = Validator::make($request->all(), $this->model->rules(), $this->model->messages());
+        $valid = Validator::make($request->all(), $model->rules(), $model->messages());
         if ($valid->fails()) {
             return ApiJsonResponse::error($valid->errors()->first(), 400, data: $valid->errors());
         }

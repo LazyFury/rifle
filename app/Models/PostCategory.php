@@ -43,6 +43,12 @@ class PostCategory extends BaseModel
         'self_post_count'
     ];
 
+    public function rules()
+    {
+        $this->rules['slug'] = 'required|unique:post_categories,slug,' . $this->id . '|regex:/^[a-zA-Z0-9-_]+$/';
+        return $this->rules;
+    }
+
     public function posts()
     {
         return $this->hasMany(Post::class, 'category_id');
