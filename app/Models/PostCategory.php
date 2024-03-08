@@ -35,4 +35,36 @@ class PostCategory extends BaseModel
         'slug.required' => 'Slug không được để trống',
         'slug.unique' => 'Slug đã tồn tại',
     ];
+
+    protected $appends = [
+        'post_count',
+        'children',
+    ];
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'category_id');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(PostCategory::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(PostCategory::class, 'parent_id');
+    }
+
+    // post count 
+    public function getPostCountAttribute()
+    {
+        return $this->posts()->count();
+    }
+
+    // children 
+    public function getChildrenAttribute()
+    {
+        return $this->children()->get();
+    }
 }

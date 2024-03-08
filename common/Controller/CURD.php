@@ -367,7 +367,6 @@ class CURD extends Controller
         if ($type == 'csv') {
             return $this->service->toCsv($columns, $result);
         }
-
         return $this->service->toXlsx($columns, $result);
     }
 

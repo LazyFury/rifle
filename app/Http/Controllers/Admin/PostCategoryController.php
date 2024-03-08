@@ -12,4 +12,10 @@ class PostCategoryController extends CURD
     {
         parent::__construct($model);
     }
+
+    public function filter(\Illuminate\Database\Eloquent\Builder $query)
+    {
+        $query->with('parent')->where('parent_id', 0);
+        return $query;
+    }
 }

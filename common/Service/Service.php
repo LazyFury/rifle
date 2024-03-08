@@ -272,9 +272,14 @@ class Service
     {
         $columns = $this->get_columns();
         $arr = [];
+        $hidden = $this->model->getHidden();
         foreach ($columns as $column) {
+            if (in_array($column['name'], $hidden)) {
+                continue;
+            }
             $arr[] = $column['comment'] ?: $column['name'];
         }
+
         return $arr;
     }
 

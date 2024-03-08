@@ -102,7 +102,7 @@
 
                             <!-- link  -->
                             <ElLink type="primary" v-if="column.type == 'link'" :underline="false"
-                                :href="makeUrl(row, column, column.key)" :target="column.url_target || '_self'">
+                                :href="makeUrl(row, column, column.link_key)" :target="column.url_target || '_self'">
                                 {{ column.prefix }}{{ row[column.key] }}{{ column.suffix }}
                             </ElLink>
                         </template>

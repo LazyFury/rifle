@@ -25,6 +25,15 @@
         :label="field.placeholder">
     </ElCheckbox>
 
+
+    <!-- Cascader -->
+    <ElCascader @change="handleUpdateCascader" clearable v-model="value" v-if="field.type == 'cascader'" :options="options"
+        :props="{
+            ...field.props,
+        }" :placeholder="field.placeholder">
+    </ElCascader>
+
+
     <!-- input  -->
     <ElInput v-model="value" @change="handleUpdate" :type="field.epInputType || 'text'" v-if="!field.type || field.type == 'input'"
         :placeholder="field.placeholder">
@@ -73,7 +82,7 @@ export default {
         },
         value: {
             handler(val) {
-                this.$emit('update:modelValue', val)
+                // this.$emit('update:modelValue', val)
             }
         }
     },
@@ -82,44 +91,56 @@ export default {
         handleUpdate(val) {
             this.$emit('update:modelValue', val)
         },
+        /**
+         * 单选级联选择器，取值最后一项
+         */
+        handleUpdateCascader(val) {
+            let value = val[val.length - 1]
+            this.$emit('update:modelValue', value)
+        },
+        progressOptions(options) {
+            return options.map(v => {
+                let rollback_label_names = ['name', 'title','label','username']
+                let rollback_value_names = ['id', 'value']
+
+                let label_name = this.field.props?.label || 'name'
+                let value_name = this.field.props?.value || 'id'
+
+                let label = ""
+                let value = ""
+
+                if(v[label_name]){
+                    label = v[label_name]
+                }else{
+                    for (let i = 0; i < rollback_label_names.length; i++) {
+                        if (v[rollback_label_names[i]]) {
+                            label = v[rollback_label_names[i]]
+                            break
+                        }
+                    }
+                }
+
+                if(v[value_name]){
+                    value = v[value_name]
+                }else{
+                    for (let i = 0; i < rollback_value_names.length; i++) {
+                        if (v[rollback_value_names[i]]) {
+                            value = v[rollback_value_names[i]]
+                            break
+                        }
+                    }
+                }
+                
+                return {
+                    label,
+                    value,
+                    children: this.progressOptions(v.children)
+                }
+            })
+        },
         getOptions() {
             if (this.field.remoteDataApi) request.get(this.field.remoteDataApi).then(res => {
-                this.options = (res.data?.data?.data || []).map(v => {
-                    let label_name = this.field.props?.label || 'name'
-                    let backend_label_names = ['name', 'title','label','username']
-                    let value_name = this.field.props?.value || 'id'
-                    let backend_value_names = ['id', 'value']
-
-                    let label = ""
-                    let value = ""
-
-                    if(v[label_name]){
-                        label = v[label_name]
-                    }
-
-                    if(v[value_name]){
-                        value = v[value_name]
-                    }
-
-                    for (let i = 0; i < backend_label_names.length; i++) {
-                        if (v[backend_label_names[i]]) {
-                            label = v[backend_label_names[i]]
-                            break
-                        }
-                    }
-
-                    for (let i = 0; i < backend_value_names.length; i++) {
-                        if (v[backend_value_names[i]]) {
-                            value = v[backend_value_names[i]]
-                            break
-                        }
-                    }
-                    
-                    return {
-                        label,
-                        value
-                    }
-                })
+                this.options = this.progressOptions(res.data?.data?.data || [])
             })
         }
     },

@@ -31,7 +31,8 @@ class Post extends BaseModel
         'author_name',
         'author_avatar',
         'content_cut',
-        'category_name'
+        'category_name',
+        'category_cascader_name',
     ];
 
     protected $rules = [
@@ -119,6 +120,21 @@ class Post extends BaseModel
     public function getCategoryNameAttribute()
     {
         return $this->getCategoryAttribute()['name'];
+    }
+
+
+    //category  cascader name
+    public function getCategoryCascaderNameAttribute()
+    {
+        $category = $this->category()->first();
+        if ($category) {
+            $parent = $category->parent()->first();
+            if ($parent) {
+                return $parent->name . ' / ' . $category->name;
+            }
+            return $category->name;
+        }
+        return '-';
     }
 
 }

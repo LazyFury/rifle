@@ -109,6 +109,7 @@ export default {
         { key: 'label', label: 'label' },
         { key: 'type', label: 'type' },
         { key: 'key', label: 'key' },
+        
         { key: 'placeholder', label: 'placeholder', width: '200px' },
         { key: 'width', label: 'width'},
         // remoteapi 
@@ -133,6 +134,8 @@ export default {
         { key: "url_prefix", label: "url_prefix" },
         // url_target
         { key: "url_target", label: "url_target" },
+        // link key 
+        {key:"link_key",label:"link_key"},
       ],
       edit_form_fields_attrs: [
         // label,name,type,placeholder,required,disabled,defaultValue,hidden,clearable,showPassword,remoteDataApi,prefix,suffix,epInputType
