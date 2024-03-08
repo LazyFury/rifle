@@ -352,7 +352,7 @@ class CURD extends Controller
 
         $query = $this->model->query();
         $query = $this->service->scopeSearch($query, $request->all());
-        $query = $this->filter($query);
+        // $query = $this->filter($query);
         $data = $query->get();
         $service = clone $this->service;
         $columns = $service->export_column_names();

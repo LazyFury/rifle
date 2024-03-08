@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\PostCategory;
 use Common\Controller\CURD;
+use Common\Utils\ApiJsonResponse;
+use Illuminate\Http\Request;
 
 class PostCategoryController extends CURD
 {
@@ -17,5 +19,21 @@ class PostCategoryController extends CURD
     {
         $query->with('parent')->where('parent_id', 0);
         return $query;
+    }
+
+    public function update(Request $request)
+    {
+        $category_id = request()->input("parent_id");
+        $id = request()->input("id");
+        $currend = PostCategory::find($id);
+        if ($currend->children()->count() > 0) {
+            if ($category_id) {
+                $category = PostCategory::find($category_id);
+                if ($category->parent_id != null) {
+                    return ApiJsonResponse::error("不能添加子分类到子分类中");
+                }
+            }
+        }
+        return parent::update($request);
     }
 }

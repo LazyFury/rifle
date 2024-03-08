@@ -27,9 +27,12 @@
 
 
     <!-- Cascader -->
-    <ElCascader @change="handleUpdateCascader" clearable v-model="value" v-if="field.type == 'cascader'" :options="options"
-        :props="{
+    <ElCascader @change="handleUpdateCascader"  v-model="value" v-if="field.type == 'cascader'" :options="options"
+        filterable
+        clearable
+       :props="{
             ...field.props,
+            checkStrictly: true,
         }" :placeholder="field.placeholder">
     </ElCascader>
 
@@ -98,7 +101,8 @@ export default {
             let value = val[val.length - 1]
             this.$emit('update:modelValue', value)
         },
-        progressOptions(options) {
+        progressOptions(options,level = 1) {
+            if(level <= 0) return []
             return options.map(v => {
                 let rollback_label_names = ['name', 'title','label','username']
                 let rollback_value_names = ['id', 'value']
@@ -134,13 +138,14 @@ export default {
                 return {
                     label,
                     value,
-                    children: this.progressOptions(v.children)
+                    children: this.progressOptions(v.children,level - 1)
                 }
             })
         },
         getOptions() {
+            let level = this.field.cascaderLevel || 2
             if (this.field.remoteDataApi) request.get(this.field.remoteDataApi).then(res => {
-                this.options = this.progressOptions(res.data?.data?.data || [])
+                this.options = this.progressOptions(res.data?.data?.data || [],level)
             })
         }
     },

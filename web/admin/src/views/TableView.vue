@@ -70,11 +70,14 @@
                     <ElTableColumn type="selection" width="55"></ElTableColumn>
 
                     <!-- id  -->
-                    <ElTableColumn label="ID" width="80" prop="id"></ElTableColumn>
+                    <slot name="tableIdColumn">
+                        <ElTableColumn v-if="!hasIdColumn(columns)" label="ID" width="80" prop="id"></ElTableColumn>
+                    </slot>
 
                     <ElTableColumn v-for="column in columns" :key="column.key"
                         :sortable="column.sortable ? 'custom' : false" :label="column.title" :width="column.width">
                         <template #default="{ row }" v-if="!column.slot">
+
                             <div :class="[column.className]" v-if="column.type == 'render'">
                                 {{ column.render(row) }}
                             </div>
@@ -105,6 +108,9 @@
                                 :href="makeUrl(row, column, column.link_key)" :target="column.url_target || '_self'">
                                 {{ column.prefix }}{{ row[column.key] }}{{ column.suffix }}
                             </ElLink>
+
+                            <!-- span  -->
+                            <span v-if="column.type == 'span'" v-html="row[column.key]"></span>
                         </template>
                         <template v-if="column.slot" #default="{ row }">
                             <slot :name="column.slot" :row="row"></slot>
@@ -475,6 +481,9 @@ export default {
                 }
             }
             this.load()
+        },
+        hasIdColumn(columns) {
+            return columns.find(v => v.key === 'id')
         }
     },
     created() { },

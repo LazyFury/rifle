@@ -130,6 +130,10 @@ class Post extends BaseModel
         if ($category) {
             $parent = $category->parent()->first();
             if ($parent) {
+                $grandparent = $parent->parent()->first();
+                if ($grandparent) {
+                    return $grandparent->name . ' / ' . $parent->name . ' / ' . $category->name;
+                }
                 return $parent->name . ' / ' . $category->name;
             }
             return $category->name;

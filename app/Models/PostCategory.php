@@ -22,7 +22,7 @@ class PostCategory extends BaseModel
 
     protected $rules = [
         'name' => 'required',
-        'slug' => 'required|unique:post_categories',
+        'slug' => 'required|unique:post_categories,slug|regex:/^[a-zA-Z0-9-_]+$/', // 只能包含字母、数字、破折号（ - ）以及下划线（ _ ）
         'description' => '',
         'parent_id' => '',
         'order' => '',
@@ -31,14 +31,16 @@ class PostCategory extends BaseModel
     ];
 
     protected $messages = [
-        'name.required' => 'Tên danh mục không được để trống',
-        'slug.required' => 'Slug không được để trống',
-        'slug.unique' => 'Slug đã tồn tại',
+        'name.required' => '名称不得为空',
+        'slug.required' => 'Slug 不得为空',
+        'slug.unique' => 'Slug 已存在',
+        "slug.regex" => "Slug 只能包含字母、数字、破折号（ - ）以及下划线（ _ ）",
     ];
 
     protected $appends = [
         'post_count',
         'children',
+        'self_post_count'
     ];
 
     public function posts()
@@ -59,6 +61,23 @@ class PostCategory extends BaseModel
     // post count 
     public function getPostCountAttribute()
     {
+        $count = 0;
+        // loop three level children , plus count 
+        foreach ($this->children as $child) {
+            $count += $child->getSelfPostCountAttribute();
+            foreach ($child->children as $child2) {
+                $count += $child2->getSelfPostCountAttribute();
+                foreach ($child2->children as $child3) {
+                    $count += $child3->getSelfPostCountAttribute();
+                }
+            }
+        }
+        return $this->posts()->count() + $count;
+    }
+
+    // self post count 
+    public function getSelfPostCountAttribute()
+    {
         return $this->posts()->count();
     }
 
@@ -66,5 +85,21 @@ class PostCategory extends BaseModel
     public function getChildrenAttribute()
     {
         return $this->children()->get();
+    }
+
+    // childrenIds 
+    public function getChildrenIdsAttribute()
+    {
+        $ids = [];
+        for ($i = 0; $i < count($this->children); $i++) {
+            $ids[] = $this->children[$i]->id;
+            for ($j = 0; $j < count($this->children[$i]->children); $j++) {
+                $ids[] = $this->children[$i]->children[$j]->id;
+                for ($k = 0; $k < count($this->children[$i]->children[$j]->children); $k++) {
+                    $ids[] = $this->children[$i]->children[$j]->children[$k]->id;
+                }
+            }
+        }
+        return $ids;
     }
 }

@@ -12,7 +12,7 @@ class PostController extends CURD
 {
 
     protected $auth_except = [
-        "export"
+        "index"
     ];
     protected $is_superuser = true;
 
@@ -33,6 +33,17 @@ class PostController extends CURD
     public static function routers()
     {
         return [] + parent::routers();
+    }
+
+    public function filter(\Illuminate\Database\Eloquent\Builder $query)
+    {
+        $query = parent::filter($query);
+        $category_id = request()->input("category_id");
+        if ($category_id) {
+            $category = PostCategory::find($category_id);
+            $query->orWhereIn("category_id", $category->getChildrenIdsAttribute());
+        }
+        return $query;
     }
 
 

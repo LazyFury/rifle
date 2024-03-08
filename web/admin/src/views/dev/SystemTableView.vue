@@ -116,6 +116,8 @@ export default {
         { key: 'remoteDataApi', label: 'remoteDataApi'},
         // elInputType
         { key: 'elInputType', label: 'elInputType'},
+        // cascader level
+        { key: 'cascaderLevel', label: 'cascaderLevel'},
       ],
       table_columns_attrs: [
         { key: 'title', label: 'title' },
@@ -155,6 +157,7 @@ export default {
         { key: 'prefix', label: 'prefix' },
         { key: 'suffix', label: 'suffix' },
         { key: 'epInputType', label: 'epInputType' },
+        { key: 'cascaderLevel', label: 'cascaderLevel'},
       ],
     };
   },
