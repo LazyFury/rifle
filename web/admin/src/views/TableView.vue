@@ -139,7 +139,7 @@
                 </template>
                 <slot name="addForm">
                     <Form ref="formRef" :title="meta.title" :defaultForm="addFormDefault" :fields="addForm"
-                        @submit="handleAddSubmit">
+                        @save="handleAddSubmit">
                     </Form>
                 </slot>
             </ElDialog>

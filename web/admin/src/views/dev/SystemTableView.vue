@@ -4,7 +4,7 @@
       <template #addForm>
         <div>
           <Form ref="formRef" :title="meta.name" :defaultForm="{}" :fields="meta.add_form_fields"
-            :progressFormData="handleProgressFormData" @submit="handleAddSubmit">
+            :progressFormData="handleProgressFormData" @save="handleAddSubmit">
 
             <!-- columns  -->
             <template #columns="{ form, field }">

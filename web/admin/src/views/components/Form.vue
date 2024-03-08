@@ -4,7 +4,7 @@
             <span class="text-2xl">{{ formTitle }}{{ title }}</span>
         </div>
         <!-- {{ form }} -->
-        <ElForm ref="formRef" :inline="false" :model="form" :rules="rules" :label-width="120" class="mt-0">
+        <ElForm ref="formRef" @submit.prevent.native="e=>{}" @submit.prevent="e=>{}" :inline="false" :model="form" :rules="rules" :label-width="120" class="mt-0">
             <div class="mb-4 grid xl:grid-cols-2">
                 <div v-for="field in fields" v-if="!multiRowMode">
                     <span>not support yet!</span>
@@ -27,7 +27,7 @@
         </ElForm>
 
         <div class="flex flex-row items-center justify-end">
-            <ElButton @click="handleSubmit" type="primary" class="w-24">保存</ElButton>
+            <ElButton @click="handleSubmit()" type="primary" class="w-24">保存</ElButton>
         </div>
     </div>
 </template>
@@ -94,7 +94,7 @@ export default {
         handleSubmit() {
             this.$refs.formRef.validate((valid) => {
                 if (valid) {
-                    this.$emit('submit', this.form)
+                    this.$emit('save', this.form)
                 }
             })
         },
