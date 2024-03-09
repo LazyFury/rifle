@@ -22,7 +22,8 @@ class Post extends BaseModel
         'author_id',
         'title',
         'content',
-        "category_id"
+        "category_id",
+        "tags_ids",
     ];
 
     // add to json 
@@ -33,13 +34,16 @@ class Post extends BaseModel
         'content_cut',
         'category_name',
         'category_cascader_name',
+        'tags',
+        'tags_name_join',
     ];
 
     protected $rules = [
         'author_id' => '',
         'title' => 'required|string',
         'content' => 'required|string',
-        'category_id' => 'integer|nullable'
+        'category_id' => 'integer|nullable',
+        "tags_ids" => "array|nullable",
     ];
 
     protected $casts = [
@@ -47,6 +51,7 @@ class Post extends BaseModel
         'title' => 'string',
         'content' => 'string',
         'author' => 'array',
+        "tags_ids" => "array",
     ];
 
     protected $messages = [
@@ -57,6 +62,7 @@ class Post extends BaseModel
         'content.required' => 'content不能为空',
         'content.string' => 'content必须是字符串',
         'category_id.integer' => 'category_id必须是整数',
+        "tags_ids.array" => "tags_ids必须是数组",
     ];
 
 
@@ -139,6 +145,29 @@ class Post extends BaseModel
             return $category->name;
         }
         return '-';
+    }
+
+
+    public function tags()
+    {
+        $ids = $this->tags_ids ?? [];
+        return PostTag::whereIn('id', $ids);
+    }
+
+    public function getTagsAttribute()
+    {
+        return $this->tags()->get();
+    }
+
+    // tags_name_join ,
+    public function getTagsNameJoinAttribute()
+    {
+        $tags = $this->tags()->get();
+        $tags_name = [];
+        foreach ($tags as $tag) {
+            $tags_name[] = $tag->name;
+        }
+        return implode(',', $tags_name);
     }
 
 }

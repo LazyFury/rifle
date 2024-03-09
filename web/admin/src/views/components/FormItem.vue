@@ -17,6 +17,13 @@
             <Icon icon="el:refresh" class=""></Icon>
         </ElButton>
     </div>
+
+    <!-- select multi  -->
+    <ElSelect v-if="field.type == 'select-multi'" @change="handleUpdate" v-model="value" multiple
+        :placeholder="field.placeholder">
+        <ElOption v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></ElOption>
+    </ElSelect>
+
     <!-- switch -->
     <ElSwitch @change="handleUpdate" v-model="value" v-if="field.type == 'switch'"
         :active-text="field.checkedChildren"></ElSwitch>
@@ -35,6 +42,17 @@
             checkStrictly: true,
         }" :placeholder="field.placeholder">
     </ElCascader>
+
+    <!-- cascader-multi  -->
+    <ElCascader @change="handleUpdateCascader" v-model="value" v-if="field.type == 'cascader-multi'" :options="options"
+        filterable
+        clearable
+        :props="{
+            ...field.props,
+            checkStrictly: true,
+            multiple: true
+        }" :placeholder="field.placeholder">
+        </ElCascader>
 
 
     <!-- input  -->
@@ -144,6 +162,8 @@ export default {
         },
         getOptions() {
             let level = this.field.cascaderLevel || 2
+            if(this.field.type == 'select') level = 1
+            if(this.field.type == 'select-multi') level = 1
             if (this.field.remoteDataApi) request.get(this.field.remoteDataApi).then(res => {
                 this.options = this.progressOptions(res.data?.data?.data || [],level)
             })
