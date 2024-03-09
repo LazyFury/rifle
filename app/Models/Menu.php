@@ -33,7 +33,7 @@ class Menu extends BaseModel
         "component" => "required",
         "meta_id" => "",
         "desciption" => "",
-        "parent_id" => "",
+        "parent_id" => "nullable|exists:menus,id",
     ];
 
     protected $messages = [

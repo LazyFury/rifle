@@ -11,17 +11,18 @@ CREATE TABLE `api_manages` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `desciption` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `list_api` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `delete_api` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `update_api` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `create_api` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `columns` json NOT NULL,
-  `add_form_fields` json NOT NULL,
-  `search_form_fields` json NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '标题',
+  `desciption` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '描述',
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'key',
+  `list_api` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '列表接口',
+  `delete_api` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '删除接口',
+  `update_api` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '编辑接口',
+  `create_api` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '新增接口',
+  `columns` json NOT NULL COMMENT 'table columns',
+  `add_form_fields` json DEFAULT NULL,
+  `search_form_fields` json NOT NULL COMMENT 'search_form_fields',
   `deleteable` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否可删除',
+  `export_api` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '导出接口',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -68,10 +69,14 @@ CREATE TABLE `menus` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `desciption` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `desciption` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `component` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `meta` json NOT NULL,
+  `meta_id` bigint unsigned DEFAULT NULL COMMENT 'meta id',
+  `path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '路由',
+  `icon` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '图标',
+  `deleteable` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否可删除',
+  `parent_id` bigint unsigned DEFAULT NULL COMMENT 'Parent Menu',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -151,6 +156,36 @@ CREATE TABLE `personal_access_tokens` (
   KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `post_categories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `post_categories` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `parent_id` int NOT NULL DEFAULT '0',
+  `order` int NOT NULL DEFAULT '0',
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `post_categories_slug_unique` (`slug`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `post_tags`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `post_tags` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Name',
+  `slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Slug',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `posts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -160,10 +195,14 @@ CREATE TABLE `posts` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tags_ids` json DEFAULT NULL COMMENT 'Tags IDs',
   `keywords` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `author_id` bigint unsigned DEFAULT NULL COMMENT '作者ID',
-  PRIMARY KEY (`id`)
+  `category_id` bigint unsigned DEFAULT NULL COMMENT '文章分类ID',
+  PRIMARY KEY (`id`),
+  KEY `posts_category_id_foreign` (`category_id`),
+  CONSTRAINT `posts_category_id_foreign` FOREIGN KEY (`category_id`) REFERENCES `post_categories` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `role_has_permissions`;
@@ -243,6 +282,7 @@ CREATE TABLE `users` (
   `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
+  `deleteable` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否可删除',
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email_unique` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -269,3 +309,16 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (13,'2024_03_05_172
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (14,'2024_03_05_175759_alert_api_manage',9);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (16,'2024_03_06_113432_alert_api_manages_add_deleteable_column',10);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (17,'2024_03_06_114308_alert_api_manages_rename_some_columns',11);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (18,'2024_03_06_134209_alert_menus_rename_meta_meta_id',12);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (23,'2024_03_06_134558_alert_menus_add_path_column',13);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (24,'2024_03_06_135633_alert_menus_add_deleteable',14);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (25,'2024_03_06_164410_alert_api_manages_add_export_api',15);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (26,'alert_api_manages_comment',16);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (27,'2024_03_06_165612_alert_api_manages_comment_desciption',17);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (28,'2024_03_07_101250_alert_menu_parent_id',18);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (30,'2024_03_08_134805_create_post_category',19);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (31,'2024_03_08_135229_alert_posts_category_id',20);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (32,'2024_03_09_092517_alert_posts_add_tags_ids_column',21);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (33,'2024_03_09_092923_create_post_tags',22);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (34,'2024_03_09_102744_alert_api_manage_add_form_fields_nullable',23);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (36,'2024_03_09_103144_alert_users_add_deleteable_column',24);

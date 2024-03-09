@@ -1,7 +1,7 @@
 
 const prod = {
     url: {
-        API_URL: 'http://139.224.255.204:3214/api',
+        API_URL: 'http://139.224.255.204:3214/admin',
         BASE_URL: 'https://yourdomain.com',
         IMG_URL: 'https://yourdomain.com',
     }

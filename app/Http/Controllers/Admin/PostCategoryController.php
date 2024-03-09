@@ -17,7 +17,7 @@ class PostCategoryController extends CURD
 
     public function filter(\Illuminate\Database\Eloquent\Builder $query)
     {
-        $query->with('parent')->where('parent_id', 0);
+        $query->with('parent')->where('parent_id', null);
         return $query;
     }
 
