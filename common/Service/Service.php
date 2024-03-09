@@ -24,6 +24,8 @@ class Service
         "__lte",
         "__like",
         "__in",
+        "__ids_and", // 使用 1,2,3 查询 ids 字段，差集
+        "__ids_or", // 使用 1,2,3 查询 ids 字段，交集   
         "__not_in",
         "__or",
         "__or_like",//简单实现多字段模糊查询
@@ -142,12 +144,36 @@ class Service
                 }
 
                 if ($type == '__in') {
-                    $value = explode(',', $value);
+                    if (is_string($value)) {
+                        $value = explode(',', $value);
+                    }
                     $query->whereIn(str_replace($type, '', $key), $value);
                 }
 
+                // in_set 
+                if ($type == '__ids_and') {
+                    if (is_string($value)) {
+                        $value = explode(',', $value);
+                    }
+                    foreach ($value as $v) {
+                        $query->where(str_replace($type, '', $key), 'like', '%' . $v . '%');
+                    }
+                }
+
+                // ids_or 
+                if ($type == '__ids_or') {
+                    if (is_string($value)) {
+                        $value = explode(',', $value);
+                    }
+                    foreach ($value as $v) {
+                        $query->orWhere(str_replace($type, '', $key), 'like', '%' . $v . '%');
+                    }
+                }
+
                 if ($type == '__not_in') {
-                    $value = explode(',', $value);
+                    if (is_string($value)) {
+                        $value = explode(',', $value);
+                    }
                     $query->whereNotIn(str_replace($type, '', $key), $value);
                 }
 

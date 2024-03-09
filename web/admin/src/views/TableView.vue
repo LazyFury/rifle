@@ -15,9 +15,9 @@
             </div>
             <ElDivider class="!mb-4 !mt-2"></ElDivider>
             <div v-if="searchFormFields && searchFormFields.length > 0">
-                <ElForm :inline="true" :model="searchForm" @submit.prevent.native="e=>{}" class="mb-2">
-                    <ElFormItem v-for="field in searchFormFields" :key="field.name" :label="field.label" :prop="field.name"
-                        :class="[]" :style="{ 'min-width': field.width || '100px' }">
+                <ElForm :inline="true" :model="searchForm" @submit.prevent.native="e => { }" class="mb-2">
+                    <ElFormItem v-for="field in searchFormFields" :key="field.name" :label="field.label"
+                        :prop="field.name" :class="[]" :style="{ 'min-width': field.width || '100px' }">
                         <FormItem :field="field" v-model="searchForm[field.name]"></FormItem>
                     </ElFormItem>
                     <ElFormItem>
@@ -85,7 +85,8 @@
                             <ElSwitch v-if="column.type == 'switch'" v-model="row[column.key]" inactive-color="#ff4949"
                                 active-text="" inactive-text="" disabled></ElSwitch>
                             <!-- checkbox  -->
-                            <ElCheckbox v-if="column.type == 'checkbox'" v-model="row[column.key]" disabled></ElCheckbox>
+                            <ElCheckbox v-if="column.type == 'checkbox'" v-model="row[column.key]" disabled>
+                            </ElCheckbox>
 
                             <!-- select  -->
                             <ElSelect v-if="column.type == 'select'" v-model="row[column.key]"
@@ -94,7 +95,8 @@
                                     :value="option.value"></ElOption>
                             </ElSelect>
                             <!-- icon  -->
-                            <Icon v-if="column.type == 'icon'" :icon="row[column.key]" :class="[column.className]"></Icon>
+                            <Icon v-if="column.type == 'icon'" :icon="row[column.key]" :class="[column.className]">
+                            </Icon>
                             <!-- image  -->
                             <ElImage v-if="column.type == 'image'" :src="$img(row[column.key])" fit="cover"
                                 :preview-teleported="true"
@@ -112,6 +114,7 @@
                             <!-- span  -->
                             <span v-if="column.type == 'span'" v-html="row[column.key]"></span>
                         </template>
+
                         <template v-if="column.slot" #default="{ row }">
                             <slot :name="column.slot" :row="row"></slot>
                         </template>
@@ -119,6 +122,7 @@
 
                     <!-- actions  -->
                     <ElTableColumn fixed="right" v-if="actions?.length" label="操作" min-width="150px">
+
                         <template #default="{ row }">
                             <ElButton v-for="action in actions" link :key="action.key" :type="action.type || 'primary'"
                                 @click="action.handler(row)">
@@ -131,15 +135,16 @@
             <!-- pagination  -->
             <div class="flex mt-2">
                 <ElPagination small layout="total,sizes, prev, pager, next, jumper" background
-                    :hide-on-single-page="false"
-                    v-model:current-page="pagination.currentPage" v-model:page-size="pagination.pageSize"
-                    :page-sizes="[5,8, 10, 20, 50, 100]" :total="pagination.total" @current-change="handleCurrentPageChange"
+                    :hide-on-single-page="false" v-model:current-page="pagination.currentPage"
+                    v-model:page-size="pagination.pageSize" :page-sizes="[5, 8, 10, 20, 50, 100]"
+                    :total="pagination.total" @current-change="handleCurrentPageChange"
                     @size-change="handlePageSizeChange"></ElPagination>
             </div>
         </ElCard>
 
         <slot name="addModal">
             <ElDialog v-if="canAdd" title="提示" v-model="editModal" class="!md:w-640px !w-full !lg:w-960px">
+
                 <template #header>
                     <div></div>
                 </template>
@@ -152,6 +157,7 @@
         </slot>
     </div>
 </template>
+
 <script>
 import { ElPagination } from 'element-plus';
 import { request } from '@/api/request';
@@ -159,7 +165,7 @@ import Form from '@/views/components/Form.vue'
 import FormItem from './components/FormItem.vue';
 
 export default {
-    components: { ElPagination, Form,FormItem },
+    components: { ElPagination, Form, FormItem },
     props: {},
     data() {
         return {
@@ -180,16 +186,16 @@ export default {
         api() {
             return this.meta.api || this.meta.api_url || this.meta.list_api
         },
-        create_api(){
+        create_api() {
             return this.meta.create_api || this.meta.api + ".create"
         },
-        update_api(){
+        update_api() {
             return this.meta.update_api || this.meta.api + ".update"
         },
-        delete_api(){
+        delete_api() {
             return this.meta.delete_api || this.meta.api + ".delete"
         },
-        export_api(){
+        export_api() {
             return this.meta.export_api || this.meta.api + ".export"
         },
         searchFormFields() {
@@ -328,13 +334,23 @@ export default {
         },
         load() {
             this.loading = true
+            let form = JSON.parse(JSON.stringify(this.searchForm))
+            for (let key in form) {
+                if (form[key] === "") {
+                    delete form[key]
+                }
+                // if is array 
+                if (Array.isArray(form[key])) {
+                    form[key] = form[key].join(",")
+                }
+            }
             request({
                 url: this.api,
                 method: 'get',
                 params: {
                     page: this.pagination.currentPage,
                     limit: this.pagination.pageSize,
-                    ...this.searchForm
+                    ...form
                 }
             }).then(res => {
                 let data = res.data.data || {}
@@ -424,7 +440,7 @@ export default {
                 xlsx: '.xlsx',
                 xls: '.xls'
             }[type]
-            
+
             request({
                 url: this.export_api,
                 method: 'get',
@@ -480,6 +496,17 @@ export default {
                     if (query[key] && !isNaN(query[key])) {
                         query[key] = Number(query[key])
                     }
+
+                    // if array
+                    if (/\,/.test(query[key])) {
+                        query[key] = (query[key].split(",") || []).filter(v => v).map(v => {
+                            if (v && !isNaN(v)) {
+                                return Number(v)
+                            }
+                            return v
+                        })
+                    }
+
                     this.searchForm[key] = query[key]
                 }
             }
@@ -504,4 +531,5 @@ export default {
     }
 };
 </script>
+
 <style lang="scss" scoped></style>

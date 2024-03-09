@@ -27,4 +27,19 @@ class PostTag extends BaseModel
         'slug.required' => 'slug不能为空',
         'slug.string' => 'slug必须是字符串',
     ];
+
+    protected $appends = [
+        "post_count"
+    ];
+
+    public function posts()
+    {
+        return Post::where("tags_ids", "like", "%{$this->id}%");
+    }
+
+    // post count 
+    public function getPostCountAttribute()
+    {
+        return $this->posts()->count();
+    }
 }
