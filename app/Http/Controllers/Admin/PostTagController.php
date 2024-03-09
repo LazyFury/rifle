@@ -11,4 +11,13 @@ class PostTagController extends CURD
     {
         parent::__construct($model);
     }
+
+    public function destroy(\Illuminate\Http\Request $request, $destoryCheck = null)
+    {
+        return parent::destroy($request, destoryCheck: function ($model) {
+            if ($model->posts()->count() > 0) {
+                return \Common\Utils\ApiJsonResponse::error("请先删除标签下的文章");
+            }
+        });
+    }
 }

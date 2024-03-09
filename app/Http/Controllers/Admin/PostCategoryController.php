@@ -36,4 +36,17 @@ class PostCategoryController extends CURD
         }
         return parent::update($request);
     }
+
+    // destory 
+    public function destroy(Request $request, $destoryCheck = null)
+    {
+        return parent::destroy($request, destoryCheck: function ($model) {
+            if ($model->children()->count() > 0) {
+                return ApiJsonResponse::error("请先删除子分类");
+            }
+            if ($model->posts()->count() > 0) {
+                return ApiJsonResponse::error("请先删除分类下的文章");
+            }
+        });
+    }
 }

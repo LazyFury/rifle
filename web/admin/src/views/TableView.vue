@@ -62,7 +62,7 @@
                     <span>导出</span>
                 </ElButton>
             </div>
-            <div class=" overflow-x-auto" style="width:calc(100vw - 300px)">
+            <div class="overflow-x-auto">
                 <ElTable ref="tableRef" size="default" v-loading="loading" :data="tableData" :border="true" stripe
                     :tree-props="{ hasChildren: 'hasChildren', children: 'children' }" row-key="id"
                     @sort-change="handleSortChange">

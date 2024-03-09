@@ -3,7 +3,7 @@ import { ref } from "vue"
 
 
 export const useTranslateStore = defineStore('translate', () => {
-    const supportedLocales = ref(['en', 'fr','zh-cn'])
+    const supportedLocales = ref(['en', 'fr', 'zh-cn'])
     const localesToDisplay = ref({
         'en': 'English',
         'fr': 'Français',
@@ -19,19 +19,19 @@ export const useTranslateStore = defineStore('translate', () => {
         locale.value = newLocale
     }
 
-    function setMessages(key,_messages) {
+    function setMessages(key, _messages) {
         messages.value[key] = _messages
     }
 
-    function getMessage(local){
+    function getMessage(local) {
         return messages.value[local] || {}
     }
-    
-    function getKey(key,args) {
+
+    function getKey(key, args) {
         let msg = getMessage(locale.value)[key] || key + ""
-        
+
         // format "hello {}" messages with the provided arguments
-        try{
+        try {
             if (Array.isArray(args) && args?.length >= 1) {
                 for (let i = 0; i < args.length; i++) {
                     msg = msg.replace(/\{(.*?)\}/, args[i])
@@ -39,21 +39,21 @@ export const useTranslateStore = defineStore('translate', () => {
             }
 
             // if obj
-            if(typeof args === "object"){
+            if (typeof args === "object") {
                 for (const key in args) {
-                    msg = msg.replace(new RegExp(`\\{${key}\\}`,"g"), args[key])
+                    msg = msg.replace(new RegExp(`\\{${key}\\}`, "g"), args[key])
                 }
             }
-            
+
             // single value 
-            if(typeof args === "string" || typeof args === "number"){
+            if (typeof args === "string" || typeof args === "number") {
                 msg = msg.replace(/\{(.*?)\}/, args)
             }
-        }catch(e){
-            console.error("Translate Error:",e)
+        } catch (e) {
+            console.error("Translate Error:", e)
         }
 
-        if(!msg){
+        if (!msg) {
             setTimeout(() => {
                 // 仅上报,push 到服务器配置翻译，初始化的时候再获取
                 console.log(`key:${key} not found in locale:${locale.value}`)
@@ -63,13 +63,13 @@ export const useTranslateStore = defineStore('translate', () => {
     }
 
     function getLocaleToDisplay(_locale) {
-        if(!_locale){
+        if (!_locale) {
             _locale = locale.value
         }
         return localesToDisplay.value[_locale] || _locale
     }
 
-    return { locale, messages, setLocale, setMessages, getKey,getLocaleToDisplay }
+    return { locale, messages, setLocale, setMessages, getKey, getLocaleToDisplay }
 })
 
 export default useTranslateStore

@@ -1,24 +1,28 @@
 <template>
 
-    <div>
+    <ElCard shadow="never">
+
         <div>
-            {{ groupLunarDate() }}
-        </div>
+            <div>
+                {{ groupLunarDate() }}
+            </div>
 
-        <div class="flex flex-row gap-2 w-500px">
-            <ElSelect v-model="value1" placeholder="请选择年份">
-                <ElOption v-for="item in Lyears" :key="item.value" :label="item.label" :value="item.value"></ElOption>
-            </ElSelect>
-            <ElSelect v-model="value2" placeholder="请选择月份">
-                <ElOption v-for="item in LMonths" :key="item.value" :label="item.label" :value="item.value"></ElOption>
-            </ElSelect>
-            <ElSelect v-model="value3" placeholder="请选择日期">
-                <ElOption v-for="item in getLunarDays(value1, value2)" :key="item.value" :label="item.label"
-                    :value="item.value"></ElOption>
-            </ElSelect>
-        </div>
+            <div class="flex flex-row gap-2 w-500px">
+                <ElSelect v-model="value1" placeholder="请选择年份">
+                    <ElOption v-for="item in Lyears" :key="item.value" :label="item.label" :value="item.value">
+                    </ElOption>
+                </ElSelect>
+                <ElSelect v-model="value2" placeholder="请选择月份">
+                    <ElOption v-for="item in LMonths" :key="item.value" :label="item.label" :value="item.value">
+                    </ElOption>
+                </ElSelect>
+                <ElSelect v-model="value3" placeholder="请选择日期">
+                    <ElOption v-for="item in getLunarDays(value1, value2)" :key="item.value" :label="item.label"
+                        :value="item.value"></ElOption>
+                </ElSelect>
+            </div>
 
-        <!-- <ElDatePicker v-model="value1" type="date" :popper-options="{}" popper-class="datepicker" placeholder="选择日期">
+            <!-- <ElDatePicker v-model="value1" type="date" :popper-options="{}" popper-class="datepicker" placeholder="选择日期">
             <template #default="cell">
                 <div class="flex flex-col items-center justify-center">
                     <span>
@@ -28,7 +32,10 @@
                 </div>
             </template>
 </ElDatePicker> -->
-    </div>
+        </div>
+
+    </ElCard>
+
 </template>
 
 

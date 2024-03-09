@@ -311,7 +311,7 @@ class CURD extends Controller
 
 
     // destroy
-    public function destroy(Request $request)
+    public function destroy(Request $request, $destoryCheck = null)
     {
 
 
@@ -333,6 +333,13 @@ class CURD extends Controller
             }
             if (!$model->get_deleteable()) {
                 return ApiJsonResponse::error("禁止删除!", 403);//not able to delete other's data
+            }
+
+            if ($destoryCheck && is_callable($destoryCheck)) {
+                $result = $destoryCheck($model);
+                if ($result) {
+                    return $result;
+                }
             }
         }
         $this->model->destroy($ids);

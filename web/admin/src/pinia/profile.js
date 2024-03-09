@@ -5,13 +5,13 @@ import { request } from '../api/request'
 export const useProfileStore = defineStore({
     id: 'profile',
     state: () => ({
-        profile: {} as any,
+        profile: {},
     }),
     getters: {
         isLoggedIn: (state) => !!state.profile,
     },
     actions: {
-        setProfile(profile: any) {
+        setProfile(profile) {
             this.profile = profile
         },
         refreshProfile() {
