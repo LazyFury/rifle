@@ -21,6 +21,7 @@
                   </ElTableColumn>
                   <!-- 操作 -->
                   <ElTableColumn label="操作" width="auto">
+
                     <template #default="{ row }">
                       <ElButton type="danger" link @click="handleDeleteColumn(form, field.name, row)">删除</ElButton>
                     </template>
@@ -45,6 +46,7 @@
                   </ElTableColumn>
 
                   <ElTableColumn label="操作" width="auto">
+
                     <template #default="{ row }">
                       <ElButton type="danger" link @click="handleDeleteColumn(form, field.name, row)">删除</ElButton>
                     </template>
@@ -60,7 +62,8 @@
             <template #add_form_fields="{ form, field }">
               <div class="overflow-x-auto">
                 <!-- add table  -->
-                <ElButton type="success" size="small" @click="handleAddAddFormTable(form, field.name)">添加Layout</ElButton>
+                <ElButton type="success" size="small" @click="handleAddAddFormTable(form, field.name)">添加Layout
+                </ElButton>
                 <!-- set null  -->
                 <ElButton type="danger" size="small" @click="form[field.name] = []">清空</ElButton>
                 <div class="overflow-x-auto" v-for="(table, i) in form[field.name]">
@@ -72,8 +75,10 @@
                       </template>
                     </ElTableColumn>
                     <ElTableColumn label="操作" width="auto">
+
                       <template #default="{ row }">
-                        <ElButton type="danger" link @click="handleDeleteAddColumn(form, field.name, row, i)">删除</ElButton>
+                        <ElButton type="danger" link @click="handleDeleteAddColumn(form, field.name, row, i)">删除
+                        </ElButton>
                       </template>
                     </ElTableColumn>
                   </ElTable>
@@ -90,6 +95,7 @@
     </TableView>
   </div>
 </template>
+
 <script>
 import { ElTable, ElTableColumn, ElInput } from 'element-plus';
 import TableView from '../TableView.vue';
@@ -111,15 +117,15 @@ export default {
         { key: 'label', label: 'label' },
         { key: 'type', label: 'type' },
         { key: 'key', label: 'key' },
-        
+
         { key: 'placeholder', label: 'placeholder', width: '200px' },
-        { key: 'width', label: 'width'},
+        { key: 'width', label: 'width' },
         // remoteapi 
-        { key: 'remoteDataApi', label: 'remoteDataApi'},
+        { key: 'remoteDataApi', label: 'remoteDataApi' },
         // elInputType
-        { key: 'elInputType', label: 'elInputType'},
+        { key: 'elInputType', label: 'elInputType' },
         // cascader level
-        { key: 'cascaderLevel', label: 'cascaderLevel'},
+        { key: 'cascaderLevel', label: 'cascaderLevel' },
       ],
       table_columns_attrs: [
         { key: 'title', label: 'title' },
@@ -139,7 +145,9 @@ export default {
         // url_target
         { key: "url_target", label: "url_target" },
         // link key 
-        {key:"link_key",label:"link_key"},
+        { key: "link_key", label: "link_key" },
+        // epType 
+        { key: "epType", label: "epType" },
       ],
       edit_form_fields_attrs: [
         // label,name,type,placeholder,required,disabled,defaultValue,hidden,clearable,showPassword,remoteDataApi,prefix,suffix,epInputType
@@ -159,7 +167,7 @@ export default {
         { key: 'prefix', label: 'prefix' },
         { key: 'suffix', label: 'suffix' },
         { key: 'epInputType', label: 'epInputType' },
-        { key: 'cascaderLevel', label: 'cascaderLevel'},
+        { key: 'cascaderLevel', label: 'cascaderLevel' },
       ],
     };
   },
@@ -282,4 +290,5 @@ export default {
   }
 };
 </script>
+
 <style lang="scss" scoped></style>

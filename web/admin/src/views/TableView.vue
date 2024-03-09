@@ -113,6 +113,16 @@
 
                             <!-- span  -->
                             <span v-if="column.type == 'span'" v-html="row[column.key]"></span>
+
+                            <!-- multi-tag split by , -->
+                            <div class="flex flex-row flex-wrap gap-2">
+                                <ElTag v-if="column.type == 'string-multi-tag'"
+                                    :type="handleColumnEpType(row, column, tag)"
+                                    v-for="tag in row[column.key].split(',')" :key="tag">{{ tag }}
+                                </ElTag>
+                            </div>
+
+
                         </template>
 
                         <template v-if="column.slot" #default="{ row }">
@@ -514,6 +524,23 @@ export default {
         },
         hasIdColumn(columns) {
             return columns.find(v => v.key === 'id')
+        },
+
+        handleColumnEpType(row, column, tag) {
+            let type = column.epType || 'success'
+            // if type == rand 
+            if (type === 'rand') {
+                let map = {
+                    0: 'info',
+                    1: 'success',
+                    2: 'warning',
+                    3: 'danger'
+                }
+                let hash = btoa(tag)
+                let index = (hash.charCodeAt(0) + hash.charCodeAt(1)) % 4
+                type = map[index]
+            }
+            return type
         }
     },
     created() { },
