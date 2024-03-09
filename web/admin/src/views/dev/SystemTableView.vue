@@ -61,6 +61,8 @@
               <div class="overflow-x-auto">
                 <!-- add table  -->
                 <ElButton type="success" size="small" @click="handleAddAddFormTable(form, field.name)">添加Layout</ElButton>
+                <!-- set null  -->
+                <ElButton type="danger" size="small" @click="form[field.name] = []">清空</ElButton>
                 <div class="overflow-x-auto" v-for="(table, i) in form[field.name]">
                   <ElTable :data="table">
                     <ElTableColumn v-for="column in edit_form_fields_attrs" :label="column.label" :prop="column.key"

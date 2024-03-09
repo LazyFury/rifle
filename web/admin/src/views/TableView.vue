@@ -318,6 +318,9 @@ export default {
         handlePageSizeChange(val) {
             this.pagination.pageSize = val
             this.load()
+
+            let url = new URL(location.href)
+            localStorage.setItem("pageSize_" + btoa(url), val)
         },
         handleCurrentPageChange(val) {
             this.pagination.currentPage = val
@@ -488,6 +491,14 @@ export default {
     },
     created() { },
     mounted() {
+
+        // load pageSize from localStorage
+        let url = new URL(location.href)
+        let pageSize = localStorage.getItem("pageSize_" + btoa(url))
+        if (pageSize) {
+            this.pagination.pageSize = pageSize
+        }
+
         this.handleQueryToSearchForm(this.$route.query)
         // this.load()
     }

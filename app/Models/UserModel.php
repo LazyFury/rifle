@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Common\Model\BaseModel;
+use Common\Model\UseDisableDelete;
 use Common\Model\UseTimeFormatTairt;
 
 
@@ -11,7 +12,7 @@ use Common\Model\UseTimeFormatTairt;
  */
 class UserModel extends BaseModel
 {
-    use UseTimeFormatTairt;
+    use UseTimeFormatTairt, UseDisableDelete;
     // tablename
     protected $table = 'users';
 
@@ -54,5 +55,10 @@ class UserModel extends BaseModel
             'email',
             "id"
         ];
+    }
+
+    public function get_deleteable()
+    {
+        return $this->deleteable;
     }
 }

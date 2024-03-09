@@ -37,7 +37,7 @@ class ApiManage extends BaseModel
         "delete_api" => "required",
         "export_api" => "required",
         "columns" => "required",
-        "add_form_fields" => "required",
+        "add_form_fields" => "nullable",
         "search_form_fields" => "required",
         "desctiption" => "",
         "key" => "",
