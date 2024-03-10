@@ -21,22 +21,21 @@ import { Icon } from '@iconify/vue';
 
 // @ts-ignore 
 import App from './App.vue'
-import router from './router/index.js'
+import router from './router/index'
 
 // request
-import { request } from './api/request.js'
+import { request } from '@/api/request'
 
 // translate
-import useTranslateStore from './pinia/translate.js'
-import zhCN from './i18n/zh-cn/main.js'
+import useTranslateStore from './pinia/translate'
+import zhCN from './i18n/zh-cn/main'
 // end translate
 
-import config from './config.js'
+import config from './config'
 import dayjs from 'dayjs'
 import numeral from 'numeral'
 
 import NProgress from 'nprogress'
-import ts from 'typescript'
 NProgress.configure({ showSpinner: true })
 
 const app = createApp(App)

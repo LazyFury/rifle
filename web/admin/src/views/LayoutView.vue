@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
-import Menu from '../components/layout/Menu.vue'
 import { ElAvatar, ElBreadcrumb, ElButton, ElTabs, ElMessageBox } from 'element-plus';
 import { onMounted, ref, watch, watchEffect } from 'vue';
 import useTranslateStore from '../pinia/translate';
-import { request } from '../api/request';
 import useProfileStore from '../pinia/profile';
+import { request } from '@/api/request';
 
 const menus = ref([])
 const router = useRouter()
