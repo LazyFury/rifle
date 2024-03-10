@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
 import Menu from '../components/layout/Menu.vue'
 import { ElAvatar, ElBreadcrumb, ElButton, ElTabs, ElMessageBox } from 'element-plus';
@@ -6,10 +6,13 @@ import { onMounted, ref, watch, watchEffect } from 'vue';
 import useTranslateStore from '../pinia/translate';
 import { request } from '../api/request';
 import useProfileStore from '../pinia/profile';
+
 const menus = ref([])
 const router = useRouter()
 const translateStore = useTranslateStore()
 const profileStore = useProfileStore()
+
+const $t = translateStore.getKey
 
 onMounted(() => {
     request.get('/menu.all').then(res => {
@@ -72,7 +75,7 @@ const logout = () => {
                             <span>{{ profileStore.profile.name }}</span>
                         </UIButton>
                         <UIButton>
-                            <ElAvatar :src="$img(profileStore.profile.avatar)" />
+                            <ElAvatar :src="(profileStore.profile.avatar)" />
                         </UIButton>
                     </div>
                 </ElRow>
@@ -87,7 +90,7 @@ const logout = () => {
                 <div class="w-200px"></div>
                 <div class="flex-1 mt-60px dark:bg-dark-700">
                     <main class="p-4" style="width: calc(100vw - 232px);">
-                        <RouterView :key="$route.meta.key"></RouterView>
+                        <RouterView :key="($route.meta.key as string)"></RouterView>
                     </main>
                 </div>
             </div>

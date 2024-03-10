@@ -28,7 +28,8 @@
                         <ElDivider class="!my-1 !mt-3" />
                         <h5 class="my-1">依赖：</h5>
                         <div v-if="plugin.requirements" class="mt-2 flex flex-row gap-1 flex-wrap">
-                            <ElTag v-for="requirement in plugin.requirements" :key="requirement" type="success">{{ requirement }}</ElTag>
+                            <ElTag v-for="requirement in plugin.requirements" :key="requirement" type="success">{{
+                requirement }}</ElTag>
                         </div>
                     </div>
                 </div>
@@ -36,8 +37,10 @@
         </div>
     </div>
 </template>
+
 <script>
-import { request } from '@/api/request'
+import { request } from '../../api/request';
+
 export default {
     components: {},
     props: {},
@@ -57,4 +60,5 @@ export default {
     }
 };
 </script>
+
 <style lang="scss" scoped></style>

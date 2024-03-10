@@ -5,7 +5,13 @@ import { request } from '../api/request.js'
 export const useProfileStore = defineStore({
     id: 'profile',
     state: () => ({
-        profile: {},
+        profile: {
+            id: 0,
+            name: '',
+            email: '',
+            avatar: '',
+            roles: [],
+        },
     }),
     getters: {
         isLoggedIn: (state) => !!state.profile,

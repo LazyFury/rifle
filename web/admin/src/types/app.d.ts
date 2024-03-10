@@ -1,7 +1,5 @@
 
 
-
-
 declare module '*.vue' {
   import { ComponentOptions } from 'vue'
   const componentOptions: ComponentOptions
@@ -9,4 +7,16 @@ declare module '*.vue' {
 }
 
 
+import { App } from 'vue';
 
+declare module '@vue/runtime-core' {
+  interface ComponentCustomProperties {
+    $img: (url: string) => string;
+  }
+}
+
+declare module 'vue' {
+  interface App {
+    $img: (url: string) => string;
+  }
+}

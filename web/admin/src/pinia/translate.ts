@@ -27,7 +27,7 @@ export const useTranslateStore = defineStore('translate', () => {
         return messages.value[local] || {}
     }
 
-    function getKey(key, args) {
+    function getKey(key, args = []) {
         let msg = getMessage(locale.value)[key] || key + ""
 
         // format "hello {}" messages with the provided arguments
@@ -62,7 +62,7 @@ export const useTranslateStore = defineStore('translate', () => {
         return msg
     }
 
-    function getLocaleToDisplay(_locale) {
+    function getLocaleToDisplay(_locale?: string) {
         if (!_locale) {
             _locale = locale.value
         }

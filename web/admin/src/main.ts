@@ -21,17 +21,17 @@ import { Icon } from '@iconify/vue';
 
 // @ts-ignore 
 import App from './App.vue'
-import router from './router'
+import router from './router/index.js'
 
 // request
-import { request } from './api/request'
+import { request } from './api/request.js'
 
 // translate
-import useTranslateStore from './pinia/translate'
+import useTranslateStore from './pinia/translate.js'
 import zhCN from './i18n/zh-cn/main.js'
 // end translate
 
-import config from './config'
+import config from './config.js'
 import dayjs from 'dayjs'
 import numeral from 'numeral'
 
