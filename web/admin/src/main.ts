@@ -36,6 +36,7 @@ import dayjs from 'dayjs'
 import numeral from 'numeral'
 
 import NProgress from 'nprogress'
+import ts from 'typescript'
 NProgress.configure({ showSpinner: true })
 
 const app = createApp(App)

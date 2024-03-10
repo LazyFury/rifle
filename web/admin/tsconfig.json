@@ -1,0 +1,41 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "module": "NodeNext",
+        "target": "esnext",
+        "moduleResolution": "NodeNext",
+        "lib": [
+            "esnext",
+            "dom",
+            "dom.iterable",
+            "scripthost",
+            "es2015",
+        ],
+        "skipLibCheck": false,
+        "esModuleInterop": false,
+        "allowSyntheticDefaultImports": true,
+        "strict": false,
+        "forceConsistentCasingInFileNames": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        "types": [
+            "vue",
+            "vite/client"
+        ],
+    },
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.js",
+        "src/**/*.vue",
+        "src/**/*.d.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ],
+    "references": [
+        {
+            "@": "../src"
+        }
+    ]
+}

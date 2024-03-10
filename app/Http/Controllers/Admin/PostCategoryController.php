@@ -40,7 +40,7 @@ class PostCategoryController extends CURD
     // destory 
     public function destroy(Request $request, $destoryCheck = null)
     {
-        return parent::destroy($request, destoryCheck: function ($model) {
+        return parent::destroy($request, destoryCheck: function (PostCategory $model) {
             if ($model->children()->count() > 0) {
                 return ApiJsonResponse::error("请先删除子分类");
             }

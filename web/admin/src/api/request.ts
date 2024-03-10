@@ -1,7 +1,7 @@
 import axios from 'axios'
-import config from '../config'
+import config from '../config.js'
 import { ElMessage } from 'element-plus';
-import router from '../router';
+import router from '../router/index.js';
 import NProgress from 'nprogress'
 
 const createAxiosInstance = (baseURL, opt = {}) => {
