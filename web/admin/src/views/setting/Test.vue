@@ -6,6 +6,9 @@
             <div>
                 {{ groupLunarDate() }}
             </div>
+            <div>
+                {{ trans("value1") }}
+            </div>
 
             <div class="flex flex-row gap-2 w-500px">
                 <ElSelect v-model="value1" placeholder="请选择年份">
@@ -32,6 +35,12 @@
                 </div>
             </template>
 </ElDatePicker> -->
+        </div>
+
+        <div>
+            <div v-for="(_, i) in 100">
+                {{ trans("value1" + i) }}
+            </div>
         </div>
 
     </ElCard>

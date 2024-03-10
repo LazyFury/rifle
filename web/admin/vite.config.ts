@@ -40,7 +40,8 @@ export default (({ mode }) => {
           "vue-router",
         ],
         dirs: [
-          // "./src/api/"
+          // "./src/api/",
+          "./src/utils/auto"
         ]
       })
     ],

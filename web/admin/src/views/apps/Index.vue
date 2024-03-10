@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { request } from '../../api/request';
+import { request } from '@/api/request';
 
 export default {
     components: {},

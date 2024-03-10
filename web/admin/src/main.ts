@@ -41,6 +41,12 @@ NProgress.configure({ showSpinner: true })
 const app = createApp(App)
 app.use(ElementPlus, { locale: ElzhCn })
 app.use(createPinia())
+app.mixin({
+    methods: {
+        trans,
+        $t: trans
+    }
+})
 app.use(function (vm) {
 
     vm.config.globalProperties.$dayjs = dayjs
@@ -52,6 +58,7 @@ app.use(function (vm) {
         console.log(target)
         return target
     }
+
 
     router.beforeEach((to, from, next) => {
         next()

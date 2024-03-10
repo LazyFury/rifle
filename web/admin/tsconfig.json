@@ -22,20 +22,22 @@
         "types": [
             "node",
             "vue",
-            "vite/client"
+            "vite/client",
+            // "node_modules/@types"
         ],
         "baseUrl": ".",
         "paths": {
             "@/*": [
                 "src/*"
             ]
-        }
+        },
     },
     "include": [
         "src/**/*.ts",
         "src/**/*.js",
         "src/**/*.vue",
         "src/**/*.d.ts",
+        "src/*.d.ts",
         "**/*.d.ts"
     ],
     "exclude": [

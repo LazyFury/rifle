@@ -11,8 +11,6 @@ const router = useRouter()
 const translateStore = useTranslateStore()
 const profileStore = useProfileStore()
 
-const $t = translateStore.getKey
-
 onMounted(() => {
     request.get('/menu.all').then(res => {
         menus.value = (res.data.data?.menus || []).filter(el => el.hidden_on_menu !== true).map(el => {
@@ -40,8 +38,9 @@ const logout = () => {
     }).catch(() => {
         // cancel
     });
-
 }
+
+const $t = trans
 
 </script>
 

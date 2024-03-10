@@ -2,6 +2,7 @@ import { defineStore } from "pinia"
 // @ts-ignore 
 import { request } from '../api/request.js'
 
+
 export const useProfileStore = defineStore({
     id: 'profile',
     state: () => ({
