@@ -76,7 +76,7 @@ class MenuController extends CURD
                 // ],
                 [
                     // dev mode 
-                    "title" => "开发人员系统维护",
+                    "title" => "开发维护",
                     "icon" => "ant-design:sliders-outlined",
                     "key" => "dev",
                     "children" => [
