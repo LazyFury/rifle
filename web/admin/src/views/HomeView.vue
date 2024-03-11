@@ -1,11 +1,10 @@
 <script setup>
 import { useRoute } from 'vue-router';
 import TheWelcome from '../components/TheWelcome.vue'
-import {Chart} from '@antv/g2'
+import { Chart } from '@antv/g2'
 import { onMounted } from 'vue';
 const route = useRoute()
-
-onMounted(()=>{
+onMounted(() => {
   const chart = new Chart({ container: "container" });
   chart.options({
     type: "interval",

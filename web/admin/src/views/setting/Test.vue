@@ -37,12 +37,6 @@
 </ElDatePicker> -->
         </div>
 
-        <div>
-            <div v-for="(_, i) in 100">
-                {{ trans("value1" + i) }}
-            </div>
-        </div>
-
     </ElCard>
 
 </template>

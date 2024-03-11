@@ -5,6 +5,7 @@ namespace App\Models;
 use Common\Model\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rule;
 
 class PostCategory extends BaseModel
 {
@@ -43,9 +44,13 @@ class PostCategory extends BaseModel
         'self_post_count'
     ];
 
-    public function rules()
+    public function rules($isUpdate = false, $data = [])
     {
-        $this->rules['slug'] = 'required|unique:post_categories,slug,' . $this->id . '|regex:/^[a-zA-Z0-9-_]+$/';
+        $this->rules['slug'] = [
+            'required',
+            'regex:/^[a-zA-Z0-9-_]+$/',
+            Rule::unique('post_categories', 'slug')->ignore($this->id),
+        ];
         return $this->rules;
     }
 

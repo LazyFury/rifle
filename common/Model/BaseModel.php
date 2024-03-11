@@ -9,7 +9,7 @@ class BaseModel extends Model
 {
     use UseTimeFormatTairt, UsePersonalFakeTrait, UseSearchable, UseDisableDelete;
 
-    public function rules()
+    public function rules(bool $isUpdate = false, array $data = [])
     {
         return $this->rules;
     }

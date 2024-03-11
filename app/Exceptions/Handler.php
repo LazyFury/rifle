@@ -37,8 +37,8 @@ class Handler extends ExceptionHandler
             return ApiJsonResponse::unauthenticated($str ?? "handle exception: Auth middleware.");
         });
 
-        // $this->renderable(function (Throwable $e) {
-        //     return ApiJsonResponse::error($e->getMessage(), ApiJsonResponse::ErrCode['InternalServerError']);
-        // });
+        $this->renderable(function (Throwable $e) {
+            return ApiJsonResponse::error($e->getMessage(), ApiJsonResponse::ErrCode['InternalServerError']);
+        });
     }
 }

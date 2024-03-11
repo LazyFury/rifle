@@ -24,6 +24,9 @@ onMounted(() => {
     if (token) profileStore.refreshProfile()
 })
 
+/**
+ * logout
+ */
 const logout = () => {
     // confirm 
     ElMessageBox.confirm('Are you sure to logout?', 'Logout', {
