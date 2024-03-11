@@ -148,6 +148,8 @@ export default {
         { key: "link_key", label: "link_key" },
         // epType 
         { key: "epType", label: "epType" },
+        // slot 
+        { key: "slot", label: "slot" },
       ],
       edit_form_fields_attrs: [
         // label,name,type,placeholder,required,disabled,defaultValue,hidden,clearable,showPassword,remoteDataApi,prefix,suffix,epInputType

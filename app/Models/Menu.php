@@ -18,11 +18,13 @@ class Menu extends BaseModel
         "meta_id",
         "desciption",
         "parent_id",
+        "type"
     ];
 
     protected $appends = [
         "meta",
         "children",
+        "all_children_id"
     ];
 
     protected $rules = [
@@ -33,7 +35,8 @@ class Menu extends BaseModel
         "component" => "required",
         "meta_id" => "",
         "desciption" => "",
-        "parent_id" => "nullable|exists:menus,id",
+        "parent_id" => "nullable|exists:menus,id|different:id",
+        "type" => "nullable|in:menu,sub_menu,group"
     ];
 
     protected $messages = [
@@ -42,6 +45,9 @@ class Menu extends BaseModel
         "path.required" => "path不能为空",
         "icon.required" => "icon不能为空",
         "component.required" => "component不能为空",
+        "meta_id.required" => "meta_id不能为空",
+        "parent_id.exists" => "父级菜单不存在",
+        "parent_id.different" => "父级菜单不能是自己",
     ];
 
     public function get_deleteable()
@@ -69,5 +75,33 @@ class Menu extends BaseModel
     public function getChildrenAttribute()
     {
         return $this->children()->get();
+    }
+
+    // all children id 
+    public function allChildrenId()
+    {
+        $ids = [];
+        $children = $this->children()->get();
+        foreach ($children as $child) {
+            $ids[] = $child->id;
+            $ids = array_merge($ids, $child->allChildrenId());
+        }
+        return $ids;
+    }
+
+    // get all children ids attr 
+    public function getAllChildrenIdAttribute()
+    {
+        return $this->allChildrenId();
+    }
+
+    // perent_id is avaliable
+    public function isParentIdAvaliable($parent_id)
+    {
+        if ($parent_id == null) {
+            return true;
+        }
+        $ids = $this->allChildrenId();
+        return !in_array($parent_id, $ids);
     }
 }

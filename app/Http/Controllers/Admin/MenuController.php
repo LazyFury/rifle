@@ -7,6 +7,7 @@ use App\Models\ApiManage;
 use Common\Controller\CURD;
 use Common\Utils\ApiJsonResponse;
 use Illuminate\Http\Request;
+use Validator;
 
 class MenuController extends CURD
 {
@@ -49,11 +50,27 @@ class MenuController extends CURD
 
     public function update(Request $request)
     {
-        $data = $request->all();
-        if (isset($data["parent_id"]) && isset($data["id"]) && $data["parent_id"] == $data["id"]) {
-            return ApiJsonResponse::error("不能选择自己作为父级菜单");
+        $valid = Validator::make($request->all(), [
+            "id" => "required|exists:menus,id",
+            "parent_id" => "nullable|exists:menus,id|different:id",
+        ], [
+            "id.required" => "id 不能为空",
+            "id.exists" => "id 不存在",
+            "parent_id.exists" => "父级菜单不存在",
+            "parent_id.different" => "父级菜单不能选择自己",
+        ]);
+        if ($valid->fails()) {
+            return ApiJsonResponse::error($valid->errors()->first());
         }
-        $data["parent_id"] = $data["parent_id"] ?? null;
+
+        $id = (int) $request->input("id");
+        $parent_id = (int) $request->input("parent_id") ?? null;
+        $model = $this->model->find($id);
+
+        if ($model->isParentIdAvaliable($parent_id) === false) {
+            return ApiJsonResponse::error("不能选择自己的子级菜单作为父级菜单");
+        }
+
         return parent::update($request);
     }
 

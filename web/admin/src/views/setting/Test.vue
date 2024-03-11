@@ -1,4 +1,17 @@
 <template>
+    <ElCard shadow="never" class="mb-4">
+        <ElForm :model="form" class="max-w-500px" label-position="right" label-width="100px">
+            <ElFormItem label="站点名称" required>
+                <ElInput v-model="form.site_name" placeholder="请输入站点名称"></ElInput>
+            </ElFormItem>
+            <ElFormItem label="站点地址" required>
+                <ElInput v-model="form.site_url" placeholder="请输入站点地址"></ElInput>
+            </ElFormItem>
+            <ElFormItem>
+                <ElButton type="primary" @click="handleSaveSetting">保存设置</ElButton>
+            </ElFormItem>
+        </ElForm>
+    </ElCard>
 
     <ElCard shadow="never">
 
@@ -37,6 +50,9 @@
 </ElDatePicker> -->
         </div>
 
+
+
+
     </ElCard>
 
 </template>
@@ -45,6 +61,7 @@
 <script>
 import calendar from 'js-calendar-converter';
 import dayjs from 'dayjs'
+import { request } from '@/api/request';
 export default {
     components: {},
     props: {},
@@ -55,6 +72,10 @@ export default {
             value3: '',
             Lyears: [],
             LMonths: [],
+            form: {
+                site_url: "",
+                site_name: "",
+            }
         };
     },
     watch: {},
@@ -101,6 +122,14 @@ export default {
             let day = this.value3;
             let chinaDay = this.getLunarDays(year, month).find((v) => v.value === day)?.label || "";
             return `${chinaYear} ${chinaMonth} ${chinaDay}`
+        },
+        handleSaveSetting() {
+            request.post("/dict_group.setConfig", {
+                key: "basic",
+                config: this.form
+            }).then(res => {
+                this.$message.success("保存成功");
+            })
         }
     },
     created() { },
@@ -133,6 +162,14 @@ export default {
                 value: v,
                 label: calendar.toChinaMonth(v)
             }
+        })
+
+        request.get("/dict_group.getConfig", {
+            params: {
+                key: "basic"
+            }
+        }).then(res => {
+            this.form = res.data.data?.config || {};
         })
     }
 };

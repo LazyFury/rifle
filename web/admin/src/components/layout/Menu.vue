@@ -2,18 +2,9 @@
     <div>
         <el-menu class="text-xl menus" @open="handleOpen" @close="handleClose" :default-active="defaultActive">
             <template v-for="(item, index) in menus">
-                <el-sub-menu v-if="item.children && item.children.length>0" :key="item.key" :index="item.key">
-                    <template #title>
-                        <Icon :icon="item.icon"></Icon>
-                        <span class="ml-1">{{ $t(item.title) }}</span>
-                    </template>
-                        <el-menu-item :index="childItem.key" v-for="(childItem) in item.children"
-                            :key="childItem.key" @click="to(childItem.path)">
-                            <Icon :icon="childItem.icon"></Icon>
-                            <span class="ml-1">{{ childItem.title }}</span>
-                        </el-menu-item>
-                </el-sub-menu>
-                <el-menu-item v-if="!item.children || item.children.length <= 0" :index="item.key" @click="to(item.path)">
+                <SubMenu :item="item"></SubMenu>
+                <el-menu-item v-if="!item.children || item.children.length <= 0" :index="item.key"
+                    @click="to(item.path)">
                     <Icon :icon="item.icon"></Icon>
                     <span class="ml-1">{{ $t(item.title) }}</span>
                 </el-menu-item>
@@ -23,9 +14,10 @@
 </template>
 <script>
 import router from '@/router';
+import SubMenu from './SubMenu.vue';
 export default {
     components: {
-
+        SubMenu
     },
     props: {
         menus: {
@@ -64,7 +56,7 @@ export default {
     },
     data() {
         return {
-            defaultActive:""
+            defaultActive: ""
         };
     },
     watch: {},
@@ -75,13 +67,13 @@ export default {
         to(path) {
             router.push(path)
         },
-        handleClose(){
+        handleClose() {
 
         },
-        handleOpen(){
+        handleOpen() {
 
         },
-        findDefaultActive(){
+        findDefaultActive() {
             let href = window.location.href
             // path = hash last 
             let path = href.split('#').pop()
@@ -97,7 +89,7 @@ export default {
         }
     },
     created() { },
-    mounted() { 
+    mounted() {
         this.findDefaultActive()
 
         router.afterEach((to, from) => {
@@ -107,9 +99,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.menus{
-    .iconify{
-        font-size: 16px!important;
+.menus {
+    .iconify {
+        font-size: 16px !important;
     }
 }
 </style>

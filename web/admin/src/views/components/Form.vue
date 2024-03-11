@@ -4,7 +4,8 @@
             <span class="text-2xl">{{ formTitle }}{{ title }}</span>
         </div>
         <!-- {{ form }} -->
-        <ElForm ref="formRef" @submit.prevent.native="e=>{}" @submit.prevent="e=>{}" :inline="false" :model="form" :rules="rules" :label-width="120" class="mt-0">
+        <ElForm ref="formRef" @submit.prevent.native="e => { }" @submit.prevent="e => { }" :inline="false" :model="form"
+            :rules="rules" :label-width="120" class="mt-0">
             <div class="mb-4 grid xl:grid-cols-2">
                 <div v-for="field in fields" v-if="!multiRowMode">
                     <span>not support yet!</span>
@@ -16,8 +17,8 @@
                 <div class="w-line mb-2"></div>
                 <template v-for="field in items" :key="field.name">
                     <ElFormItem v-if="!field.hidden" :label="field.label + ':'" :prop="field.name" :style="{
-                        width: field.width
-                    }">
+                width: field.width
+            }">
                         <slot :name="field.name" :fields="fields" :field="field" :form="form">
                             <FormItem :field="field" v-model="form[field.name]"></FormItem>
                         </slot>
@@ -40,7 +41,7 @@ export default {
             type: Array,
             default: () => []
         },
-        title:{
+        title: {
             type: String,
             default: ''
         },
@@ -78,6 +79,9 @@ export default {
         isAdd() {
             return !this.form.id
         },
+        isUpdate() {
+            return !this.isAdd
+        },
         formTitle() {
             return this.isAdd ? '新增' : '编辑'
         }
@@ -86,10 +90,12 @@ export default {
         return {
             form: {
 
-            }
+            },
         };
     },
-    watch: {},
+    watch: {
+
+    },
     methods: {
         handleSubmit() {
             this.$refs.formRef.validate((valid) => {
@@ -101,7 +107,7 @@ export default {
         edit(data) {
             this.reset()
             let form = JSON.parse(JSON.stringify(data))
-            if(this.progressFormData && typeof this.progressFormData === 'function'){
+            if (this.progressFormData && typeof this.progressFormData === 'function') {
                 form = this.progressFormData(form)
             }
             this.form = form

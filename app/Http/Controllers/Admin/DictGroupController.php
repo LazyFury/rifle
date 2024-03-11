@@ -9,7 +9,7 @@ use Validator;
 
 class DictGroupController extends \Common\Controller\CURD
 {
-    protected $auth_except = ["getDictGroupAsObj"];
+    protected $auth_except = ["getConfig"];
 
     public function __construct(\App\Models\DictGroup $model)
     {
@@ -22,7 +22,12 @@ class DictGroupController extends \Common\Controller\CURD
             "getConfig" => [
                 "method" => "get",
                 "uri" => "getConfig",
-                "action" => "getDictGroupAsObj"
+                "action" => "getConfig"
+            ],
+            "setConfig" => [
+                "method" => "post",
+                "uri" => "setConfig",
+                "action" => "setConfig"
             ]
         ] + parent::routers();
     }
@@ -33,16 +38,16 @@ class DictGroupController extends \Common\Controller\CURD
     }
 
     // get dict group as obj 
-    public function getDictGroupAsObj(Request $request)
+    public function getConfig(Request $request)
     {
         $valid = Validator::make($request->all(), [
-            "id" => "required|integer|exists:dict_groups,id"
+            "key" => "required|string"
         ]);
         if ($valid->fails()) {
             return response()->json($valid->errors(), 400);
         }
-        $id = $request->input("id");
-        $result = $this->model->find($id);
+        $key = $request->input("key");
+        $result = $this->model->where("key", $key)->first();
         $config = [];
         foreach ($result->dicts()->get() as $dict) {
             $config[$dict->key] = $dict->value;
@@ -51,5 +56,29 @@ class DictGroupController extends \Common\Controller\CURD
             "config" => $config,
             "group" => $result
         ]);
+    }
+
+    public function setConfig(Request $request)
+    {
+        $valid = Validator::make($request->all(), [
+            "key" => "required|string",
+            "config" => "required|array"
+        ]);
+        if ($valid->fails()) {
+            return response()->json($valid->errors(), 400);
+        }
+        $key = $request->input("key");
+        $config = $request->input("config");
+        $result = $this->model->where("key", $key)->first();
+        foreach ($config as $key => $value) {
+            $dict = $result->dicts()->where("key", $key)->first();
+            if ($dict) {
+                $dict->value = $value;
+                $dict->save();
+            } else {
+                // to nothing 
+            }
+        }
+        return ApiJsonResponse::success(null);
     }
 }

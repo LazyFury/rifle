@@ -5,6 +5,7 @@ namespace App\Models;
 use Common\Model\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rule;
 
 class DictGroup extends BaseModel
 {
@@ -19,7 +20,9 @@ class DictGroup extends BaseModel
     protected $rules = [
         'name' => 'required|string|max:255',
         'description' => 'nullable|string|max:255',
-        'key' => "required|string|max:255|unique:dict_groups,key",
+        'key' => [
+            "required",
+        ],
     ];
 
     protected $messages = [
@@ -35,6 +38,16 @@ class DictGroup extends BaseModel
     protected $appends = [
         'dict_count',
     ];
+
+
+    public function rules(bool $isUpdate = false, array $data = [])
+    {
+        $this->rules['key'] = [
+            'required',
+            Rule::unique('dict_groups', 'key')->ignore($this->id),
+        ];
+        return $this->rules;
+    }
 
     // dicts
     public function dicts()
