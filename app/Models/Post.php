@@ -132,19 +132,13 @@ class Post extends BaseModel
     //category  cascader name
     public function getCategoryCascaderNameAttribute()
     {
-        $category = $this->category()->first();
-        if ($category) {
-            $parent = $category->parent()->first();
-            if ($parent) {
-                $grandparent = $parent->parent()->first();
-                if ($grandparent) {
-                    return $grandparent->name . ' / ' . $parent->name . ' / ' . $category->name;
-                }
-                return $parent->name . ' / ' . $category->name;
-            }
-            return $category->name;
+        $parents = $this->category()->first()?->get_all_parents() ?? [];
+        $names = [];
+        foreach ($parents as $parent) {
+            $names[] = $parent->name;
         }
-        return '-';
+        $names[] = $this->getCategoryAttribute()['name'];
+        return implode(' / ', $names);
     }
 
 

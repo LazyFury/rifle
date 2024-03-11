@@ -132,4 +132,16 @@ class PostCategory extends BaseModel
         }
         return $post_count + $this->posts()->count();
     }
+
+    // find all parent 
+    public function get_all_parents()
+    {
+        $parents = [];
+        $parent = $this->parent()->first();
+        while ($parent) {
+            $parents[] = $parent;
+            $parent = $parent->parent()->first();
+        }
+        return $parents;
+    }
 }
