@@ -23,17 +23,6 @@ class PostCategoryController extends CURD
 
     public function update(Request $request)
     {
-        $category_id = request()->input("parent_id");
-        $id = request()->input("id");
-        $currend = PostCategory::find($id);
-        if ($currend->children()->count() > 0) {
-            if ($category_id) {
-                $category = PostCategory::find($category_id);
-                if ($category->parent_id != null) {
-                    return ApiJsonResponse::error("不能添加子分类到子分类中");
-                }
-            }
-        }
         return parent::update($request);
     }
 

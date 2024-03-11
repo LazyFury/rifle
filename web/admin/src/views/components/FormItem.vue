@@ -19,7 +19,7 @@
     </div>
 
     <!-- select multi  -->
-    <ElSelect v-if="field.type == 'select-multi'" @change="handleUpdate" v-model="value" multiple
+    <ElSelect v-if="field.type == 'select-multi'" filterable @change="handleUpdate" v-model="value" multiple
         :placeholder="field.placeholder">
         <ElOption v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></ElOption>
     </ElSelect>
@@ -112,7 +112,10 @@ export default {
          * 单选级联选择器，取值最后一项
          */
         handleUpdateCascader(val) {
-            let value = val[val.length - 1]
+            let value = null
+            if (val && val.length > 0) {
+                value = val[val.length - 1]
+            }
             this.$emit('update:modelValue', value)
         },
         progressOptions(options, level = 1) {

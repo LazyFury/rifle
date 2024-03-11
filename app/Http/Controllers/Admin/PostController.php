@@ -49,7 +49,7 @@ class PostController extends CURD
         $category_id = request()->input("category_id");
         if ($category_id) {
             $category = PostCategory::find($category_id);
-            $query->orWhereIn("category_id", $category->getChildrenIdsAttribute());
+            $query->orWhereIn("category_id", $category->get_all_children_ids());
         }
         return $query;
     }

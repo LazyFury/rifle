@@ -36,6 +36,9 @@ class PostCategory extends BaseModel
         'slug.required' => 'Slug 不得为空',
         'slug.unique' => 'Slug 已存在',
         "slug.regex" => "Slug 只能包含字母、数字、破折号（ - ）以及下划线（ _ ）",
+        "parent_id.exists" => "父级分类不存在",
+        "parent_id.different" => "父级分类不能是自己",
+        "parent_id.not_in" => "父级分类不能是自己的子分类",
     ];
 
     protected $appends = [
@@ -51,6 +54,14 @@ class PostCategory extends BaseModel
             'regex:/^[a-zA-Z0-9-_]+$/',
             Rule::unique('post_categories', 'slug')->ignore($this->id),
         ];
+
+        $this->rules['parent_id'] = [
+            'nullable',
+            'exists:post_categories,id',
+            "different:id", // 父级分类不能是自己
+            Rule::notIn($this->get_all_children_ids()),
+        ];
+
         return $this->rules;
     }
 
@@ -72,18 +83,7 @@ class PostCategory extends BaseModel
     // post count 
     public function getPostCountAttribute()
     {
-        $count = 0;
-        // loop three level children , plus count 
-        foreach ($this->children as $child) {
-            $count += $child->getSelfPostCountAttribute();
-            foreach ($child->children as $child2) {
-                $count += $child2->getSelfPostCountAttribute();
-                foreach ($child2->children as $child3) {
-                    $count += $child3->getSelfPostCountAttribute();
-                }
-            }
-        }
-        return $this->posts()->count() + $count;
+        return $this->get_all_post_count();
     }
 
     // self post count 
@@ -98,20 +98,38 @@ class PostCategory extends BaseModel
         return $this->children()->get();
     }
 
-    // childrenIds 
-    public function getChildrenIdsAttribute()
+
+    // danger:get all children 
+    public function get_all_children()
     {
+        $children = $this->children()->get();
+        $result = [];
+        foreach ($children as $child) {
+            $result[] = $child;
+            $result = array_merge($result, $child->get_all_children());
+        }
+        return $result;
+    }
+
+    // get_childrenIds
+    public function get_all_children_ids()
+    {
+        $arr = $this->get_all_children();
         $ids = [];
-        for ($i = 0; $i < count($this->children); $i++) {
-            $ids[] = $this->children[$i]->id;
-            for ($j = 0; $j < count($this->children[$i]->children); $j++) {
-                $ids[] = $this->children[$i]->children[$j]->id;
-                for ($k = 0; $k < count($this->children[$i]->children[$j]->children); $k++) {
-                    $ids[] = $this->children[$i]->children[$j]->children[$k]->id;
-                }
-            }
+        foreach ($arr as $item) {
+            $ids[] = $item->id;
         }
         return $ids;
     }
 
+    // get all posts 
+    public function get_all_post_count()
+    {
+        $all_children = $this->get_all_children();
+        $post_count = 0;
+        foreach ($all_children as $child) {
+            $post_count += $child->posts()->count();
+        }
+        return $post_count + $this->posts()->count();
+    }
 }
