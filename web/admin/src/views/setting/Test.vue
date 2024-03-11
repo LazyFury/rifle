@@ -1,5 +1,11 @@
 <template>
     <ElCard shadow="never" class="mb-4">
+
+        <div>
+            <h1 class="mt-2 mb-2">系统设置</h1>
+        </div>
+        <ElDivider class="!my-4"></ElDivider>
+
         <ElForm :model="form" class="max-w-500px" label-position="right" label-width="100px">
             <ElFormItem label="站点名称" required>
                 <ElInput v-model="form.site_name" placeholder="请输入站点名称"></ElInput>
@@ -20,7 +26,6 @@
                 {{ groupLunarDate() }}
             </div>
             <div>
-                {{ trans("value1") }}
             </div>
 
             <div class="flex flex-row gap-2 w-500px">
