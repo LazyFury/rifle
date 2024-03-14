@@ -33,7 +33,66 @@ class MenuController extends CURD
                 "action" => "all",
                 "meta" => [
                     "tag" => $tag,
-                    "name" => "获取所有菜单"
+                    "name" => "获取所有菜单",
+                    "description" => "获取所有菜单",
+                    "response" => [
+                        "menus" => [
+                            "type" => "array",
+                            "items" => [
+                                "type" => "object",
+                                "properties" => [
+                                    "title" => [
+                                        "type" => "string",
+                                        "description" => "菜单标题"
+                                    ],
+                                    "key" => [
+                                        "type" => "string",
+                                        "description" => "菜单key"
+                                    ],
+                                    "path" => [
+                                        "type" => "string"
+                                    ],
+                                    "icon" => [
+                                        "type" => "string"
+                                    ],
+                                    "component" => [
+                                        "type" => "string"
+                                    ],
+                                    "meta" => [
+                                        "type" => "object"
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ],
+                    "definitions" => [
+                        "menus" => [
+                            "type" => "array",
+                            "items" => [
+                                "type" => "object",
+                                "properties" => [
+                                    "title" => [
+                                        "type" => "string"
+                                    ],
+                                    "key" => [
+                                        "type" => "string"
+                                    ],
+                                    "path" => [
+                                        "type" => "string"
+                                    ],
+                                    "icon" => [
+                                        "type" => "string"
+                                    ],
+                                    "component" => [
+                                        "type" => "string"
+                                    ],
+                                    "meta" => [
+                                        "type" => "object"
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
                 ]
             ]
         ];

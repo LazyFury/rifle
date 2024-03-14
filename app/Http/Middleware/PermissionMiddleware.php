@@ -16,20 +16,39 @@ class PermissionMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next,$permission_code): Response
+    public function handle(Request $request, Closure $next, $permission_code): Response
     {
         // dump($permission_code);
         $user = auth()->user();
 
         //如果给没有设置 auth 中间件的路由设置了 permission 中间件，那么这里的 $user 就是 null
-        if(!$user){
+        if (!$user) {
             return ApiJsonResponse::unauthenticated("检查权限中间件失败，用户未登录。");
         }
 
-        // if(!$user->can($permission_code)){
+        // if (!$user->can($permission_code)) {
         //     return ApiJsonResponse::forbidden();
         // }
 
-        return $next($request);
+        [$type] = explode('.', $permission_code);
+        if ($type == "model") {
+            [$_, $model] = explode('.', $permission_code);
+            $alias = "model.{$model}.*";
+            if ($user->can($permission_code) or $user->can($alias)) {
+                return $next($request);
+            }
+        }
+
+        if ($user->can($permission_code)) {
+            return $next($request);
+        }
+
+        return ApiJsonResponse::forbidden();
+
+        // $role_premission = $user->getAllPermissions()->pluck('name')->toArray();
+        // if (!in_array($permission_code, $role_premission)) {
+        //     return ApiJsonResponse::forbidden();
+        // }
+
     }
 }

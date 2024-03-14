@@ -3,6 +3,7 @@
 namespace Common\Router;
 
 use Common\Utils\ApiJsonResponse;
+use Common\Utils\OpenApiParam;
 use Illuminate\Support\Facades\Route;
 
 class RegisterController
@@ -165,7 +166,28 @@ class RegisterController
                     "parameters" => $parameters,
                     "responses" => [
                         "200" => [
-                            "description" => "successful operation"
+                            "description" => "Ok",
+                            "content" => [
+                                "application/json" => [
+                                    "schema" => [
+                                        "type" => "object",
+                                        "properties" => [
+                                            "code" => [
+                                                "type" => "integer",
+                                                "format" => "int32"
+                                            ],
+                                            "message" => [
+                                                "type" => "string"
+                                            ],
+                                            "data" => [
+                                                "type" => "object",
+                                                "properties" => $route['meta']['response'] ?? []
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ],
+
                         ]
                     ],
                     // "requestBody" => $route['meta']['requestBody'] ?? "",//openapi 3.0 不太方便

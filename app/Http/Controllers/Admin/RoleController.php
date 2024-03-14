@@ -73,21 +73,28 @@ class RoleController extends \Common\Controller\CURD
         }
         $role_id = $request->role_id;
         $permissions = $request->permissions;
-        RoleHasPermission::where('role_id', $role_id)->delete();
+        // RoleHasPermission::where('role_id', $role_id)->delete();
         foreach ($permissions as $permission) {
             $permission_id = $permission['permission_id'];
-            $enabled = $permission['enabled'];
+            $enabled = (int) $permission['enabled'] ?? 0;
             $perm = RoleHasPermission::where('role_id', $role_id)->where('permission_id', $permission_id)->first();
             if ($perm) {
-                $perm->update([
-                    "enabled" => $enabled
-                ]);
+                if ($perm->isSameWith($role_id, $permission_id, $enabled)) {
+                    continue;
+                }
+                $perm->enabled = $enabled;
+                $perm->update();
             } else {
-                RoleHasPermission::create([
-                    'role_id' => $role_id,
-                    'permission_id' => $permission_id,
-                    'enabled' => $enabled
-                ]);
+                if ($enabled == 1) {
+                    RoleHasPermission::create([
+                        'role_id' => $role_id,
+                        'permission_id' => $permission_id,
+                        'enabled' => $enabled
+                    ]);
+                    continue;
+                }
+
+                //do nothing
             }
 
         }
