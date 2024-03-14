@@ -25,15 +25,25 @@ class MenuController extends CURD
     // static routers 
     public static function routers()
     {
+        $tag = static::tag();
         $arr = [
             "all" => [
                 "method" => "get",
                 "uri" => "all",
-                "action" => "all"
+                "action" => "all",
+                "meta" => [
+                    "tag" => $tag,
+                    "name" => "获取所有菜单"
+                ]
             ]
         ];
 
         return array_merge($arr, parent::routers());
+    }
+
+    public static function tag()
+    {
+        return '菜单管理';
     }
 
     public function filter(\Illuminate\Database\Eloquent\Builder $query)

@@ -16,24 +16,41 @@ class AuthController extends Controller
         $this->service = $service;
         $this->middleware('auth:sanctum')->except('login');
     }
+
+    // static tag 
+    public static function tag()
+    {
+        return 'Auth';
+    }
+
     // static routes 
     public static function routers()
     {
+        $tag = self::tag();
         return [
             "login" => [
                 "method" => "post",
                 "uri" => "login",
-                "action" => "login"
+                "action" => "login",
+                "meta" => [
+                    "tag" => $tag,
+                ]
             ],
             "logout" => [
                 "method" => "post",
                 "uri" => "logout",
-                "action" => "logout"
+                "action" => "logout",
+                "meta" => [
+                    "tag" => $tag,
+                ]
             ],
             "profile" => [
                 "method" => "get",
                 "uri" => "profile",
-                "action" => "profile"
+                "action" => "profile",
+                "meta" => [
+                    "tag" => $tag,
+                ]
             ]
         ];
     }

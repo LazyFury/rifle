@@ -13,18 +13,30 @@ class RoleController extends \Common\Controller\CURD
         parent::__construct($model);
     }
 
+    public static function tag()
+    {
+        return '权限管理/角色';
+    }
+
     public static function routers()
     {
+        $tag = static::tag();
         return [
             "get_permissions" => [
                 "method" => "get",
                 "uri" => "get_permissions",
-                "action" => "get_permissions"
+                "action" => "get_permissions",
+                "meta" => [
+                    "tag" => $tag
+                ]
             ],
             "set_permissions" => [
                 "method" => "post",
                 "uri" => "set_permissions",
-                "action" => "set_permissions"
+                "action" => "set_permissions",
+                "meta" => [
+                    "tag" => $tag
+                ]
             ]
         ] + parent::routers();
     }

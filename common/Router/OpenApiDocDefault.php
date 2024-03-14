@@ -38,9 +38,8 @@ return [
             ]
         ],
         "parameters" => [
-            new OpenApiParam("token", "header", "token", required: false, example: "123456", schema: [
+            new OpenApiParam("Authorization__", "header", "apifox 全局变量会覆盖文档", required: false, example: "Bearer xxx", schema: [
                 "type" => "string",
-                "description" => "token",
                 "example" => "123456"
             ])
         ],

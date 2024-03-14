@@ -12,6 +12,11 @@ class PermissionController extends CURD
         parent::__construct($model);
     }
 
+    public static function tag()
+    {
+        return '权限管理/权限';
+    }
+
     public function destroy(\Illuminate\Http\Request $request, $destoryCheck = null)
     {
         return response()->json([

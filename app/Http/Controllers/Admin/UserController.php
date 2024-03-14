@@ -12,4 +12,9 @@ class UserController extends CURD
         parent::__construct($model);
         $this->service = $service;
     }
+
+    public static function tag()
+    {
+        return '用户管理';
+    }
 }

@@ -22,9 +22,16 @@ class ApiManageController extends CURD
     //     "key" => ""
     // ];
 
+
+
     public function __construct(\App\Models\ApiManage $model)
     {
         parent::__construct($model);
+    }
+
+    public static function tag()
+    {
+        return 'Api 管理';
     }
 
 }

@@ -12,6 +12,11 @@ class PostTagController extends CURD
         parent::__construct($model);
     }
 
+    public static function tag()
+    {
+        return '内容管理/标签';
+    }
+
     public function destroy(\Illuminate\Http\Request $request, $destoryCheck = null)
     {
         return parent::destroy($request, destoryCheck: function ($model) {

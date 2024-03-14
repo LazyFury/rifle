@@ -34,11 +34,15 @@ class PostController extends CURD
     // routers
     public static function routers()
     {
+        $tag = static::tag();
         return [
             "archive" => [
                 "method" => "get",
                 "uri" => "archive",
                 "action" => "archive",
+                "meta" => [
+                    "tag" => $tag
+                ]
             ]
         ] + parent::routers();
     }

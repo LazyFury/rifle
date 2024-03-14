@@ -16,4 +16,9 @@ class DictController extends CURD
     {
         return $query->with('group');
     }
+
+    public static function tag()
+    {
+        return '字典管理/字典';
+    }
 }

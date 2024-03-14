@@ -18,18 +18,30 @@ class DictGroupController extends \Common\Controller\CURD
 
     public static function routers()
     {
+        $tag = static::tag();
         return [
             "getConfig" => [
                 "method" => "get",
                 "uri" => "getConfig",
-                "action" => "getConfig"
+                "action" => "getConfig",
+                "meta" => [
+                    "tag" => $tag
+                ]
             ],
             "setConfig" => [
                 "method" => "post",
                 "uri" => "setConfig",
-                "action" => "setConfig"
+                "action" => "setConfig",
+                "meta" => [
+                    "tag" => $tag
+                ]
             ]
         ] + parent::routers();
+    }
+
+    public static function tag()
+    {
+        return '字典管理/字典组';
     }
 
     public function filter(\Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder

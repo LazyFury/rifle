@@ -15,6 +15,11 @@ class PostCategoryController extends CURD
         parent::__construct($model);
     }
 
+    public static function tag()
+    {
+        return '内容管理/分类';
+    }
+
     public function filter(\Illuminate\Database\Eloquent\Builder $query)
     {
         $query->with('parent')->where('parent_id', null);

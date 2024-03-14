@@ -130,7 +130,7 @@ class RegisterController
 
 
             foreach ($result as $route) {
-                $uri = "/" . $route['uri'];
+                $uri = ($route_prefix ? "/" : "") . $route['uri'];
                 // $tag = uri without last
                 $arr = explode("/", $uri);
                 array_pop($arr);
@@ -138,7 +138,7 @@ class RegisterController
 
                 $tag_name = $tag;
                 if ($route['meta']['tag'] ?? false) {
-                    $tag_name = $prefix . "/" . $route['meta']['tag'];
+                    $tag_name = $prefix . ($route_prefix ? "/" : "") . $route['meta']['tag'];
                 }
                 $tag = [
                     "name" => $tag_name,
