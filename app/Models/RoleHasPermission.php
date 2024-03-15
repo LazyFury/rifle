@@ -44,4 +44,11 @@ class RoleHasPermission extends Model
     {
         return $this->role_id == $role_id && $this->permission_id == $permission_id && $this->enabled == $enabled;
     }
+
+    // permission 
+    public function permission()
+    {
+        return $this->belongsTo(\Spatie\Permission\Models\Permission::class, 'permission_id', 'id');
+    }
+
 }

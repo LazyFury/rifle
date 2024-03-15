@@ -38,5 +38,13 @@ class RoleSeeder extends Seeder
             Role::create(['name' => 'user', 'remark' => '用户']);
         }
 
+
+        // assign role admin to user id 3
+        $user = User::find(3);
+        logger("user", [$user]);
+        if ($user) {
+            $user->assignRole('admin');
+        }
+
     }
 }

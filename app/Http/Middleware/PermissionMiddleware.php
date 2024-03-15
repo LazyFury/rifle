@@ -29,26 +29,32 @@ class PermissionMiddleware
         // if (!$user->can($permission_code)) {
         //     return ApiJsonResponse::forbidden();
         // }
+        logger("permission_code", [$permission_code]);
+        logger("roles", [$user->roles->pluck('name')]);
 
         [$type] = explode('.', $permission_code);
         if ($type == "model") {
+            // logger("model", [$type]);
             [$_, $model] = explode('.', $permission_code);
             $alias = "model.{$model}.*";
-            if ($user->can($permission_code) or $user->can($alias)) {
+            // logger("user", [$user->permissions]);
+            // logger($user->hasRole('admin'));
+
+            $permissions = $user->getPermissionsViaRoles()->toArray();
+            // logger("permissions", [$permissions]);
+            // 检查模型权限
+            if (in_array($permission_code, $permissions)) {
+                logger("pass code", [$permission_code]);
+                return $next($request);
+            }
+
+            // 检查模型别名权限
+            if (in_array($alias, $permissions)) {
+                logger("pass *", [$permission_code]);
                 return $next($request);
             }
         }
 
-        if ($user->can($permission_code)) {
-            return $next($request);
-        }
-
         return ApiJsonResponse::forbidden();
-
-        // $role_premission = $user->getAllPermissions()->pluck('name')->toArray();
-        // if (!in_array($permission_code, $role_premission)) {
-        //     return ApiJsonResponse::forbidden();
-        // }
-
     }
 }

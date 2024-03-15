@@ -16,14 +16,16 @@ class PermissionSeeder extends Seeder
     {
         // Permission
         $command = $this->command;
-        function createPermissionForModel(string $model, $actions = ['create', 'detail', 'update', 'delete', 'list',"*"],$command=null)
+        function createPermissionForModel(string $model, $actions = ['create', 'detail', 'update', 'delete', 'list', "*"], $command = null)
         {
             foreach ($actions as $action) {
                 $key = "model." . $model . '.' . $action;
-                if (Permission::where([
-                    'name' => $key
-                ])->first()) {
-                    if($command != null){
+                if (
+                    Permission::where([
+                        'name' => $key
+                    ])->first()
+                ) {
+                    if ($command != null) {
                         $command->info('Permission ' . $key . ' already exists.');
                     }
                     continue;
@@ -31,15 +33,15 @@ class PermissionSeeder extends Seeder
 
                 Permission::create(['name' => $key]);
 
-                if($command != null){
+                if ($command != null) {
                     $command->info('!!!【created】Permission ' . $key . ' created.');
                 }
             }
         }
 
-        createPermissionForModel('posts',command:$command);
-        createPermissionForModel('users',command:$command);
-        createPermissionForModel('roles',command:$command);
-        createPermissionForModel('permissions',command:$command);
+        createPermissionForModel('posts', command: $command);
+        createPermissionForModel('users', command: $command);
+        createPermissionForModel('roles', command: $command);
+        createPermissionForModel('permissions', command: $command);
     }
 }

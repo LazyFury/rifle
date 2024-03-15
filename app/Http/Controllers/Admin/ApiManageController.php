@@ -29,6 +29,16 @@ class ApiManageController extends CURD
         parent::__construct($model);
     }
 
+    public function define_middleware()
+    {
+        return [
+            'index' => '#',
+            'store' => '#',
+            'update' => '#',
+            'destroy' => '#',
+        ];
+    }
+
     public static function tag()
     {
         return 'Api 管理';

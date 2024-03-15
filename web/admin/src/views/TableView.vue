@@ -8,32 +8,49 @@
                     <p class="text-gray">{{ meta.description }}</p>
                 </div>
                 <div class="flex-grow">
-                    <div class="flex flex-row-reverse">
-
-                    </div>
+                    <div class="flex flex-row-reverse"></div>
                 </div>
             </div>
             <ElDivider class="!mb-4 !mt-2"></ElDivider>
             <div v-if="searchFormFields && searchFormFields.length > 0">
-                <ElForm :inline="true" :model="searchForm" @submit.prevent.native="e => { }" class="mb-2">
-                    <ElFormItem v-for="field in searchFormFields" :key="field.name" :label="field.label"
-                        :prop="field.name" :class="[]" :style="{ 'min-width': field.width || '100px' }">
-                        <FormItem :field="field" v-model="searchForm[field.name]"></FormItem>
+                <ElForm
+                    :inline="true"
+                    :model="searchForm"
+                    @submit.prevent.native="(e) => {}"
+                    class="mb-2"
+                >
+                    <ElFormItem
+                        v-for="field in searchFormFields"
+                        :key="field.name"
+                        :label="field.label"
+                        :prop="field.name"
+                        :class="[]"
+                        :style="{ 'min-width': field.width || '100px' }"
+                    >
+                        <FormItem
+                            :field="field"
+                            v-model="searchForm[field.name]"
+                        ></FormItem>
                     </ElFormItem>
                     <ElFormItem>
                         <ElButton type="primary" @click="submitSearch">
-                            <Icon icon="heroicons-solid:magnifying-glass" class="mt-0px mr-4px"></Icon>
+                            <Icon
+                                icon="heroicons-solid:magnifying-glass"
+                                class="mt-0px mr-4px"
+                            ></Icon>
                             <span>{{ $t("search") }}</span>
                         </ElButton>
                         <!-- reset  -->
                         <ElButton type="default" @click="resetSearchForm">
-                            <Icon icon="la:trash-restore-alt" class="mt-0px mr-4px"></Icon>
+                            <Icon
+                                icon="la:trash-restore-alt"
+                                class="mt-0px mr-4px"
+                            ></Icon>
                             <span>{{ $t("reset") }}</span>
                         </ElButton>
                     </ElFormItem>
                 </ElForm>
             </div>
-
 
             <!-- betch actions  -->
             <div class="mb-4">
@@ -42,15 +59,22 @@
                     <span>添加</span>
                 </ElButton>
                 <ElButton :loading="loading" type="default" @click="load">
-                    <Icon v-if="!loading" icon="ant-design:reload-outlined"></Icon>
+                    <Icon
+                        v-if="!loading"
+                        icon="ant-design:reload-outlined"
+                    ></Icon>
                     <span>{{ $t("refresh") }}</span>
                 </ElButton>
 
                 <!-- divider vertical  -->
                 <ElDivider direction="vertical" class="mx-4"></ElDivider>
 
-                <ElButton :type="action.btnType" @click="batchAction(action.action)"
-                    v-for="action in meta.table?.batchActions || []" :key="action.name">
+                <ElButton
+                    :type="action.btnType"
+                    @click="batchAction(action.action)"
+                    v-for="action in meta.table?.batchActions || []"
+                    :key="action.name"
+                >
                     {{ action.label }}
                 </ElButton>
                 <ElButton type="danger" @click="handleBatchDelete()">
@@ -63,66 +87,132 @@
                 </ElButton>
             </div>
             <div class="overflow-x-auto">
-                <ElTable ref="tableRef" size="default" v-loading="loading" :data="tableData" :border="true" stripe
-                    :tree-props="{ hasChildren: 'hasChildren', children: 'children' }" row-key="id"
-                    @sort-change="handleSortChange">
+                <ElTable
+                    ref="tableRef"
+                    size="default"
+                    v-loading="loading"
+                    :data="tableData"
+                    :border="true"
+                    stripe
+                    :tree-props="{
+                        hasChildren: 'hasChildren',
+                        children: 'children',
+                    }"
+                    row-key="id"
+                    @sort-change="handleSortChange"
+                >
                     <!-- selection  -->
                     <ElTableColumn type="selection" width="55"></ElTableColumn>
 
                     <!-- id  -->
                     <slot name="tableIdColumn">
-                        <ElTableColumn v-if="!hasIdColumn(columns)" label="ID" width="80" prop="id"></ElTableColumn>
+                        <ElTableColumn
+                            v-if="!hasIdColumn(columns)"
+                            label="ID"
+                            width="80"
+                            prop="id"
+                        ></ElTableColumn>
                     </slot>
 
-                    <ElTableColumn v-for="column in columns" :key="column.key"
-                        :sortable="column.sortable ? 'custom' : false" :label="column.title" :width="column.width">
+                    <ElTableColumn
+                        v-for="column in columns"
+                        :key="column.key"
+                        :sortable="column.sortable ? 'custom' : false"
+                        :label="column.title"
+                        :width="column.width"
+                    >
                         <template #default="{ row }" v-if="!column.slot">
-
-                            <div :class="[column.className]" v-if="column.type == 'render'">
+                            <div
+                                :class="[column.className]"
+                                v-if="column.type == 'render'"
+                            >
                                 {{ column.render(row) }}
                             </div>
                             <!-- switch  -->
-                            <ElSwitch v-if="column.type == 'switch'" v-model="row[column.key]" inactive-color="#ff4949"
-                                active-text="" inactive-text="" disabled></ElSwitch>
+                            <ElSwitch
+                                v-if="column.type == 'switch'"
+                                v-model="row[column.key]"
+                                inactive-color="#ff4949"
+                                active-text=""
+                                inactive-text=""
+                                disabled
+                            ></ElSwitch>
                             <!-- checkbox  -->
-                            <ElCheckbox v-if="column.type == 'checkbox'" v-model="row[column.key]" disabled>
+                            <ElCheckbox
+                                v-if="column.type == 'checkbox'"
+                                v-model="row[column.key]"
+                                disabled
+                            >
                             </ElCheckbox>
 
                             <!-- select  -->
-                            <ElSelect v-if="column.type == 'select'" v-model="row[column.key]"
-                                :placeholder="column.placeholder" clearable>
-                                <ElOption v-for="option in column.options" :key="option.value" :label="option.label"
-                                    :value="option.value"></ElOption>
+                            <ElSelect
+                                v-if="column.type == 'select'"
+                                v-model="row[column.key]"
+                                :placeholder="column.placeholder"
+                                clearable
+                            >
+                                <ElOption
+                                    v-for="option in column.options"
+                                    :key="option.value"
+                                    :label="option.label"
+                                    :value="option.value"
+                                ></ElOption>
                             </ElSelect>
                             <!-- icon  -->
-                            <Icon v-if="column.type == 'icon'" :icon="row[column.key]" :class="[column.className]">
+                            <Icon
+                                v-if="column.type == 'icon'"
+                                :icon="row[column.key]"
+                                :class="[column.className]"
+                            >
                             </Icon>
                             <!-- image  -->
-                            <ElImage v-if="column.type == 'image'" :src="$img(row[column.key])" fit="cover"
+                            <ElImage
+                                v-if="column.type == 'image'"
+                                :src="$img(row[column.key])"
+                                fit="cover"
                                 :preview-teleported="true"
-                                :preview-src-list="row[column.key] ? [$img(row[column.key])] : []"
-                                style="width: 50px; height: 50px;"></ElImage>
-                            <ElTag v-if="column.type == 'tag'" :type="column.epType || 'success'">{{ row[column.key] }}
+                                :preview-src-list="
+                                    row[column.key]
+                                        ? [$img(row[column.key])]
+                                        : []
+                                "
+                                style="width: 50px; height: 50px"
+                            ></ElImage>
+                            <ElTag
+                                v-if="column.type == 'tag'"
+                                :type="column.epType || 'success'"
+                                >{{ row[column.key] }}
                             </ElTag>
 
                             <!-- link  -->
-                            <ElLink type="primary" v-if="column.type == 'link'" :underline="false"
-                                :href="makeUrl(row, column, column.link_key)" :target="column.url_target || '_self'">
-                                {{ column.prefix }}{{ row[column.key] }}{{ column.suffix }}
+                            <ElLink
+                                type="primary"
+                                v-if="column.type == 'link'"
+                                :underline="false"
+                                :href="makeUrl(row, column, column.link_key)"
+                                :target="column.url_target || '_self'"
+                            >
+                                {{ column.prefix }}{{ row[column.key]
+                                }}{{ column.suffix }}
                             </ElLink>
 
                             <!-- span  -->
-                            <span v-if="column.type == 'span'" v-html="row[column.key]"></span>
+                            <span
+                                v-if="column.type == 'span'"
+                                v-html="row[column.key]"
+                            ></span>
 
                             <!-- multi-tag split by , -->
                             <div class="flex flex-row flex-wrap gap-2">
-                                <ElTag v-if="column.type == 'string-multi-tag'"
+                                <ElTag
+                                    v-if="column.type == 'string-multi-tag'"
                                     :type="handleColumnEpType(row, column, tag)"
-                                    v-for="tag in row[column.key].split(',')" :key="tag">{{ tag }}
+                                    v-for="tag in row[column.key].split(',')"
+                                    :key="tag"
+                                    >{{ tag }}
                                 </ElTag>
                             </div>
-
-
                         </template>
 
                         <template v-if="column.slot" #default="{ row }">
@@ -131,11 +221,20 @@
                     </ElTableColumn>
 
                     <!-- actions  -->
-                    <ElTableColumn fixed="right" v-if="actions?.length" label="操作" min-width="150px">
-
+                    <ElTableColumn
+                        fixed="right"
+                        v-if="actions?.length"
+                        label="操作"
+                        min-width="150px"
+                    >
                         <template #default="{ row }">
-                            <ElButton v-for="action in actions" link :key="action.key" :type="action.type || 'primary'"
-                                @click="action.handler(row)">
+                            <ElButton
+                                v-for="action in actions"
+                                link
+                                :key="action.key"
+                                :type="action.type || 'primary'"
+                                @click="action.handler(row)"
+                            >
                                 {{ action.title }}
                             </ElButton>
                         </template>
@@ -144,23 +243,39 @@
             </div>
             <!-- pagination  -->
             <div class="flex mt-2">
-                <ElPagination small layout="total,sizes, prev, pager, next, jumper" background
-                    :hide-on-single-page="false" v-model:current-page="pagination.currentPage"
-                    v-model:page-size="pagination.pageSize" :page-sizes="[5, 8, 10, 20, 50, 100]"
-                    :total="pagination.total" @current-change="handleCurrentPageChange"
-                    @size-change="handlePageSizeChange"></ElPagination>
+                <ElPagination
+                    small
+                    layout="total,sizes, prev, pager, next, jumper"
+                    background
+                    :hide-on-single-page="false"
+                    v-model:current-page="pagination.currentPage"
+                    v-model:page-size="pagination.pageSize"
+                    :page-sizes="[5, 8, 10, 20, 50, 100]"
+                    :total="pagination.total"
+                    @current-change="handleCurrentPageChange"
+                    @size-change="handlePageSizeChange"
+                ></ElPagination>
             </div>
         </ElCard>
 
         <slot name="addModal">
-            <ElDialog v-if="canAdd" title="提示" v-model="editModal" class="!md:w-640px !w-full !lg:w-960px">
-
+            <ElDialog
+                v-if="canAdd"
+                title="提示"
+                v-model="editModal"
+                class="!md:w-640px !w-full !lg:w-960px"
+            >
                 <template #header>
                     <div></div>
                 </template>
                 <slot name="addForm">
-                    <Form ref="formRef" :title="meta.title" :defaultForm="addFormDefault" :fields="addForm"
-                        @save="handleAddSubmit">
+                    <Form
+                        ref="formRef"
+                        :title="meta.title"
+                        :defaultForm="addFormDefault"
+                        :fields="addForm"
+                        @save="handleAddSubmit"
+                    >
                     </Form>
                 </slot>
             </ElDialog>
@@ -169,10 +284,10 @@
 </template>
 
 <script>
-import { ElPagination } from 'element-plus';
-import { request } from '@/api/request';
-import Form from '@/views/components/Form.vue'
-import FormItem from './components/FormItem.vue';
+import { ElPagination } from "element-plus";
+import { request } from "@/api/request";
+import Form from "@/views/components/Form.vue";
+import FormItem from "./components/FormItem.vue";
 
 export default {
     components: { ElPagination, Form, FormItem },
@@ -184,378 +299,433 @@ export default {
             pagination: {
                 currentPage: 1,
                 pageSize: this.$route.meta?.table?.pageSize || 10,
-                total: 0
+                total: 0,
             },
             tableData: [],
             loading: false,
-            editModal: false
+            editModal: false,
         };
     },
     watch: {},
     computed: {
         api() {
-            return this.meta.api || this.meta.api_url || this.meta.list_api
+            return this.meta.api || this.meta.api_url || this.meta.list_api;
         },
         create_api() {
-            return this.meta.create_api || this.meta.api + ".create"
+            return this.meta.create_api || this.meta.api + ".create";
         },
         update_api() {
-            return this.meta.update_api || this.meta.api + ".update"
+            return this.meta.update_api || this.meta.api + ".update";
         },
         delete_api() {
-            return this.meta.delete_api || this.meta.api + ".delete"
+            return this.meta.delete_api || this.meta.api + ".delete";
         },
         export_api() {
-            return this.meta.export_api || this.meta.api + ".export"
+            return this.meta.export_api || this.meta.api + ".export";
         },
         searchFormFields() {
-            return this.meta.searchForm?.fields || this.meta.search_form_fields || []
+            return (
+                this.meta.searchForm?.fields ||
+                this.meta.search_form_fields ||
+                []
+            );
         },
         addForm() {
-            return this.meta.addForm || this.meta.add_form_fields || []
+            return this.meta.addForm || this.meta.add_form_fields || [];
         },
         canAdd() {
-            return this.addForm && this.addForm.length > 0
+            return this.addForm && this.addForm.length > 0;
         },
         addFormDefault() {
-            let obj = {}
-            this.addForm.forEach(arr => {
-                arr.forEach(field => {
-                    obj[field.name] = field.defaultValue
-                    if (typeof field.defaultValue == null || field.defaultValue == undefined) {
-                        obj[field.name] = ""
+            let obj = {};
+            this.addForm.forEach((arr) => {
+                arr.forEach((field) => {
+                    obj[field.name] = field.defaultValue;
+                    if (
+                        typeof field.defaultValue == null ||
+                        field.defaultValue == undefined
+                    ) {
+                        obj[field.name] = "";
                     }
-                })
-            })
-            return obj
+                });
+            });
+            return obj;
         },
         columns() {
-            let columns = this.meta.table?.columns || this.meta.columns || []
-            if (typeof columns === 'string') {
-                columns = JSON.parse(columns)
+            let columns = this.meta.table?.columns || this.meta.columns || [];
+            if (typeof columns === "string") {
+                columns = JSON.parse(columns);
             }
-            if (typeof columns === 'string') {
-                return
+            if (typeof columns === "string") {
+                return;
             }
-            console.log(columns)
-            columns = columns?.map(v => ({
-                ...v,
-                dataIndex: v.dataIndex ? v.dataIndex : 999
-            })).sort((a, b) => a.dataIndex - b.dataIndex) || []
-            return (columns || []).map(column => {
+            console.log(columns);
+            columns =
+                columns
+                    ?.map((v) => ({
+                        ...v,
+                        dataIndex: v.dataIndex ? v.dataIndex : 999,
+                    }))
+                    .sort((a, b) => a.dataIndex - b.dataIndex) || [];
+            return (columns || []).map((column) => {
                 return {
                     ...column,
-                    type: column.type || 'render',
+                    type: column.type || "render",
                     render: (row) => {
-                        if (column.slot) return ""
-                        if (column.type === '' || column.type === 'render') {
-                            let { valueType: type, key, mapping_key, data = [], def, formatStr = "", prefix = "", suffix = "" } = column || {}
-                            let formatConfig = column.formatter
-                            if (type === 'mapping') {
-                                console.log(data)
-                                console.log(row[column.key])
-                                return data.find(item => item[key] == row[column.key])?.[mapping_key] || def || ""
+                        if (column.slot) return "";
+                        if (column.type === "" || column.type === "render") {
+                            let {
+                                valueType: type,
+                                key,
+                                mapping_key,
+                                data = [],
+                                def,
+                                formatStr = "",
+                                prefix = "",
+                                suffix = "",
+                            } = column || {};
+                            let formatConfig = column.formatter;
+                            if (type === "mapping") {
+                                console.log(data);
+                                console.log(row[column.key]);
+                                return (
+                                    data.find(
+                                        (item) => item[key] == row[column.key]
+                                    )?.[mapping_key] ||
+                                    def ||
+                                    ""
+                                );
                             }
 
-                            if (type === 'date') {
-                                return row[column.key] ? this.$dayjs(row[column.key]).format('YYYY-MM-DD HH:mm:ss') : ''
+                            if (type === "date") {
+                                return row[column.key]
+                                    ? this.$dayjs(row[column.key]).format(
+                                          "YYYY-MM-DD HH:mm:ss"
+                                      )
+                                    : "";
                             }
 
-                            if (type === 'datetime') {
-                                return row[column.key] ? this.$dayjs(row[column.key]).format('YYYY-MM-DD HH:mm:ss') : ''
+                            if (type === "datetime") {
+                                return row[column.key]
+                                    ? this.$dayjs(row[column.key]).format(
+                                          "YYYY-MM-DD HH:mm:ss"
+                                      )
+                                    : "";
                             }
-                            // number 
-                            if (type === 'number') {
-                                let result = row[column.key] ? this.$numeral(row[column.key]).format(formatStr || '0,0.00') : ''
-                                return `${prefix}${result}${suffix}`
+                            // number
+                            if (type === "number") {
+                                let result = row[column.key]
+                                    ? this.$numeral(row[column.key]).format(
+                                          formatStr || "0,0.00"
+                                      )
+                                    : "";
+                                return `${prefix}${result}${suffix}`;
                             }
 
-                            // bool 
-                            if (type === 'boolean') {
-                                return row[column.key] ? (formatConfig.trueText || '是') : (formatConfig.falseText || '否')
+                            // bool
+                            if (type === "boolean") {
+                                return row[column.key]
+                                    ? formatConfig.trueText || "是"
+                                    : formatConfig.falseText || "否";
                             }
                         }
-                        return row[column.key]
-                    }
-                }
-            })
+                        return row[column.key];
+                    },
+                };
+            });
         },
         actions() {
-            return (this.meta.table?.actions || [
-                {
-                    key: 'edit',
-                    title: '编辑',
-                    type: 'primary'
-                },
-                {
-                    key: 'delete',
-                    title: '删除',
-                    type: 'danger'
-                }
-            ]).map(action => {
+            return (
+                this.meta.table?.actions || [
+                    {
+                        key: "edit",
+                        title: "编辑",
+                        type: "primary",
+                    },
+                    {
+                        key: "delete",
+                        title: "删除",
+                        type: "danger",
+                    },
+                ]
+            ).map((action) => {
                 return {
                     ...action,
                     handler: (row) => {
-                        console.log(row)
-                        if (action.key === 'delete') {
-                            this.handleBatchDelete([row.id])
+                        console.log(row);
+                        if (action.key === "delete") {
+                            this.handleBatchDelete([row.id]);
                         }
-                        if (action.key === 'edit') {
-                            this.editModal = true
+                        if (action.key === "edit") {
+                            this.editModal = true;
                             this.$nextTick(() => {
-                                this.$refs.formRef?.edit(row)
-                                this.$emit("edit", row)
-                            })
+                                this.$refs.formRef?.edit(row);
+                                this.$emit("edit", row);
+                            });
                         }
-                    }
-                }
-            })
-        }
+                    },
+                };
+            });
+        },
     },
     methods: {
         add() {
-            this.editModal = true
+            this.editModal = true;
             this.$nextTick(() => {
-                this.$refs.formRef?.add({})
-                this.$emit("add")
-            })
+                this.$refs.formRef?.add({});
+                this.$emit("add");
+            });
         },
         submitSearch() {
-            console.log(this.searchForm)
-            this.load()
+            console.log(this.searchForm);
+            this.load();
         },
         resetSearchForm() {
-            this.searchForm = {}
-            this.load()
+            this.searchForm = {};
+            this.load();
 
             // reset table sort
-            this.$refs.tableRef.clearSort()
+            this.$refs.tableRef.clearSort();
         },
         handlePageSizeChange(val) {
-            this.pagination.pageSize = val
-            this.load()
+            this.pagination.pageSize = val;
+            this.load();
 
-            let url = new URL(location.href)
-            localStorage.setItem("pageSize_" + btoa(url), val)
+            let url = new URL(location.href);
+            localStorage.setItem("pageSize_" + btoa(url), val);
         },
         handleCurrentPageChange(val) {
-            this.pagination.currentPage = val
-            this.load()
+            this.pagination.currentPage = val;
+            this.load();
         },
         load() {
-            this.loading = true
-            let form = JSON.parse(JSON.stringify(this.searchForm))
+            this.loading = true;
+            let form = JSON.parse(JSON.stringify(this.searchForm));
             for (let key in form) {
                 if (form[key] === "") {
-                    delete form[key]
+                    delete form[key];
                 }
-                // if is array 
+                // if is array
                 if (Array.isArray(form[key])) {
-                    form[key] = form[key].join(",")
+                    form[key] = form[key].join(",");
                 }
             }
             request({
                 url: this.api,
-                method: 'get',
+                method: "get",
                 params: {
                     page: this.pagination.currentPage,
                     limit: this.pagination.pageSize,
-                    ...form
-                }
-            }).then(res => {
-                let data = res.data.data || {}
-                this.tableData = data?.data || []
-                let { size, page, total } = data?.pageable
-                this.pagination = {
-                    pageSize: size,
-                    currentPage: page,
-                    total
-                }
-
-            }).finally(() => {
-                setTimeout(() => {
-                    this.loading = false
-                }, 200)
+                    ...form,
+                },
             })
+                .then((res) => {
+                    let data = res.data.data || {};
+                    this.tableData = data?.data || [];
+                    let { size, page, total } = data?.pageable;
+                    this.pagination = {
+                        pageSize: size,
+                        currentPage: page,
+                        total,
+                    };
+                })
+                .catch((err) => {
+                    this.tableData = [];
+                })
+                .finally(() => {
+                    setTimeout(() => {
+                        this.loading = false;
+                    }, 200);
+                });
         },
         handleSortChange({ column, order }) {
-            if (!order) return
-            let { no } = column
-            let col = this.meta.table.columns[no - 1]
-            this.searchForm.order_by = col.key + (order === 'ascending' ? '_asc' : '_desc')
-            console.log(col)
-            this.load()
+            if (!order) return;
+            let { no } = column;
+            let col = this.meta.table.columns[no - 1];
+            this.searchForm.order_by =
+                col.key + (order === "ascending" ? "_asc" : "_desc");
+            console.log(col);
+            this.load();
         },
         getTableSelection() {
-            return this.$refs.tableRef?.getSelectionRows() || []
+            return this.$refs.tableRef?.getSelectionRows() || [];
         },
         getTableSelectionIds() {
-            return this.getTableSelection().map(item => item.id)
+            return this.getTableSelection().map((item) => item.id);
         },
         batchAction(key) {
             let actionMap = {
-                delete: () => this.handleBatchDelete()
-            }
-            actionMap[key]?.()
+                delete: () => this.handleBatchDelete(),
+            };
+            actionMap[key]?.();
         },
         handleBatchDelete(ids = null) {
-            if (!ids) ids = this.getTableSelectionIds()
-            if (!ids.length) return
-            this.$confirm('确定删除选中的数据吗？', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                console.log(ids)
-                request.delete(this.delete_api, {
-                    data: {
-                        ids
-                    },
-                }).then(res => {
-                    if (res.data.code == 200) {
-                        this.$message.success("删除成功")
-                        this.load()
-                    }
+            if (!ids) ids = this.getTableSelectionIds();
+            if (!ids.length) return;
+            this.$confirm("确定删除选中的数据吗？", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning",
+            })
+                .then(() => {
+                    console.log(ids);
+                    request
+                        .delete(this.delete_api, {
+                            data: {
+                                ids,
+                            },
+                        })
+                        .then((res) => {
+                            if (res.data.code == 200) {
+                                this.$message.success("删除成功");
+                                this.load();
+                            }
+                        });
                 })
-            }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
+                .catch(() => {
+                    this.$message({
+                        type: "info",
+                        message: "已取消删除",
+                    });
                 });
-            });
         },
         exportData() {
-            this.$confirm('确定导出当前数据吗？', '提示', {
+            this.$confirm("确定导出当前数据吗？", "提示", {
                 confirmButtonText: this.$t("export"),
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                this.exportDataApi()
-            }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消导出'
+                cancelButtonText: "取消",
+                type: "warning",
+            })
+                .then(() => {
+                    this.exportDataApi();
+                })
+                .catch(() => {
+                    this.$message({
+                        type: "info",
+                        message: "已取消导出",
+                    });
                 });
-            });
         },
         exportDataApi() {
-            console.log('export')
-            let type = 'xlsx'
+            console.log("export");
+            let type = "xlsx";
             let contentType = {
-                xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                xls: 'application/vnd.ms-excel'
-            }[type]
+                xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                xls: "application/vnd.ms-excel",
+            }[type];
 
             let fileExt = {
-                xlsx: '.xlsx',
-                xls: '.xls'
-            }[type]
+                xlsx: ".xlsx",
+                xls: ".xls",
+            }[type];
 
             request({
                 url: this.export_api,
-                method: 'get',
-                responseType: 'blob',
+                method: "get",
+                responseType: "blob",
                 params: {
                     ...this.searchForm,
-                    type
+                    type,
                 },
-                binary: true
-            }).then(res => {
-                let blob = new Blob([res.data], { type: contentType })
-                let url = window.URL.createObjectURL(blob)
-                let link = document.createElement('a')
-                link.style.display = 'none'
-                link.href = url
-                let filename = `${this.meta.title}-导出-${this.$dayjs().format('YYYYMMDDHHmmss')}`
-                link.setAttribute('download', `${filename}.${fileExt}`)
-                document.body.appendChild(link)
-                link.click()
-                document.body.removeChild(link)
-                window.URL.revokeObjectURL(url)
-            })
+                binary: true,
+            }).then((res) => {
+                let blob = new Blob([res.data], { type: contentType });
+                let url = window.URL.createObjectURL(blob);
+                let link = document.createElement("a");
+                link.style.display = "none";
+                link.href = url;
+                let filename = `${this.meta.title}-导出-${this.$dayjs().format(
+                    "YYYYMMDDHHmmss"
+                )}`;
+                link.setAttribute("download", `${filename}.${fileExt}`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+            });
         },
         handleAddSubmit(form) {
-            console.log(form)
+            console.log(form);
             if (form.id) {
-                request.put(this.update_api, form).then(res => {
+                request.put(this.update_api, form).then((res) => {
                     if (res.data?.code == 200) {
-                        this.$message.success("修改成功")
-                        this.editModal = false
-                        this.load()
+                        this.$message.success("修改成功");
+                        this.editModal = false;
+                        this.load();
                     }
-                })
-                return
+                });
+                return;
             }
 
-            request.post(this.create_api, form).then(res => {
+            request.post(this.create_api, form).then((res) => {
                 if (res.data?.code == 200) {
-                    this.$message.success("添加成功")
-                    this.editModal = false
-                    this.load()
+                    this.$message.success("添加成功");
+                    this.editModal = false;
+                    this.load();
                 }
-            })
+            });
         },
         makeUrl(row, column, key) {
-            let url = column.url_prefix || ""
-            return url + row[key]
+            let url = column.url_prefix || "";
+            return url + row[key];
         },
         handleQueryToSearchForm(query) {
             for (let key in query) {
-                if (this.searchFormFields.find(v => v.name === key)) {
-                    // if num try 
+                if (this.searchFormFields.find((v) => v.name === key)) {
+                    // if num try
                     if (query[key] && !isNaN(query[key])) {
-                        query[key] = Number(query[key])
+                        query[key] = Number(query[key]);
                     }
 
                     // if array
                     if (/\,/.test(query[key])) {
-                        query[key] = (query[key].split(",") || []).filter(v => v).map(v => {
-                            if (v && !isNaN(v)) {
-                                return Number(v)
-                            }
-                            return v
-                        })
+                        query[key] = (query[key].split(",") || [])
+                            .filter((v) => v)
+                            .map((v) => {
+                                if (v && !isNaN(v)) {
+                                    return Number(v);
+                                }
+                                return v;
+                            });
                     }
 
-                    this.searchForm[key] = query[key]
+                    this.searchForm[key] = query[key];
                 }
             }
-            this.load()
+            this.load();
         },
         hasIdColumn(columns) {
-            return columns.find(v => v.key === 'id')
+            return columns.find((v) => v.key === "id");
         },
 
         handleColumnEpType(row, column, tag) {
-            let type = column.epType || 'success'
-            // if type == rand 
-            if (type === 'rand') {
+            let type = column.epType || "success";
+            // if type == rand
+            if (type === "rand") {
                 let map = {
-                    0: 'info',
-                    1: 'success',
-                    2: 'warning',
-                    3: 'danger'
-                }
-                let hash = btoa(tag)
-                let index = (hash.charCodeAt(0) + hash.charCodeAt(1)) % 4
-                type = map[index]
+                    0: "info",
+                    1: "success",
+                    2: "warning",
+                    3: "danger",
+                };
+                let hash = btoa(tag);
+                let index = (hash.charCodeAt(0) + hash.charCodeAt(1)) % 4;
+                type = map[index];
             }
-            return type
-        }
+            return type;
+        },
     },
-    created() { },
+    created() {},
     mounted() {
-
         // load pageSize from localStorage
-        let url = new URL(location.href)
-        let pageSize = localStorage.getItem("pageSize_" + btoa(url))
+        let url = new URL(location.href);
+        let pageSize = localStorage.getItem("pageSize_" + btoa(url));
         if (pageSize) {
-            this.pagination.pageSize = pageSize
+            this.pagination.pageSize = pageSize;
         }
 
-        this.handleQueryToSearchForm(this.$route.query)
+        this.handleQueryToSearchForm(this.$route.query);
         // this.load()
-    }
+    },
 };
 </script>
 

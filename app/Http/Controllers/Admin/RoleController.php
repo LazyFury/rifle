@@ -82,8 +82,9 @@ class RoleController extends \Common\Controller\CURD
                 if ($perm->isSameWith($role_id, $permission_id, $enabled)) {
                     continue;
                 }
-                $perm->enabled = $enabled;
-                $perm->update();
+                $perm->where('role_id', $role_id)->where('permission_id', $permission_id)->update([
+                    'enabled' => $enabled
+                ]);
             } else {
                 if ($enabled == 1) {
                     RoleHasPermission::create([

@@ -7,6 +7,7 @@ use Common\Model\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Permission\Traits\HasRoles;
@@ -59,4 +60,18 @@ class User extends Authenticatable
         ];
     }
 
+
+    public function getPermissionsViaRoles(): Collection
+    {
+        $permissions = RoleHasPermission::where("role_id", $this->roles->pluck('id'))->whereHas('permission', function ($query) {
+            $query->where('enabled', '1');
+        })->with('permission')->get();
+
+        $permissions = $permissions->map(function ($item) {
+            return $item->permission->name;
+        });
+
+        // logger("permissions", [$permissions]);
+        return $permissions;
+    }
 }

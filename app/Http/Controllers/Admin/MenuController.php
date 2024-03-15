@@ -21,7 +21,15 @@ class MenuController extends CURD
         // "all"
     ];
 
-    //
+    public function define_middleware()
+    {
+        return [
+            'index' => '#',
+            'store' => '#',
+            'update' => '#',
+            'destroy' => '#',
+        ];
+    }
     // static routers 
     public static function routers()
     {
