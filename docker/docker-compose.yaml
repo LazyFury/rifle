@@ -9,6 +9,8 @@ services:
       MYSQL_DATABASE: rifle
       MYSQL_USER: rifle
       MYSQL_PASSWORD: rifle
+      # password plugin
+      DEFAULT_AUTHENTICATION_PLUGIN: mysql_native_password
     ports:
       - "3306:3306"
     volumes:

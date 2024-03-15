@@ -5,7 +5,7 @@
             v-model="dialogVisible"
             width="640px"
         >
-            <ElCard shadow="never" class="!mt-0 !pt-0">
+            <ElCard v-loading="loading" shadow="never" class="!mt-0 !pt-0">
                 <div>
                     <div class="flex flex-row items-center gap-2">
                         <h3 class="!my-0">{{ role.name }}</h3>
@@ -14,23 +14,21 @@
                     <ElDivider class="!my-2"></ElDivider>
                     <div>
                         <!-- btn set all  -->
-                        <ElButton
-                            @click="handleSelectAll"
-                            type="text"
-                            size="mini"
-                            >Set All</ElButton
+                        <ElButton @click="handleSelectAll" type="text"
+                            >全选</ElButton
                         >
                         <!-- btn reset all  -->
-                        <ElButton
-                            @click="handleResetAll()"
-                            type="text"
-                            size="mini"
-                            >Reset All</ElButton
+                        <ElButton @click="handleResetAll()" type="text"
+                            >全不选</ElButton
                         >
                         <!-- open all  -->
-                        <ElButton type="text" size="mini">Open All</ElButton>
+                        <ElButton @click="handleExpandAll()" type="text"
+                            >展开全部</ElButton
+                        >
                         <!-- close all  -->
-                        <ElButton type="text" size="mini">Close All</ElButton>
+                        <ElButton @click="handleCollapseAll()" type="text"
+                            >收起全部</ElButton
+                        >
                     </div>
                 </div>
                 <div class="max-h-320px" style="overflow-y: auto">
@@ -80,6 +78,8 @@ export default {
             ],
             role: {},
             checkedKeys: [],
+            parentIds: [],
+            loading: false,
         };
     },
     methods: {
@@ -95,17 +95,29 @@ export default {
         handleResetAll() {
             this.$refs.tree.setCheckedKeys([]);
         },
-        open(row) {
-            this.dialogVisible = true;
+        handleExpandAll() {
+            this.$refs.tree.store.setDefaultExpandedKeys(this.parentIds);
+        },
+        handleCollapseAll() {
+            let nodes = this.$refs.tree.store.nodesMap;
+            for (let key in nodes) {
+                nodes[key].expanded = false;
+            }
+        },
+        async open(row) {
             this.role = row;
-            this.getPermissions();
-            this.getRolesPermissions();
+            this.dialogVisible = true;
+            this.loading = true;
+            await this.getPermissions();
+            await this.getRolesPermissions();
+            this.handleCollapseAll();
+            this.loading = false;
         },
         close() {
             this.dialogVisible = false;
         },
         getRolesPermissions() {
-            request
+            return request
                 .get("/role.get_permissions", {
                     params: {
                         role_id: this.role.id,
@@ -119,7 +131,7 @@ export default {
                 });
         },
         getPermissions() {
-            request
+            return request
                 .get("/permission.list", {
                     params: {
                         page: 1,
@@ -128,6 +140,10 @@ export default {
                 })
                 .then((res) => {
                     this.treeData = res.data.data?.data;
+                    let parentIds = this.treeData.map((item) => item.id);
+                    this.parentIds = parentIds;
+                    console.log("parentIds", parentIds);
+                    // this.defaultExpandedKeys = parentIds;
                 });
         },
         save() {

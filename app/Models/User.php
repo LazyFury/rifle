@@ -4,11 +4,11 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Common\Model\BaseModel;
-use Common\Utils\Cache;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Permission\Traits\HasRoles;
@@ -68,15 +68,12 @@ class User extends Authenticatable
             $query->where('enabled', '1');
         })->with('permission');
 
-        $permissions = Cache::rememberSql($query, [
-            'id' => $this->id,
-            'enabled' => '1'
-        ], new \DateInterval('P1M'), "user_permissions_{$this->id}", function () use ($query) {
-            return (clone $query)->get();
-        });
-
-        $permissions = $permissions->map(function ($item) {
-            return $item->permission->name;
+        $permissions = Cache::remember('user_permissions_' . $this->id, now()->addMinutes(10), function () use ($query) {
+            $permissions = $query->get();
+            $permissions = $permissions->map(function ($item) {
+                return $item->permission->name;
+            });
+            return $permissions;
         });
 
         // logger("permissions", [$permissions]);

@@ -5,7 +5,6 @@
                 class="text-primary flex flex-row items-center"
                 @click="editPermission(row)"
                 type="text"
-                size="mini"
             >
                 <span> 编辑角色权限</span>
                 <Icon icon="ant-design:edit-outlined"></Icon>
