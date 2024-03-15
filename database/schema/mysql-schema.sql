@@ -46,6 +46,38 @@ CREATE TABLE `cache_locks` (
   PRIMARY KEY (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `dict_groups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `dict_groups` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `dict_groups_key_unique` (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `dicts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `dicts` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `group_id` bigint unsigned DEFAULT NULL,
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `dicts_key_group_id_unique` (`key`,`group_id`),
+  KEY `dicts_group_id_foreign` (`group_id`),
+  CONSTRAINT `dicts_group_id_foreign` FOREIGN KEY (`group_id`) REFERENCES `dict_groups` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `failed_jobs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -77,7 +109,9 @@ CREATE TABLE `menus` (
   `icon` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '图标',
   `deleteable` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否可删除',
   `parent_id` bigint unsigned DEFAULT NULL COMMENT 'Parent Menu',
-  PRIMARY KEY (`id`)
+  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'menu',
+  PRIMARY KEY (`id`),
+  KEY `menus_parent_id_IDX` (`parent_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `migrations`;
@@ -133,6 +167,7 @@ CREATE TABLE `permissions` (
   `guard_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
+  `parent_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '父级权限',
   PRIMARY KEY (`id`),
   UNIQUE KEY `permissions_name_guard_name_unique` (`name`,`guard_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -166,7 +201,7 @@ CREATE TABLE `post_categories` (
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` text COLLATE utf8mb4_unicode_ci,
-  `parent_id` int NOT NULL DEFAULT '0',
+  `parent_id` bigint unsigned DEFAULT NULL COMMENT '父级分类ID',
   `order` int NOT NULL DEFAULT '0',
   `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '1',
@@ -211,6 +246,7 @@ DROP TABLE IF EXISTS `role_has_permissions`;
 CREATE TABLE `role_has_permissions` (
   `permission_id` bigint unsigned NOT NULL,
   `role_id` bigint unsigned NOT NULL,
+  `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否启用',
   PRIMARY KEY (`permission_id`,`role_id`),
   KEY `role_has_permissions_role_id_foreign` (`role_id`),
   CONSTRAINT `role_has_permissions_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
@@ -322,3 +358,9 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (32,'2024_03_09_092
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (33,'2024_03_09_092923_create_post_tags',22);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (34,'2024_03_09_102744_alert_api_manage_add_form_fields_nullable',23);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (36,'2024_03_09_103144_alert_users_add_deleteable_column',24);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (42,'2024_03_09_160415_alert_post_category_parent_id_nullable',25);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (46,'2024_03_11_112113_create_dicts_table',26);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (47,'2024_03_11_114923_alert_dict_add_key',26);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (48,'2024_03_11_152246_alert__menus_add_type_columns',27);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (49,'2024_03_11_175144_alert_role_has_permission_add_enabled',28);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (50,'2024_03_15_102848_alert_permission_parent_id',29);
