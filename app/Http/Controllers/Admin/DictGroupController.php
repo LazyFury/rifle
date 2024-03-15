@@ -9,11 +9,12 @@ use Validator;
 
 class DictGroupController extends \Common\Controller\CURD
 {
-    protected $auth_except = ["getConfig"];
+    protected $auth_except = [];
 
     public function __construct(\App\Models\DictGroup $model)
     {
         parent::__construct($model);
+        // $this->middleware("permission:model.getConfig")->only("getConfig");
     }
 
     public static function routers()

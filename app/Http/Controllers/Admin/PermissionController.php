@@ -17,6 +17,11 @@ class PermissionController extends CURD
         return '权限管理/权限';
     }
 
+    public function filter(\Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder
+    {
+        return $query->where("parent_id", null);
+    }
+
     public function destroy(\Illuminate\Http\Request $request, $destoryCheck = null)
     {
         return response()->json([

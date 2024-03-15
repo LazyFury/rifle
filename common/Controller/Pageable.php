@@ -73,7 +73,7 @@ trait Pageable
                 'offset' => $offset,
                 'no_page' => $no_page,
             ],
-            new \DateInterval("PT5M"),
+            new \DateInterval("PT5S"),
             "count_",
             function () use ($query) {
                 return (clone $query)->count();

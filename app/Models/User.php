@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Common\Model\BaseModel;
+use Common\Utils\Cache;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -63,9 +64,16 @@ class User extends Authenticatable
 
     public function getPermissionsViaRoles(): Collection
     {
-        $permissions = RoleHasPermission::where("role_id", $this->roles->pluck('id'))->whereHas('permission', function ($query) {
+        $query = RoleHasPermission::where("role_id", $this->roles->pluck('id'))->whereHas('permission', function ($query) {
             $query->where('enabled', '1');
-        })->with('permission')->get();
+        })->with('permission');
+
+        $permissions = Cache::rememberSql($query, [
+            'id' => $this->id,
+            'enabled' => '1'
+        ], new \DateInterval('P1M'), "user_permissions_{$this->id}", function () use ($query) {
+            return (clone $query)->get();
+        });
 
         $permissions = $permissions->map(function ($item) {
             return $item->permission->name;
