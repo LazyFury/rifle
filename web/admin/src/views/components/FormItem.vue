@@ -1,39 +1,15 @@
 <template>
     <!-- textarea  -->
-    <ElInput
-        @change="handleUpdate"
-        v-model="value"
-        v-if="field.type == 'textarea'"
-        type="textarea"
-        :placeholder="field.placeholder"
-    ></ElInput>
+    <ElInput @change="handleUpdate" v-model="value" v-if="field.type == 'textarea'" type="textarea"
+        :placeholder="field.placeholder"></ElInput>
     <!-- password  -->
-    <ElInput
-        @change="handleUpdate"
-        v-model="value"
-        v-if="field.type == 'password'"
-        type="password"
-        :placeholder="field.placeholder"
-    >
+    <ElInput @change="handleUpdate" v-model="value" v-if="field.type == 'password'" type="password"
+        :placeholder="field.placeholder">
     </ElInput>
     <!-- select  -->
-    <div
-        v-if="field.type == 'select'"
-        class="flex flex-row items-center w-full"
-    >
-        <ElSelect
-            class="w-full"
-            filterable
-            @change="handleUpdate"
-            v-model="value"
-            :placeholder="field.placeholder"
-        >
-            <ElOption
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-            ></ElOption>
+    <div v-if="field.type == 'select'" class="flex flex-row items-center w-full">
+        <ElSelect class="w-full" filterable @change="handleUpdate" v-model="value" :placeholder="field.placeholder">
+            <ElOption v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></ElOption>
         </ElSelect>
         <div class="mr-2"></div>
         <!-- refresh  -->
@@ -43,81 +19,39 @@
     </div>
 
     <!-- select multi  -->
-    <ElSelect
-        v-if="field.type == 'select-multi'"
-        filterable
-        @change="handleUpdate"
-        v-model="value"
-        multiple
-        :placeholder="field.placeholder"
-    >
-        <ElOption
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-        ></ElOption>
+    <ElSelect v-if="field.type == 'select-multi'" filterable @change="handleUpdate" v-model="value" multiple
+        :placeholder="field.placeholder">
+        <ElOption v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></ElOption>
     </ElSelect>
 
     <!-- switch -->
-    <ElSwitch
-        @change="handleUpdate"
-        v-model="value"
-        v-if="field.type == 'switch'"
-        :active-text="field.checkedChildren"
-    >
+    <ElSwitch @change="handleUpdate" v-model="value" v-if="field.type == 'switch'" :active-text="field.checkedChildren">
     </ElSwitch>
     <!-- checkbox only one -->
-    <ElCheckbox
-        @change="handleUpdate"
-        v-model="value"
-        v-if="field.type == 'checkbox' && !field.multiple"
-        :label="field.placeholder"
-    >
+    <ElCheckbox @change="handleUpdate" v-model="value" v-if="field.type == 'checkbox' && !field.multiple"
+        :label="field.placeholder">
     </ElCheckbox>
 
     <!-- Cascader -->
-    <ElCascader
-        @change="handleUpdateCascader"
-        v-model="value"
-        v-if="field.type == 'cascader'"
-        :options="options"
-        filterable
-        clearable
-        :props="{
-            ...field.props,
-            checkStrictly: true,
-        }"
-        :placeholder="field.placeholder"
-    >
+    <ElCascader @change="handleUpdateCascader" v-model="value" v-if="field.type == 'cascader'" :options="options"
+        filterable clearable :props="{
+        ...field.props,
+        checkStrictly: true,
+    }" :placeholder="field.placeholder">
     </ElCascader>
 
     <!-- cascader-multi  -->
-    <ElCascader
-        @change="handleUpdateCascader"
-        v-model="value"
-        v-if="field.type == 'cascader-multi'"
-        :options="options"
-        filterable
-        clearable
-        :props="{
-            ...field.props,
-            checkStrictly: true,
-            multiple: true,
-        }"
-        :placeholder="field.placeholder"
-    >
+    <ElCascader @change="handleUpdateCascader" v-model="value" v-if="field.type == 'cascader-multi'" :options="options"
+        filterable clearable :props="{
+        ...field.props,
+        checkStrictly: true,
+        multiple: true,
+    }" :placeholder="field.placeholder">
     </ElCascader>
 
     <!-- input  -->
-    <ElInput
-        v-model="value"
-        :disabled="field.disabled"
-        @change="handleUpdate"
-        :type="field.epInputType || 'text'"
-        v-if="!field.type || field.type == 'input'"
-        :placeholder="field.placeholder"
-    >
+    <ElInput v-model="value" :disabled="field.disabled" @change="handleUpdate" :type="field.epInputType || 'text'"
+        v-if="!field.type || field.type == 'input'" :placeholder="field.placeholder">
         <!-- suffix  -->
         <template v-if="field.suffix" #suffix>
             <div>
@@ -168,7 +102,7 @@ export default {
         },
         field: {
             handler() {
-                this.getOptions();
+                // this.getOptions();
             },
             deep: true,
         },
@@ -254,7 +188,7 @@ export default {
                     });
         },
     },
-    created() {},
+    created() { },
     mounted() {
         this.getOptions();
     },

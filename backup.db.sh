@@ -12,7 +12,6 @@ password=$PASSWORD
 backup_dir="./database/backups/"
 
 
-
 # get all args from command line
 excludes=(
     "telescope_entries"

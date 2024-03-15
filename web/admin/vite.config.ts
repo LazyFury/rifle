@@ -60,7 +60,7 @@ export default (({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks: {
-            'element-plus': ['element-plus'],
+            // 'element-plus': ['element-plus'],
             "antv-g2": ["@antv/g2"],
             "vue": ["vue"],
             "vue-router": ["vue-router"],

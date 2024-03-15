@@ -21,7 +21,6 @@
                   </ElTableColumn>
                   <!-- 操作 -->
                   <ElTableColumn label="操作" width="auto">
-
                     <template #default="{ row }">
                       <ElButton type="danger" link @click="handleDeleteColumn(form, field.name, row)">删除</ElButton>
                     </template>
