@@ -26,6 +26,11 @@ class PermissionMiddleware
             return ApiJsonResponse::unauthenticated("检查权限中间件失败，用户未登录。");
         }
 
+        if ($user->is_superuser) {
+            logger("passed superuser", [$user->is_superuser]);
+            return $next($request);
+        }
+
         // if (!$user->can($permission_code)) {
         //     return ApiJsonResponse::forbidden();
         // }

@@ -14,6 +14,13 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Validator;
 
+
+/**
+ *  CURD Controller
+ * @package Common\Controller
+ * @property BaseModel $model
+ * @property Service $service
+ */
 class CURD extends Controller
 {
     use Pageable;
