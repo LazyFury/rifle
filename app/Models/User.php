@@ -3,7 +3,6 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Common\Model\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -15,7 +14,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasPermissions;
+    use HasApiTokens, HasFactory, HasPermissions, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -61,18 +60,28 @@ class User extends Authenticatable
         ];
     }
 
+    public function roles()
+    {
+        logger('get roles');
+
+        return $this->hasOne(Role::class, 'id', 'role_id');
+    }
 
     public function getPermissionsViaRoles(): Collection
     {
-        $query = RoleHasPermission::where("role_id", $this->roles->pluck('id'))->whereHas('permission', function ($query) {
+        if (! $this->roles) {
+            return collect();
+        }
+        $query = RoleHasPermission::where('role_id', $this->roles?->id)->whereHas('permission', function ($query) {
             $query->where('enabled', '1');
         })->with('permission');
 
-        $permissions = Cache::remember('user_permissions_' . $this->id, now()->addMinutes(10), function () use ($query) {
+        $permissions = Cache::remember('user_permissions_'.$this->id, now()->addMinutes(10), function () use ($query) {
             $permissions = $query->get();
             $permissions = $permissions->map(function ($item) {
                 return $item->permission->name;
             });
+
             return $permissions;
         });
 

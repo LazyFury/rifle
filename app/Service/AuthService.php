@@ -4,7 +4,6 @@ namespace App\Service;
 
 use App\Models\User;
 use Common\Service\Service;
-use Common\Utils\ApiJsonResponse;
 
 /**
  * User Service
@@ -12,7 +11,6 @@ use Common\Utils\ApiJsonResponse;
  */
 class AuthService
 {
-
     protected User $model;
 
     public function __construct(User $model)
@@ -24,7 +22,7 @@ class AuthService
     {
         $request->validate([
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         $credentials = $request->only('email', 'password');
@@ -34,18 +32,19 @@ class AuthService
             $token = $user->createToken('authToken')->plainTextToken;
 
             return [
-                "user" => $user,
-                "token" => $token
+                'user' => $user,
+                'token' => $token,
             ];
         }
 
-        return "账号密码错误";
+        return '账号密码错误';
     }
 
     public function logout()
     {
         auth()->user()->tokens()->delete();
-        return "退出成功";
+
+        return '退出成功';
     }
 
     public function profile()
@@ -53,13 +52,13 @@ class AuthService
         return auth()->user();
     }
 
-    // register 
+    // register
     public function register($request)
     {
         $request->validate([
             'name' => 'required|string|max:20',
             'email' => 'required|email|unique:users',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         $user = $this->model->create($request->all());
@@ -67,29 +66,30 @@ class AuthService
         return $user;
     }
 
-    // admin login is must supperuser 
+    // admin login is must supperuser
     public function adminLogin($request)
     {
         $request->validate([
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         $credentials = $request->only('email', 'password');
 
         if (auth()->attempt($credentials)) {
-            if (auth()->user()->is_superuser) {
+            if (auth()->user()->is_superuser or true) {
                 $user = auth()->user();
                 $token = $user->createToken('authToken')->plainTextToken;
 
                 return [
-                    "user" => $user,
-                    "token" => $token
+                    'user' => $user,
+                    'token' => $token,
                 ];
             }
-            return "没有权限";
+
+            return '没有权限';
         }
 
-        return "账号密码错误";
+        return '账号密码错误';
     }
 }

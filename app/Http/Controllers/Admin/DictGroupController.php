@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers\Admin;
 
 use Common\Utils\ApiJsonResponse;
@@ -14,29 +13,32 @@ class DictGroupController extends \Common\Controller\CURD
     public function __construct(\App\Models\DictGroup $model)
     {
         parent::__construct($model);
-        // $this->middleware("permission:model.getConfig")->only("getConfig");
+        $this->middleware('permission:model.getConfig')->only([
+            'getConfig', 'setConfig',
+        ]);
     }
 
     public static function routers()
     {
         $tag = static::tag();
+
         return [
-            "getConfig" => [
-                "method" => "get",
-                "uri" => "getConfig",
-                "action" => "getConfig",
-                "meta" => [
-                    "tag" => $tag
-                ]
+            'getConfig' => [
+                'method' => 'get',
+                'uri' => 'getConfig',
+                'action' => 'getConfig',
+                'meta' => [
+                    'tag' => $tag,
+                ],
             ],
-            "setConfig" => [
-                "method" => "post",
-                "uri" => "setConfig",
-                "action" => "setConfig",
-                "meta" => [
-                    "tag" => $tag
-                ]
-            ]
+            'setConfig' => [
+                'method' => 'post',
+                'uri' => 'setConfig',
+                'action' => 'setConfig',
+                'meta' => [
+                    'tag' => $tag,
+                ],
+            ],
         ] + parent::routers();
     }
 
@@ -50,48 +52,50 @@ class DictGroupController extends \Common\Controller\CURD
         return $query;
     }
 
-    // get dict group as obj 
+    // get dict group as obj
     public function getConfig(Request $request)
     {
         $valid = Validator::make($request->all(), [
-            "key" => "required|string"
+            'key' => 'required|string',
         ]);
         if ($valid->fails()) {
             return response()->json($valid->errors(), 400);
         }
-        $key = $request->input("key");
-        $result = $this->model->where("key", $key)->first();
+        $key = $request->input('key');
+        $result = $this->model->where('key', $key)->first();
         $config = [];
         foreach ($result->dicts()->get() as $dict) {
             $config[$dict->key] = $dict->value;
         }
+
         return ApiJsonResponse::success([
-            "config" => $config,
-            "group" => $result
+            'config' => $config,
+            'group' => $result,
         ]);
     }
 
     public function setConfig(Request $request)
     {
         $valid = Validator::make($request->all(), [
-            "key" => "required|string",
-            "config" => "required|array"
+            'key' => 'required|string',
+            'config' => 'required|array',
         ]);
         if ($valid->fails()) {
             return response()->json($valid->errors(), 400);
         }
-        $key = $request->input("key");
-        $config = $request->input("config");
-        $result = $this->model->where("key", $key)->first();
+        $key = $request->input('key');
+        $config = $request->input('config');
+        $result = $this->model->where('key', $key)->first();
         foreach ($config as $key => $value) {
-            $dict = $result->dicts()->where("key", $key)->first();
+            $dict = $result->dicts()->where('key', $key)->first();
             if ($dict) {
                 $dict->value = $value;
                 $dict->save();
             } else {
-                // to nothing 
+                // to nothing
             }
         }
+
         return ApiJsonResponse::success(null);
     }
 }

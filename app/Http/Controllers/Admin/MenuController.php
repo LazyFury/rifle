@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\ApiManage;
 use Common\Controller\CURD;
 use Common\Utils\ApiJsonResponse;
 use Illuminate\Http\Request;
-use Validator;
 
 class MenuController extends CURD
 {
-
     public function __construct(\App\Models\Menu $model)
     {
         parent::__construct($model);
@@ -21,80 +18,79 @@ class MenuController extends CURD
         // "all"
     ];
 
-
-    // static routers 
+    // static routers
     public static function routers()
     {
         $tag = static::tag();
         $arr = [
-            "all" => [
-                "method" => "get",
-                "uri" => "all",
-                "action" => "all",
-                "meta" => [
-                    "tag" => $tag,
-                    "name" => "获取所有菜单",
-                    "description" => "获取所有菜单",
-                    "response" => [
-                        "menus" => [
-                            "type" => "array",
-                            "items" => [
-                                "type" => "object",
-                                "properties" => [
-                                    "title" => [
-                                        "type" => "string",
-                                        "description" => "菜单标题"
+            'all' => [
+                'method' => 'get',
+                'uri' => 'all',
+                'action' => 'all',
+                'meta' => [
+                    'tag' => $tag,
+                    'name' => '获取所有菜单',
+                    'description' => '获取所有菜单',
+                    'response' => [
+                        'menus' => [
+                            'type' => 'array',
+                            'items' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'title' => [
+                                        'type' => 'string',
+                                        'description' => '菜单标题',
                                     ],
-                                    "key" => [
-                                        "type" => "string",
-                                        "description" => "菜单key"
+                                    'key' => [
+                                        'type' => 'string',
+                                        'description' => '菜单key',
                                     ],
-                                    "path" => [
-                                        "type" => "string"
+                                    'path' => [
+                                        'type' => 'string',
                                     ],
-                                    "icon" => [
-                                        "type" => "string"
+                                    'icon' => [
+                                        'type' => 'string',
                                     ],
-                                    "component" => [
-                                        "type" => "string"
+                                    'component' => [
+                                        'type' => 'string',
                                     ],
-                                    "meta" => [
-                                        "type" => "object"
-                                    ]
-                                ]
-                            ]
-                        ]
+                                    'meta' => [
+                                        'type' => 'object',
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
-                    "definitions" => [
-                        "menus" => [
-                            "type" => "array",
-                            "items" => [
-                                "type" => "object",
-                                "properties" => [
-                                    "title" => [
-                                        "type" => "string"
+                    'definitions' => [
+                        'menus' => [
+                            'type' => 'array',
+                            'items' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'title' => [
+                                        'type' => 'string',
                                     ],
-                                    "key" => [
-                                        "type" => "string"
+                                    'key' => [
+                                        'type' => 'string',
                                     ],
-                                    "path" => [
-                                        "type" => "string"
+                                    'path' => [
+                                        'type' => 'string',
                                     ],
-                                    "icon" => [
-                                        "type" => "string"
+                                    'icon' => [
+                                        'type' => 'string',
                                     ],
-                                    "component" => [
-                                        "type" => "string"
+                                    'component' => [
+                                        'type' => 'string',
                                     ],
-                                    "meta" => [
-                                        "type" => "object"
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                                    'meta' => [
+                                        'type' => 'object',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         return array_merge($arr, parent::routers());
@@ -107,13 +103,14 @@ class MenuController extends CURD
 
     public function filter(\Illuminate\Database\Eloquent\Builder $query)
     {
-        return $query->where("parent_id", null);
+        return $query->where('parent_id', null);
     }
 
     public function create(Request $request)
     {
         $data = $request->all();
-        $data["parent_id"] = $data["parent_id"] ?? null;
+        $data['parent_id'] = $data['parent_id'] ?? null;
+
         return parent::create($request);
     }
 
@@ -124,15 +121,16 @@ class MenuController extends CURD
 
     public function all(Request $request)
     {
-        $menus = \App\Models\Menu::where("parent_id", null)->get();
+        $menus = \App\Models\Menu::where('parent_id', null)->get();
+
         return ApiJsonResponse::success([
-            "menus" => [
+            'menus' => [
                 [
-                    "title" => "控制台",
-                    "key" => "overview",
-                    "path" => "/overview",
-                    "icon" => "ant-design:home-outlined",
-                    "component" => "HomeView"
+                    'title' => '控制台',
+                    'key' => 'overview',
+                    'path' => '/overview',
+                    'icon' => 'ant-design:home-outlined',
+                    'component' => 'HomeView',
                 ],
                 ...$menus->toArray(),
                 // [
@@ -144,146 +142,147 @@ class MenuController extends CURD
                 //     "meta" => ApiManage::where("key", "article")->first()
                 // ],
                 [
-                    // dev mode 
-                    "title" => "开发维护",
-                    "icon" => "ant-design:sliders-outlined",
-                    "key" => "dev",
-                    "children" => [
+                    // dev mode
+                    'title' => '开发维护',
+                    'icon' => 'ant-design:sliders-outlined',
+                    'key' => 'dev',
+                    'children' => [
                         [
-                            "title" => "菜单管理",
-                            "key" => "menu",
-                            "path" => "/dev/menu",
-                            "component" => "TableView",
-                            "meta" => ApiManage::where("key", "menu-manager")->first()
+                            'title' => '菜单管理',
+                            'key' => 'menu',
+                            'path' => '/dev/menu',
+                            'component' => 'TableView',
+                            'meta' => ApiManage::where('key', 'menu-manager')->first(),
                         ],
                         [
-                            "title" => "Api 表格管理",
-                            "key" => "api",
-                            "path" => "/dev/api",
-                            "component" => "dev/SystemTableView",
-                            "meta" => [
-                                "list_api" => "/api_manage.list",
-                                "create_api" => "/api_manage.create",
-                                "update_api" => "/api_manage.update",
-                                "delete_api" => "/api_manage.delete",
-                                "export_api" => "/api_manage.export",
-                                "columns" => [
+                            'title' => 'Api 表格管理',
+                            'key' => 'api',
+                            'path' => '/dev/api',
+                            'component' => 'dev/SystemTableView',
+                            'meta' => [
+                                'description' => 'API 表格管理',
+                                'list_api' => '/api_manage.list',
+                                'create_api' => '/api_manage.create',
+                                'update_api' => '/api_manage.update',
+                                'delete_api' => '/api_manage.delete',
+                                'export_api' => '/api_manage.export',
+                                'columns' => [
                                     [
-                                        "title" => "名称",
-                                        "dataIndex" => "title",
-                                        "key" => "title"
+                                        'title' => '名称',
+                                        'dataIndex' => 'title',
+                                        'key' => 'title',
                                     ],
                                     [
-                                        "title" => "key",
-                                        "dataIndex" => "key",
-                                        "key" => "key"
+                                        'title' => 'key',
+                                        'dataIndex' => 'key',
+                                        'key' => 'key',
                                     ],
                                     [
-                                        "title" => "API",
-                                        "dataIndex" => "api",
-                                        "key" => "list_api"
+                                        'title' => 'API',
+                                        'dataIndex' => 'api',
+                                        'key' => 'list_api',
                                     ],
                                     [
-                                        "title" => "删除API",
-                                        "dataIndex" => "del_api",
-                                        "key" => "delete_api"
+                                        'title' => '删除API',
+                                        'dataIndex' => 'del_api',
+                                        'key' => 'delete_api',
                                     ],
                                     [
-                                        "title" => "更新API",
-                                        "dataIndex" => "update_api",
-                                        "key" => "update_api"
+                                        'title' => '更新API',
+                                        'dataIndex' => 'update_api',
+                                        'key' => 'update_api',
                                     ],
                                     [
-                                        "title" => "创建API",
-                                        "dataIndex" => "add_api",
-                                        "key" => "create_api"
-                                    ]
+                                        'title' => '创建API',
+                                        'dataIndex' => 'add_api',
+                                        'key' => 'create_api',
+                                    ],
                                 ],
-                                "add_form_fields" => [
+                                'add_form_fields' => [
                                     [
                                         [
-                                            "label" => "名称",
-                                            "name" => "title",
-                                            "placeholder" => "请输入名称"
+                                            'label' => '名称',
+                                            'name' => 'title',
+                                            'placeholder' => '请输入名称',
                                         ],
                                         // key
                                         [
-                                            "label" => "key",
-                                            "name" => "key",
-                                            "placeholder" => "请输入key"
+                                            'label' => 'key',
+                                            'name' => 'key',
+                                            'placeholder' => '请输入key',
                                         ],
                                     ],
                                     [
-                                        // apis 
+                                        // apis
                                         [
-                                            "label" => "API",
-                                            "name" => "list_api",
-                                            "placeholder" => "请输入API"
+                                            'label' => 'API',
+                                            'name' => 'list_api',
+                                            'placeholder' => '请输入API',
                                         ],
-                                        // del_api 
+                                        // del_api
                                         [
-                                            "label" => "删除API",
-                                            "name" => "delete_api",
-                                            "placeholder" => "请输入删除API"
+                                            'label' => '删除API',
+                                            'name' => 'delete_api',
+                                            'placeholder' => '请输入删除API',
                                         ],
-                                        // update_api 
+                                        // update_api
                                         [
-                                            "label" => "更新API",
-                                            "name" => "update_api",
-                                            "placeholder" => "请输入更新API"
+                                            'label' => '更新API',
+                                            'name' => 'update_api',
+                                            'placeholder' => '请输入更新API',
                                         ],
                                         // create_api
                                         [
-                                            "label" => "创建API",
-                                            "name" => "create_api",
-                                            "placeholder" => "请输入创建API"
+                                            'label' => '创建API',
+                                            'name' => 'create_api',
+                                            'placeholder' => '请输入创建API',
                                         ],
                                         // export_api
                                         [
-                                            "label" => "导出API",
-                                            "name" => "export_api",
-                                            "placeholder" => "请输入导出API"
-                                        ]
-                                    ],
-                                    [
-                                        [
-                                            "label" => "表格列",
-                                            "name" => "columns",
-                                            "placeholder" => "请输入表格列",
-                                            "width" => "100%"
+                                            'label' => '导出API',
+                                            'name' => 'export_api',
+                                            'placeholder' => '请输入导出API',
                                         ],
                                     ],
                                     [
                                         [
-                                            "label" => "搜索表单",
-                                            "name" => "search_form_fields",
-                                            "placeholder" => "请输入搜索表单",
-                                            "width" => "100%"
-                                        ]
+                                            'label' => '表格列',
+                                            'name' => 'columns',
+                                            'placeholder' => '请输入表格列',
+                                            'width' => '100%',
+                                        ],
+                                    ],
+                                    [
+                                        [
+                                            'label' => '搜索表单',
+                                            'name' => 'search_form_fields',
+                                            'placeholder' => '请输入搜索表单',
+                                            'width' => '100%',
+                                        ],
                                     ],
                                     [
                                         // add_form_fields
                                         [
-                                            "label" => "添加表单",
-                                            "name" => "add_form_fields",
-                                            "placeholder" => "请输入添加表单",
-                                            "width" => "100%"
-                                        ]
+                                            'label' => '添加表单',
+                                            'name' => 'add_form_fields',
+                                            'placeholder' => '请输入添加表单',
+                                            'width' => '100%',
+                                        ],
                                     ],
                                     [
                                         [
-                                            "label" => "描述",
-                                            "name" => "description",
-                                            "placeholder" => "请输入描述",
-                                            "width" => "100%"
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                                            'label' => '描述',
+                                            'name' => 'description',
+                                            'placeholder' => '请输入描述',
+                                            'width' => '100%',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ]);
     }
 }

@@ -20,11 +20,11 @@ class UserSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        // User::factory()->create([
-        //     'name' => 'user',
-        //     'email' => 'user@mail.com',
-        //     'password' => bcrypt('123456'),
-        // ]);
+        User::factory()->create([
+            'name' => 'user',
+            'email' => 'user@mail.com',
+            'password' => bcrypt('123456'),
+        ]);
 
         // create user admin
         User::factory()->create([

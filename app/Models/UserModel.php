@@ -6,13 +6,13 @@ use Common\Model\BaseModel;
 use Common\Model\UseDisableDelete;
 use Common\Model\UseTimeFormatTairt;
 
-
 /**
  * User alias
  */
 class UserModel extends BaseModel
 {
-    use UseTimeFormatTairt, UseDisableDelete;
+    use UseDisableDelete, UseTimeFormatTairt;
+
     // tablename
     protected $table = 'users';
 
@@ -22,30 +22,32 @@ class UserModel extends BaseModel
     ];
 
     protected $rules = [
-        "name" => "required|string|max:20",
+        'name' => 'required|string|max:20',
+        'role_id' => 'nullable|integer|exists:roles,id',
     ];
 
     protected $messages = [
-        "name.required" => "用户名不能为空",
-        "name.string" => "用户名必须是字符串",
-        "name.max" => "用户名最大长度为20",
+        'name.required' => '用户名不能为空',
+        'name.string' => '用户名必须是字符串',
+        'name.max' => '用户名最大长度为20',
     ];
 
     protected $fillable = [
-        "name",
+        'name',
+        'role_id',
     ];
 
     protected $casts = [
     ];
 
     protected $appends = [
-        'hidden_email'
+        'hidden_email',
     ];
 
     public function getHiddenEmailAttribute($value)
     {
         // hidden some
-        return substr($value, 0, 3) . '****' . substr($value, -3);
+        return substr($value, 0, 3).'****'.substr($value, -3);
     }
 
     public function get_searchable()
@@ -53,7 +55,7 @@ class UserModel extends BaseModel
         return [
             'name',
             'email',
-            "id"
+            'id',
         ];
     }
 
