@@ -27,6 +27,7 @@ class ApiManage extends BaseModel
         'add_form_fields',
         'search_form_fields',
         'description',
+        'group_key',
     ];
 
     protected $rules = [
@@ -41,6 +42,7 @@ class ApiManage extends BaseModel
         'search_form_fields' => 'required',
         'description' => 'nullable',
         'key' => 'nullable',
+        'group_key' => 'nullable',
     ];
 
     protected $messages = [

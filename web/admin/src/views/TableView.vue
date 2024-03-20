@@ -13,23 +13,69 @@
             </div>
             <ElDivider class="!mb-4 !mt-2"></ElDivider>
             <div v-if="searchFormFields && searchFormFields.length > 0">
-                <ElForm :inline="true" :model="searchForm" @submit.prevent.native="(e) => { }" class="mb-2">
-                    <ElFormItem v-for="field in searchFormFields" :key="field.name" :label="field.label"
-                        :prop="field.name" :class="[]" :style="{ 'min-width': field.width || '100px' }">
-                        <FormItem :field="field" v-model="searchForm[field.name]"></FormItem>
+                <ElForm
+                    :inline="true"
+                    :model="searchForm"
+                    @submit.prevent.native="(e) => {}"
+                    class="mb-2"
+                >
+                    <ElFormItem
+                        v-for="field in searchFormFields"
+                        :key="field.name"
+                        :label="field.label"
+                        :prop="field.name"
+                        :class="[]"
+                        :style="{ 'min-width': field.width || '100px' }"
+                    >
+                        <FormItem
+                            :field="field"
+                            v-model="searchForm[field.name]"
+                        ></FormItem>
                     </ElFormItem>
                     <ElFormItem>
                         <ElButton type="primary" @click="submitSearch">
-                            <Icon icon="heroicons-solid:magnifying-glass" class="mt-0px mr-4px"></Icon>
+                            <Icon
+                                icon="heroicons-solid:magnifying-glass"
+                                class="mt-0px mr-4px"
+                            ></Icon>
                             <span>{{ $t("search") }}</span>
                         </ElButton>
                         <!-- reset  -->
                         <ElButton type="default" @click="resetSearchForm">
-                            <Icon icon="la:trash-restore-alt" class="mt-0px mr-4px"></Icon>
+                            <Icon
+                                icon="la:trash-restore-alt"
+                                class="mt-0px mr-4px"
+                            ></Icon>
                             <span>{{ $t("reset") }}</span>
                         </ElButton>
                     </ElFormItem>
                 </ElForm>
+            </div>
+
+            <!-- meta filters  -->
+            <div>
+                <div v-for="f in meta.filters || {}" :key="f.name" class="mb-2">
+                    <ElForm
+                        :model="searchForm"
+                        @submit.prevent.native="(e) => {}"
+                        class="mb-2"
+                    >
+                        <ElRadioGroup
+                            v-model="searchForm[f.name]"
+                            @change="handleFilterChange"
+                        >
+                            <ElRadioButton
+                                v-for="item in f.options"
+                                :key="item.value"
+                                :label="item.value"
+                                :name="f.name"
+                            >
+                                {{ item.label }}
+                            </ElRadioButton>
+                        </ElRadioGroup>
+                    </ElForm>
+                </div>
+                <ElDivider class="!mb-4 !mt-4"></ElDivider>
             </div>
 
             <!-- betch actions  -->
@@ -39,15 +85,22 @@
                     <span>添加</span>
                 </ElButton>
                 <ElButton :loading="loading" type="default" @click="load">
-                    <Icon v-if="!loading" icon="ant-design:reload-outlined"></Icon>
+                    <Icon
+                        v-if="!loading"
+                        icon="ant-design:reload-outlined"
+                    ></Icon>
                     <span>{{ $t("refresh") }}</span>
                 </ElButton>
 
                 <!-- divider vertical  -->
                 <ElDivider direction="vertical" class="mx-4"></ElDivider>
 
-                <ElButton :type="action.btnType" @click="batchAction(action.action)"
-                    v-for="action in meta.table?.batchActions || []" :key="action.name">
+                <ElButton
+                    :type="action.btnType"
+                    @click="batchAction(action.action)"
+                    v-for="action in meta.table?.batchActions || []"
+                    :key="action.name"
+                >
                     {{ action.label }}
                 </ElButton>
                 <ElButton type="danger" @click="handleBatchDelete()">
@@ -60,65 +113,130 @@
                 </ElButton>
             </div>
             <div class="overflow-x-auto">
-                <ElTable ref="tableRef" size="default" v-loading="loading" :data="tableData" :border="true" stripe
+                <ElTable
+                    ref="tableRef"
+                    size="default"
+                    v-loading="loading"
+                    :data="tableData"
+                    :border="true"
+                    stripe
                     :tree-props="{
                         hasChildren: 'hasChildren',
                         children: 'children',
-                    }" row-key="id" @sort-change="handleSortChange">
+                    }"
+                    row-key="id"
+                    @sort-change="handleSortChange"
+                >
                     <!-- selection  -->
                     <ElTableColumn type="selection" width="55"></ElTableColumn>
 
                     <!-- id  -->
                     <slot name="tableIdColumn">
-                        <ElTableColumn v-if="!hasIdColumn(columns)" label="ID" width="80" prop="id"></ElTableColumn>
+                        <ElTableColumn
+                            v-if="!hasIdColumn(columns)"
+                            label="ID"
+                            width="80"
+                            prop="id"
+                        ></ElTableColumn>
                     </slot>
 
-                    <ElTableColumn v-for="column in columns" :key="column.key"
-                        :sortable="column.sortable ? 'custom' : false" :label="column.title" :width="column.width">
+                    <ElTableColumn
+                        v-for="column in columns"
+                        :key="column.key"
+                        :sortable="column.sortable ? 'custom' : false"
+                        :label="column.title"
+                        :width="column.width"
+                    >
                         <template #default="{ row }" v-if="!column.slot">
-                            <div :class="[column.className]" v-if="column.type == 'render'">
+                            <div
+                                :class="[column.className]"
+                                v-if="column.type == 'render'"
+                            >
                                 {{ column.render(row) }}
                             </div>
                             <!-- switch  -->
-                            <ElSwitch v-if="column.type == 'switch'" v-model="row[column.key]" inactive-color="#ff4949"
-                                active-text="" inactive-text="" disabled></ElSwitch>
+                            <ElSwitch
+                                v-if="column.type == 'switch'"
+                                v-model="row[column.key]"
+                                inactive-color="#ff4949"
+                                active-text=""
+                                inactive-text=""
+                                disabled
+                            ></ElSwitch>
                             <!-- checkbox  -->
-                            <ElCheckbox v-if="column.type == 'checkbox'" v-model="row[column.key]" disabled>
+                            <ElCheckbox
+                                v-if="column.type == 'checkbox'"
+                                v-model="row[column.key]"
+                                disabled
+                            >
                             </ElCheckbox>
 
                             <!-- select  -->
-                            <ElSelect v-if="column.type == 'select'" v-model="row[column.key]"
-                                :placeholder="column.placeholder" clearable>
-                                <ElOption v-for="option in column.options" :key="option.value" :label="option.label"
-                                    :value="option.value"></ElOption>
+                            <ElSelect
+                                v-if="column.type == 'select'"
+                                v-model="row[column.key]"
+                                :placeholder="column.placeholder"
+                                clearable
+                            >
+                                <ElOption
+                                    v-for="option in column.options"
+                                    :key="option.value"
+                                    :label="option.label"
+                                    :value="option.value"
+                                ></ElOption>
                             </ElSelect>
                             <!-- icon  -->
-                            <Icon v-if="column.type == 'icon'" :icon="row[column.key]" :class="[column.className]">
+                            <Icon
+                                v-if="column.type == 'icon'"
+                                :icon="row[column.key]"
+                                :class="[column.className]"
+                            >
                             </Icon>
                             <!-- image  -->
-                            <ElImage v-if="column.type == 'image'" :src="$img(row[column.key])" fit="cover"
-                                :preview-teleported="true" :preview-src-list="row[column.key]
-                        ? [$img(row[column.key])]
-                        : []
-                        " style="width: 50px; height: 50px"></ElImage>
-                            <ElTag v-if="column.type == 'tag'" :type="column.epType || 'success'">{{ row[column.key] }}
+                            <ElImage
+                                v-if="column.type == 'image'"
+                                :src="$img(row[column.key])"
+                                fit="cover"
+                                :preview-teleported="true"
+                                :preview-src-list="
+                                    row[column.key]
+                                        ? [$img(row[column.key])]
+                                        : []
+                                "
+                                style="width: 50px; height: 50px"
+                            ></ElImage>
+                            <ElTag
+                                v-if="column.type == 'tag'"
+                                :type="column.epType || 'success'"
+                                >{{ row[column.key] }}
                             </ElTag>
 
                             <!-- link  -->
-                            <ElLink type="primary" v-if="column.type == 'link'" :underline="false"
-                                :href="makeUrl(row, column, column.link_key)" :target="column.url_target || '_self'">
+                            <ElLink
+                                type="primary"
+                                v-if="column.type == 'link'"
+                                :underline="false"
+                                :href="makeUrl(row, column, column.link_key)"
+                                :target="column.url_target || '_self'"
+                            >
                                 {{ column.prefix }}{{ row[column.key]
                                 }}{{ column.suffix }}
                             </ElLink>
 
                             <!-- span  -->
-                            <span v-if="column.type == 'span'" v-html="row[column.key]"></span>
+                            <span
+                                v-if="column.type == 'span'"
+                                v-html="row[column.key]"
+                            ></span>
 
                             <!-- multi-tag split by , -->
                             <div class="flex flex-row flex-wrap gap-2">
-                                <ElTag v-if="column.type == 'string-multi-tag'"
+                                <ElTag
+                                    v-if="column.type == 'string-multi-tag'"
                                     :type="handleColumnEpType(row, column, tag)"
-                                    v-for="tag in row[column.key].split(',')" :key="tag">{{ tag }}
+                                    v-for="tag in row[column.key].split(',')"
+                                    :key="tag"
+                                    >{{ tag }}
                                 </ElTag>
                             </div>
                         </template>
@@ -129,10 +247,20 @@
                     </ElTableColumn>
 
                     <!-- actions  -->
-                    <ElTableColumn fixed="right" v-if="actions?.length" label="操作" min-width="150px">
+                    <ElTableColumn
+                        fixed="right"
+                        v-if="actions?.length"
+                        label="操作"
+                        min-width="150px"
+                    >
                         <template #default="{ row }">
-                            <ElButton v-for="action in actions" link :key="action.key" :type="action.type || 'primary'"
-                                @click="action.handler(row)">
+                            <ElButton
+                                v-for="action in actions"
+                                link
+                                :key="action.key"
+                                :type="action.type || 'primary'"
+                                @click="action.handler(row)"
+                            >
                                 {{ action.title }}
                             </ElButton>
                         </template>
@@ -141,22 +269,39 @@
             </div>
             <!-- pagination  -->
             <div class="flex mt-2">
-                <ElPagination small layout="total,sizes, prev, pager, next, jumper" background
-                    :hide-on-single-page="false" v-model:current-page="pagination.currentPage"
-                    v-model:page-size="pagination.pageSize" :page-sizes="[5, 8, 10, 20, 50, 100]"
-                    :total="pagination.total" @current-change="handleCurrentPageChange"
-                    @size-change="handlePageSizeChange"></ElPagination>
+                <ElPagination
+                    small
+                    layout="total,sizes, prev, pager, next, jumper"
+                    background
+                    :hide-on-single-page="false"
+                    v-model:current-page="pagination.currentPage"
+                    v-model:page-size="pagination.pageSize"
+                    :page-sizes="[5, 8, 10, 20, 50, 100]"
+                    :total="pagination.total"
+                    @current-change="handleCurrentPageChange"
+                    @size-change="handlePageSizeChange"
+                ></ElPagination>
             </div>
         </ElCard>
 
         <slot name="addModal">
-            <ElDialog v-if="canAdd" title="提示" v-model="editModal" class="!md:w-640px !w-full !lg:w-960px">
+            <ElDialog
+                v-if="canAdd"
+                title="提示"
+                v-model="editModal"
+                class="!md:w-640px !w-full !lg:w-960px"
+            >
                 <template #header>
                     <div></div>
                 </template>
                 <slot name="addForm">
-                    <Form ref="formRef" :title="meta.title" :defaultForm="addFormDefault" :fields="addForm"
-                        @save="handleAddSubmit">
+                    <Form
+                        ref="formRef"
+                        :title="meta.title"
+                        :defaultForm="addFormDefault"
+                        :fields="addForm"
+                        @save="handleAddSubmit"
+                    >
                     </Form>
                 </slot>
             </ElDialog>
@@ -165,7 +310,7 @@
 </template>
 
 <script>
-import { ElPagination } from "element-plus";
+import { ElDivider, ElForm, ElPagination, ElRadioGroup } from "element-plus";
 import { request } from "@/api/request";
 import Form from "@/views/components/Form.vue";
 import FormItem from "./components/FormItem.vue";
@@ -281,24 +426,24 @@ export default {
                             if (type === "date") {
                                 return row[column.key]
                                     ? this.$dayjs(row[column.key]).format(
-                                        "YYYY-MM-DD HH:mm:ss"
-                                    )
+                                          "YYYY-MM-DD HH:mm:ss"
+                                      )
                                     : "";
                             }
 
                             if (type === "datetime") {
                                 return row[column.key]
                                     ? this.$dayjs(row[column.key]).format(
-                                        "YYYY-MM-DD HH:mm:ss"
-                                    )
+                                          "YYYY-MM-DD HH:mm:ss"
+                                      )
                                     : "";
                             }
                             // number
                             if (type === "number") {
                                 let result = row[column.key]
                                     ? this.$numeral(row[column.key]).format(
-                                        formatStr || "0,0.00"
-                                    )
+                                          formatStr || "0,0.00"
+                                      )
                                     : "";
                                 return `${prefix}${result}${suffix}`;
                             }
@@ -594,8 +739,12 @@ export default {
             }
             return type;
         },
+
+        handleFilterChange(val) {
+            this.load();
+        },
     },
-    created() { },
+    created() {},
     mounted() {
         // load pageSize from localStorage
         let url = new URL(location.href);

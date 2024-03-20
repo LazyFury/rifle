@@ -122,6 +122,19 @@ class MenuController extends CURD
     public function all(Request $request)
     {
         $menus = \App\Models\Menu::where('parent_id', null)->get();
+        $api_grouped_group_keys = ApiManage::where('group_key', '!=', '')->groupBy('group_key')->get(['group_key']);
+        $api_grouped_group_keys = $api_grouped_group_keys->map(function ($item) {
+            return [
+                'label' => $item->group_key,
+                'value' => $item->group_key,
+            ];
+        })->toArray();
+
+        // unshift all
+        $api_grouped_group_keys = array_merge([[
+            'label' => '全部',
+            'value' => '',
+        ]], $api_grouped_group_keys);
 
         return ApiJsonResponse::success([
             'menus' => [
@@ -198,6 +211,15 @@ class MenuController extends CURD
                                         'key' => 'create_api',
                                     ],
                                 ],
+                                'filters' => [
+                                    [
+                                        'label' => '名称',
+                                        'name' => 'group_key',
+                                        'type' => 'ridao-group',
+                                        'default' => '',
+                                        'options' => $api_grouped_group_keys,
+                                    ],
+                                ],
                                 'add_form_fields' => [
                                     [
                                         [
@@ -210,6 +232,11 @@ class MenuController extends CURD
                                             'label' => 'key',
                                             'name' => 'key',
                                             'placeholder' => '请输入key',
+                                        ],
+                                        [
+                                            'label' => 'Group Key',
+                                            'name' => 'group_key',
+                                            'placeholder' => '请输入Group Key',
                                         ],
                                     ],
                                     [

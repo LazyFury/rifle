@@ -14,7 +14,7 @@ class DictGroupController extends \Common\Controller\CURD
     {
         parent::__construct($model);
         $this->middleware('permission:model.getConfig')->only([
-            'getConfig', 'setConfig',
+            'setConfig',
         ]);
     }
 
