@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "chokidar": "^3.6.0",
-        "dayjs": "^1.11.10"
+        "dayjs": "^1.11.10",
+        "unocss": "^0.58.6"
     }
 }

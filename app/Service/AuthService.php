@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Models\User;
 use Common\Service\Service;
+use Common\Utils\ApiJsonResponse;
 
 /**
  * User Service
@@ -64,5 +65,31 @@ class AuthService
         $user = $this->model->create($request->all());
 
         return $user;
+    }
+
+    // admin login is must supperuser 
+    public function adminLogin($request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        $credentials = $request->only('email', 'password');
+
+        if (auth()->attempt($credentials)) {
+            if (auth()->user()->is_superuser) {
+                $user = auth()->user();
+                $token = $user->createToken('authToken')->plainTextToken;
+
+                return [
+                    "user" => $user,
+                    "token" => $token
+                ];
+            }
+            return "没有权限";
+        }
+
+        return "账号密码错误";
     }
 }

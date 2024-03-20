@@ -57,7 +57,7 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $result = $this->service->login($request);
+        $result = $this->service->adminLogin($request);
         if (is_string($result)) {
             return ApiJsonResponse::error($result);
         }

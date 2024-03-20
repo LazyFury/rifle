@@ -13,6 +13,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+function templateContext(
+    array $context = []
+) {
+    return [
+        'context' => [
+            'title' => 'Hello World!',
+            'content' => 'Welcome to my first Laravel application.',
+            'icp' => '京ICP备12345678号-1',
+        ],
+        'request' => request(),
+        'domain' => request()->getHost() ?? 'localhost',
+    ] + $context;
+}
+
 Route::get('/', function () {
-    return "Waiting for the next step!";
+    return view('welcome', templateContext([
+        'hello' => 'Hello World!',
+    ]));
 });
