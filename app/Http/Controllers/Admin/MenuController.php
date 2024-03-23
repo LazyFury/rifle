@@ -213,11 +213,29 @@ class MenuController extends CURD
                                 ],
                                 'filters' => [
                                     [
-                                        'label' => '名称',
+                                        'label' => 'Group Key',
                                         'name' => 'group_key',
-                                        'type' => 'ridao-group',
+                                        'type' => 'radio-button-group',
                                         'default' => '',
-                                        'options' => $api_grouped_group_keys,
+                                        // 'options' => $api_grouped_group_keys,
+                                        'remoteDataApi' => '/api_manage.get_grouped_keys',
+                                    ],
+                                ],
+                                'search_form_fields' => [
+                                    [
+                                        'label' => '名称',
+                                        'name' => 'title',
+                                        'placeholder' => '请输入名称',
+                                    ],
+                                    [
+                                        'label' => 'key',
+                                        'name' => 'key',
+                                        'placeholder' => '请输入key',
+                                    ],
+                                    [
+                                        'label' => 'Group Key',
+                                        'name' => 'group_key',
+                                        'placeholder' => '请输入Group Key',
                                     ],
                                 ],
                                 'add_form_fields' => [

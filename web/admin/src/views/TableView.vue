@@ -12,6 +12,33 @@
                 </div>
             </div>
             <ElDivider class="!mb-4 !mt-2"></ElDivider>
+
+            <!-- meta filters  -->
+            <div v-if="meta.filters">
+                <ElForm
+                    :model="searchForm"
+                    @submit.prevent.native="(e) => {}"
+                    class="mb-2"
+                >
+                    <div
+                        v-for="f in meta.filters || []"
+                        :key="f.name"
+                        class="mb-2"
+                    >
+                        <ElFormItem :label="f.label">
+                            <FormItem
+                                :field="f"
+                                v-model="searchForm[f.name]"
+                                @change="handleFilterChange"
+                            ></FormItem>
+                        </ElFormItem>
+                    </div>
+                </ElForm>
+
+                <ElDivider class="!mb-4 !mt-4"></ElDivider>
+            </div>
+
+            <!-- search form  -->
             <div v-if="searchFormFields && searchFormFields.length > 0">
                 <ElForm
                     :inline="true"
@@ -50,32 +77,6 @@
                         </ElButton>
                     </ElFormItem>
                 </ElForm>
-            </div>
-
-            <!-- meta filters  -->
-            <div>
-                <div v-for="f in meta.filters || {}" :key="f.name" class="mb-2">
-                    <ElForm
-                        :model="searchForm"
-                        @submit.prevent.native="(e) => {}"
-                        class="mb-2"
-                    >
-                        <ElRadioGroup
-                            v-model="searchForm[f.name]"
-                            @change="handleFilterChange"
-                        >
-                            <ElRadioButton
-                                v-for="item in f.options"
-                                :key="item.value"
-                                :label="item.value"
-                                :name="f.name"
-                            >
-                                {{ item.label }}
-                            </ElRadioButton>
-                        </ElRadioGroup>
-                    </ElForm>
-                </div>
-                <ElDivider class="!mb-4 !mt-4"></ElDivider>
             </div>
 
             <!-- betch actions  -->
