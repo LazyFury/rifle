@@ -165,12 +165,12 @@
                                 disabled
                             ></ElSwitch>
                             <!-- checkbox  -->
-                            <ElCheckbox
-                                v-if="column.type == 'checkbox'"
+                            <div v-if="column.type == 'checkbox'">
+                                <ElCheckbox
                                 v-model="row[column.key]"
                                 disabled
-                            >
-                            </ElCheckbox>
+                            ></ElCheckbox>
+                            </div>
 
                             <!-- select  -->
                             <ElSelect

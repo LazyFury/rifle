@@ -24,6 +24,7 @@ class UserModel extends BaseModel
     protected $rules = [
         'name' => 'required|string|max:20',
         'role_id' => 'nullable|integer|exists:roles,id',
+        'is_superuser' => 'nullable|boolean',
     ];
 
     protected $messages = [
@@ -35,9 +36,11 @@ class UserModel extends BaseModel
     protected $fillable = [
         'name',
         'role_id',
+        'is_superuser',
     ];
 
     protected $casts = [
+        'is_superuser' => 'boolean',
     ];
 
     protected $appends = [
