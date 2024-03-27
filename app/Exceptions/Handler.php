@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Common\Utils\ApiJsonResponse;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -31,14 +32,27 @@ class Handler extends ExceptionHandler
 
         $this->renderable(function (AuthenticationException $e) {
             $str = $e->getMessage();
-            if ($str == "Unauthenticated.") {
+            if ($str == 'Unauthenticated.') {
                 $str = null;
             }
-            return ApiJsonResponse::unauthenticated($str ?? "handle exception: Auth middleware.");
+
+            return ApiJsonResponse::unauthenticated($str ?? 'handle exception: Auth middleware.');
         });
 
         $this->renderable(function (Throwable $e) {
-            return ApiJsonResponse::error($e->getMessage(), ApiJsonResponse::ErrCode['InternalServerError']);
+            if (request()->is('api/*')) {
+                return ApiJsonResponse::error($e->getMessage(), ApiJsonResponse::ErrCode['InternalServerError']);
+            }
+
+            $code = 500;
+            if ($e instanceof NotFoundHttpException) {
+                $code = 404;
+            }
+
+            return response()->view('errors', [
+                'code' => $code,
+                'message' => $e->getMessage(),
+            ], $code);
         });
     }
 }
