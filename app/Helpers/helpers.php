@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\DictGroup;
+
 /**
  * Get the hot posts.
  */
@@ -67,5 +69,37 @@ if (! function_exists('is_active_url')) {
         }
 
         return request()->is($url);
+    }
+}
+
+/**
+ * Get Config in DictGroup
+ */
+if (! function_exists('get_config')) {
+    function get_config($key, $default = null)
+    {
+        $arr = DictGroup::where('key', $key)->first();
+        if (! $arr) {
+            return $default;
+        }
+        $config = [];
+        foreach ($arr->dicts()->get() as $dict) {
+            $config[$dict->key] = $dict->value;
+        }
+
+        return $config;
+    }
+}
+
+/**
+ * calc page loading time
+ */
+if (! function_exists('calc_page_loading_time')) {
+    function calc_page_loading_time()
+    {
+        $unix = microtime(true) - LARAVEL_START;
+        $time = round($unix, 3);
+
+        return "Page loaded in {$time} seconds.";
     }
 }

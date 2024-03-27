@@ -20,10 +20,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+        $base_config = get_config('basic') ?? [];
 
         view()->share('context', [
-            'title' => 'Laravel Application',
-            'content' => 'This is a Laravel application.',
+            'title' => $base_config['site_name'] ?? 'Laravel',
+            'content' => $base_config['site_description'] ?? '--',
             'icp' => 'ICP: 12345678',
             'js' => "console.log('Hello, Laravel! in php.');",
         ]);
