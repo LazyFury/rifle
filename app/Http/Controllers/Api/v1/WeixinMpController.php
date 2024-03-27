@@ -20,8 +20,8 @@ class WeixinMpController
 
     public function jsapi(\Illuminate\Http\Request $request)
     {
-        $appId = 'wx312c64478e116813';
-        $appSecret = 'e94cb44d5b30c1daee25f7f59e7ac8a7';
+        $appId = '-';
+        $appSecret = '-';
         $result = Http::get('https://api.weixin.qq.com/cgi-bin/token', [
             'grant_type' => 'client_credential',
             'appid' => $appId,
