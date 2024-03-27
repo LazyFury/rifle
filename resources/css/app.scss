@@ -8,3 +8,13 @@
     color: #333;
     background-color: #f8f9fa;
 }
+
+a{
+    text-decoration: none;
+    color: #333;
+
+    &:hover{
+        text-decoration: underline;
+        opacity: 0.8;
+    }
+}
