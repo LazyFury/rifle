@@ -68,7 +68,33 @@ if (! function_exists('is_active_url')) {
             return request()->is('/');
         }
 
+        if ($url == 'posts') {
+            // also /post/{id,slug}
+            return request()->is('post*');
+        }
+
         return request()->is($url);
+    }
+}
+
+/**
+ * title to slug
+ */
+if (! function_exists('title_to_slug')) {
+    function title_to_slug($title)
+    {
+        $not_allow_chars = ['!', '！', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '[', ']', '{', '}', '|', '\\', ';', ':', '"', '\'', ',', '<', '>', '.', '?', '/'];
+        $not_allow_chinese_chars = ['，', '。', '？', '！', '“', '”', '‘', '’', '；', '：', '、', '（', '）', '【', '】', '《', '》', '——', '……', '￥', '…', '·', '「', '」', '『', '』', '〈', '〉', '〖', '〗', '【', '】', '﹏', '＿', '＼', '／', '＆', '％', '＃', '＠', '＊', '＋', '－', '＝', '＜', '＞', '～', '｜', '｛', '｝', '｟', '｠', '｢', '｣', '､', '、', '〃', '》', '「', '」', '『', '』', '【', '】', '〔', '〕', '〖', '〗', '〘', '〙', '〚', '〛', '〜', '〝', '〞', '〟', '〰', '〾', '〿', '–', '—', '‘', '’', '‛', '“', '”', '„', '‟', '†', '‡', '•', '‣', '․', '‥', '…', '‧', '‰', '‱', '′', '″', '‴', '‵', '‶', '‷', '‸', '‹', '›', '※', '‼', '‽', '‾', '‿', '⁀', '⁁', '⁂', '⁃', '⁄', '⁇', '⁈', '⁉', '⁊', '⁋', '⁌', '⁍', '⁎', '⁏', '⁐', '⁑', '⁒', '⁓', '⁔', '⁕', '⁖', '⁗', '⁘', '⁙', '⁚', '⁛', '⁜'];
+        $slug = str_replace($not_allow_chars, '', $title);
+        $slug = str_replace($not_allow_chinese_chars, '', $slug);
+        $slug = str_replace(' ', '-', $slug);
+
+        // chinese to pinyin
+
+        // lower
+        $slug = strtolower($slug);
+
+        return $slug;
     }
 }
 
@@ -97,7 +123,8 @@ if (! function_exists('get_config')) {
 if (! function_exists('calc_page_loading_time')) {
     function calc_page_loading_time()
     {
-        $unix = microtime(true) - LARAVEL_START;
+        $start = defined('LARAVEL_START') ? LARAVEL_START : $_SERVER['REQUEST_TIME_FLOAT'];
+        $unix = microtime(true) - $start;
         $time = round($unix, 3);
 
         return "Page loaded in {$time} seconds.";

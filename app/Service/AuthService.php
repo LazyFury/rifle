@@ -86,8 +86,6 @@ class AuthService
                     'token' => $token,
                 ];
             }
-
-            return '没有权限';
         }
 
         return '账号密码错误';

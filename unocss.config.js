@@ -22,5 +22,12 @@ export default defineConfig({
     },
     shortcuts:{
         "main-container":"container mx-auto xl:w-1200px"
+    },
+    theme:{
+        colors:{
+            primary:"#ff3f2d",
+            secondary:"#f3f4f6",
+            accent:"#ff3f2d",
+        }
     }
 })

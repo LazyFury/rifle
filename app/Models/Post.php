@@ -5,7 +5,6 @@ namespace App\Models;
 use Common\Model\BaseModel;
 use Common\Model\UsePersonalTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Facades\Cache;
 
 class Post extends BaseModel
 {
@@ -22,11 +21,12 @@ class Post extends BaseModel
         'author_id',
         'title',
         'content',
-        "category_id",
-        "tags_ids",
+        'category_id',
+        'tags_ids',
+        'slug',
     ];
 
-    // add to json 
+    // add to json
     protected $appends = [
         'author',
         'author_name',
@@ -36,6 +36,8 @@ class Post extends BaseModel
         'category_cascader_name',
         'tags',
         'tags_name_join',
+        'short_title',
+        'short_content',
     ];
 
     protected $rules = [
@@ -43,7 +45,8 @@ class Post extends BaseModel
         'title' => 'required|string',
         'content' => 'required|string',
         'category_id' => 'integer|nullable',
-        "tags_ids" => "array|nullable",
+        'tags_ids' => 'array|nullable',
+        'slug' => 'string|nullable|exists:posts,slug',
     ];
 
     protected $casts = [
@@ -51,7 +54,7 @@ class Post extends BaseModel
         'title' => 'string',
         'content' => 'string',
         'author' => 'array',
-        "tags_ids" => "array",
+        'tags_ids' => 'array',
     ];
 
     protected $messages = [
@@ -62,14 +65,13 @@ class Post extends BaseModel
         'content.required' => 'content不能为空',
         'content.string' => 'content必须是字符串',
         'category_id.integer' => 'category_id必须是整数',
-        "tags_ids.array" => "tags_ids必须是数组",
+        'tags_ids.array' => 'tags_ids必须是数组',
     ];
-
 
     public function get_searchable()
     {
         return [
-            'author'
+            'author',
         ];
     }
 
@@ -88,17 +90,17 @@ class Post extends BaseModel
     {
         return $this->author()->first() ?: [
             'name' => '-',
-            'avatar' => ''
+            'avatar' => '',
         ];
     }
 
-    // author_name 
+    // author_name
     public function getAuthorNameAttribute()
     {
         return $this->getAuthorAttribute()['name'];
     }
 
-    // author_avatar 
+    // author_avatar
     public function getAuthorAvatarAttribute()
     {
         return $this->getAuthorAttribute()['avatar'] ?? '';
@@ -107,7 +109,7 @@ class Post extends BaseModel
     // content cut 16
     public function getContentCutAttribute()
     {
-        return mb_substr($this->content, 0, 16) . '...';
+        return mb_substr($this->content, 0, 16).'...';
     }
 
     // category_name
@@ -119,7 +121,7 @@ class Post extends BaseModel
     public function getCategoryAttribute()
     {
         return $this->category()->first() ?: [
-            'name' => '-'
+            'name' => '-',
         ];
     }
 
@@ -127,7 +129,6 @@ class Post extends BaseModel
     {
         return $this->getCategoryAttribute()['name'];
     }
-
 
     //category  cascader name
     public function getCategoryCascaderNameAttribute()
@@ -138,13 +139,14 @@ class Post extends BaseModel
             $names[] = $parent->name;
         }
         $names[] = $this->getCategoryAttribute()['name'];
+
         return implode(' / ', $names);
     }
-
 
     public function tags()
     {
         $ids = $this->tags_ids ?? [];
+
         return PostTag::whereIn('id', $ids);
     }
 
@@ -161,7 +163,19 @@ class Post extends BaseModel
         foreach ($tags as $tag) {
             $tags_name[] = $tag->name;
         }
+
         return implode(',', $tags_name);
     }
 
+    // short title attr
+    public function getShortTitleAttribute()
+    {
+        return mb_substr($this->title, 0, 16).'...';
+    }
+
+    // short_content
+    public function getShortContentAttribute()
+    {
+        return mb_substr($this->content, 0, 32).'...';
+    }
 }

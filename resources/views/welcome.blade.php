@@ -10,8 +10,8 @@
                 <img src="https://fastly.picsum.photos/id/441/200/100.jpg?hmac=PfbiUv548vtNVDw-xxuNtmgIIjPBakQFhPCZ5FYzqvA"
                     alt="{{ $post['title'] }}" title="{{ $post['title'] }}"
                     class="w-full object-cover object-center block bg-gray-300" />
-                <a href="/post/{{ $post['id'] }}" title="{{ $post['title'] }}">
-                    <span>{{ $post['title'] }}</span>
+                <a href="/post/{{ $post['slug'] }}" class="mt-2 inline-block" title="{{ $post['title'] }}">
+                    <span>{{ $post['short_title'] }}</span>
                 </a>
             </div>
         @endforeach
@@ -50,8 +50,8 @@
                         <img src="https://fastly.picsum.photos/id/441/200/100.jpg?hmac=PfbiUv548vtNVDw-xxuNtmgIIjPBakQFhPCZ5FYzqvA"
                             alt="{{ $post['title'] }}" title="{{ $post['title'] }}"
                             class="w-full object-cover object-center block bg-gray-300" />
-                        <a href="/post/{{ $post['id'] }}" title="{{ $post['title'] }}">
-                            <span>{{ $post['title'] }}</span>
+                        <a href="/post/{{ $post['slug'] }}" class="mt-2 inline-block" title="{{ $post['title'] }}">
+                            <span>{{ $post['short_title'] }}</span>
                         </a>
                     </div>
                 @endforeach
@@ -70,12 +70,12 @@
                     <img src="https://fastly.picsum.photos/id/441/200/100.jpg?hmac=PfbiUv548vtNVDw-xxuNtmgIIjPBakQFhPCZ5FYzqvA"
                         alt="{{ $post['title'] }}" title="{{ $post['title'] }}"
                         class="w-200px object-cover object-center block bg-gray-300">
-                    <div class="py-2">
-                        <a href="/post/{{ $post['id'] }}" title="{{ $post['title'] }}">
-                            <h3 class="my-0 text-xl">{{ $post['title'] }}</h3>
+                    <div class="py-2 flex-1">
+                        <a href="/post/{{ $post['slug'] }}"  title="{{ $post['title'] }}">
+                            <h3 class="my-0 text-xl">{{ $post['short_title'] }}</h3>
                         </a>
 
-                        <p class="my-0">{{ $post['content'] }}</p>
+                        <p class="my-0">{{ $post['short_content'] }}</p>
                         <!-- tags  -->
                         <div class="mt-2">
                             @foreach ($post['tags'] as $tag)
@@ -108,8 +108,8 @@
                         <img src="https://fastly.picsum.photos/id/441/200/100.jpg?hmac=PfbiUv548vtNVDw-xxuNtmgIIjPBakQFhPCZ5FYzqvA"
                             alt="{{ $post['title'] }}" title="{{ $post['title'] }}"
                             class="w-full h-64px object-cover object-center block bg-gray-300" />
-                        <a href="/post/{{ $post['id'] }}" title="{{ $post['title'] }}">
-                            <span>{{ $post['title'] }}</span>
+                        <a href="/post/{{ $post['slug'] }}" class="mt-2 inline-block" title="{{ $post['title'] }}">
+                            <span>{{ $post['short_title'] }}</span>
                         </a>
                     </div>
                 @endforeach
@@ -118,8 +118,8 @@
             <h3 class="mb-1">Hot Posts</h3>
             @foreach (get_hot_posts(5) as $post)
                 <div class="mb-2">
-                    <a href="/post/{{ $post['id'] }}">
-                        <span class="my-0">{{ $post['title'] }}</span>
+                    <a href="/post/{{ $post['slug'] }}">
+                        <span class="my-0">{{ $post['short_title'] }}</span>
                     </a>
                 </div>
             @endforeach

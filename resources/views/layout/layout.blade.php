@@ -31,7 +31,7 @@
       <div class="main-container my-2 flex flex-row items-end">
         <div class="flex-1 flex flex-col">
             <div class="flex flex-row">
-            <h1 class="text-2xl mt-0 mb-0 text-#ea391c">{{$context['title']}}</h1>
+            <h1 class="text-2xl mt-0 mb-0 text-primary">{{$context['title']}}</h1>
             </div>
             <span class="text-sm">{{$context['content']}}</span>
         </div>
@@ -44,9 +44,9 @@
       </div>
      </header>
 
-     <div class="bg-#ea391c sticky top-0 z-10">
+     <div class="bg-primary sticky top-0 z-10 py-3">
       <div class="main-container">
-        <nav class="flex gap-6 py-2 flex-wrap">
+        <nav class="flex gap-6 flex-wrap">
           @foreach(get_nav_items() as $item)
             <a href="{{$item['url']}}" class="text-white {{
                 is_active_url($item['url']) ? 'underline' : ''
@@ -60,8 +60,7 @@
     <main class="flex-1 main-container">
         @section('content')
         <div>
-            <h1>footer</h1>
-            <p>footer</p>
+            <h1>content</h1>
         </div>
         @show
     </main>

@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Home\HomeController;
+use App\Http\Controllers\Home\PostController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,8 +15,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome', ([
-        'hello' => 'Hello World!',
-    ]));
-});
+Route::get('/', [HomeController::class, 'index']);
+
+// posts
+
+/**
+ * @see PostController::detail
+ */
+Route::get('/post/{slug}', [PostController::class, 'detail']);
