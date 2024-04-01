@@ -18,8 +18,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index']);
 
 // posts
-
-/**
- * @see PostController::detail
- */
+Route::get('/posts', [PostController::class, 'list']);
 Route::get('/post/{slug}', [PostController::class, 'detail']);

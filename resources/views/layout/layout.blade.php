@@ -14,7 +14,7 @@
     @vite(['resources/css/app.scss', 'resources/js/app.js', 'resources/css/unocss.css'])
   </head>
 
-  <body class="min-h-100vh flex flex-col">
+  <body class="min-h-100vh flex flex-col text-gray-800">
     <div class="bg-gray-300">
       <div class="main-container flex flex-row items-center">
         <div class="flex-1">
@@ -31,7 +31,7 @@
       <div class="main-container my-2 flex flex-row items-end">
         <div class="flex-1 flex flex-col">
             <div class="flex flex-row">
-            <h1 class="text-2xl mt-0 mb-0 text-primary">{{$context['title']}}</h1>
+            <h1 class="text-4xl font-bold mt-0 mb-0 text-primary">{{$context['title']}}</h1>
             </div>
             <span class="text-sm">{{$context['content']}}</span>
         </div>
@@ -44,7 +44,7 @@
       </div>
      </header>
 
-     <div class="bg-primary sticky top-0 z-10 py-3">
+     <div class="bg-primary sticky top-0 z-10 py-2 text-lg">
       <div class="main-container">
         <nav class="flex gap-6 flex-wrap">
           @foreach(get_nav_items() as $item)

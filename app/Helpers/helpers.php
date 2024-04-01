@@ -130,3 +130,53 @@ if (! function_exists('calc_page_loading_time')) {
         return "Page loaded in {$time} seconds.";
     }
 }
+
+/**
+ * text cut as short
+ */
+if (! function_exists('text_cut')) {
+    function text_cut($text, $length = 32)
+    {
+        if (mb_strlen($text) <= $length) {
+            return $text;
+        }
+
+        return mb_substr($text, 0, $length).(mb_strlen($text) > $length ? '...' : '');
+    }
+}
+
+/**
+ * split title in search as array
+ */
+if (! function_exists('split_text')) {
+    function split_text($title, $k)
+    {
+        $arr = explode($k, $title);
+        if (count($arr) == 1) {
+            return [
+                [
+                    'text' => $arr[0],
+                    'is_key' => false,
+                ],
+            ];
+        }
+
+        if (count($arr) == 2) {
+            return [
+                [
+                    'text' => $arr[0],
+                    'is_key' => false,
+                ],
+                [
+                    'text' => $k,
+                    'is_key' => true,
+                ],
+                [
+                    'text' => $arr[1],
+                    'is_key' => false,
+                ],
+            ];
+        }
+
+    }
+}

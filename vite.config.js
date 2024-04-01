@@ -14,4 +14,7 @@ export default defineConfig({
             config: 'unocss.config.js',
         }),
     ],
+    server:{
+        port:13712
+    }
 });
