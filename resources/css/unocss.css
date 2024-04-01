@@ -154,6 +154,9 @@
 .transition{transition-property:color,background-color,border-color,outline-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms;}
 .duration-150{transition-duration:150ms;}
 .ease-in-out{transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);}
+[content~="\$post\["]{content:var(--post\[);}
+[content~="\$tag\)\{\{"]{content:var(--tag\)\{\{);}
+[content~="\$tag\["]{content:var(--tag\[);}
 @media (min-width: 640px){
 .sm\:hidden{display:none;}
 .sm\:flex{display:flex;}

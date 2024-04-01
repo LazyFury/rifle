@@ -27,6 +27,8 @@ class AppServiceProvider extends ServiceProvider
             'content' => $base_config['site_description'] ?? '--',
             'icp' => 'ICP: 12345678',
             'js' => "console.log('Hello, Laravel! in php.');",
+            'description' => 'This is a Laravel application.',
+            'keywords' => 'Laravel, PHP, Web Development',
         ]);
 
         view()->share('friendLinks', [

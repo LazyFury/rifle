@@ -4,6 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@yield("title") | {{$context['title']}}</title>
+
+    @section('head')
+    @if($context['description'])
+    <meta name="description" content="{{$context['description']}}" />
+    @endif
+    
+    @if($context['keywords'])
+    <meta name="keywords" content="{{$context['keywords']}}" />
+    @endif
+
+    @show
     <link href="https://unpkg.com/@csstools/normalize.css" rel="stylesheet" />
     <link href="https://unpkg.com/sanitize.css/assets.css" rel="stylesheet" />
     <link href="https://unpkg.com/sanitize.css/typography.css" rel="stylesheet" />
