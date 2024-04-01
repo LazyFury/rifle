@@ -35,14 +35,14 @@ class PostService extends Service
         // max-count 32
         $slug = substr($slug, 0, 32);
 
-        $find = $this->model->query()
-            ->where('slug', $slug)
-            ->where('id', '!=', $request->id)
-            ->first();
+        // $find = $this->model->query()
+        //     ->where('slug', $slug)
+        //     ->where('id', '!=', $request->id)
+        //     ->first();
 
-        if ($find) {
-            $slug = $slug.'-'.time();
-        }
+        // if ($find) {
+        //     $slug = $slug.'-'.time();
+        // }
 
         $request->merge(['slug' => $slug]);
     }

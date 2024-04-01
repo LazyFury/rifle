@@ -46,7 +46,7 @@ class Post extends BaseModel
         'content' => 'required|string',
         'category_id' => 'integer|nullable',
         'tags_ids' => 'array|nullable',
-        'slug' => 'string|nullable|exists:posts,slug',
+        'slug' => 'string|unique:posts,slug|nullable',
     ];
 
     protected $casts = [
@@ -66,6 +66,8 @@ class Post extends BaseModel
         'content.string' => 'content必须是字符串',
         'category_id.integer' => 'category_id必须是整数',
         'tags_ids.array' => 'tags_ids必须是数组',
+        'slug.string' => 'slug必须是字符串',
+        'slug.unique' => 'slug已存在',
     ];
 
     public function get_searchable()
