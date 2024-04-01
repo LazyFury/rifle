@@ -37,10 +37,6 @@ if (! function_exists('get_nav_items')) {
                 'url' => '/',
             ],
             [
-                'title' => 'Store',
-                'url' => '/store',
-            ],
-            [
                 'title' => 'Blog',
                 'url' => '/posts',
             ],
