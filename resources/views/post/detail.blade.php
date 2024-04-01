@@ -4,7 +4,7 @@
 
 
 @section('content')
-    <div class="flex flex-row gap-2">
+    <div class="flex flex-row gap-2 items-start">
         <div class="my-4 gap-2 flex-1">
             <div class="flex-1">
                 <div>

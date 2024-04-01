@@ -18,7 +18,7 @@
         @endforeach
     </div>
 
-    <div class="main-container flex flex-row flex-wrap gap-2 py-2">
+    <div class="main-container flex flex-row flex-wrap gap-2 py-2 items-start">
 
 
 
@@ -98,6 +98,8 @@
             @include('components.hot_posts_style2')
 
             @include('components.all_categories')
+
+            @include('components.all_tags')
         </div>
 
     </div>

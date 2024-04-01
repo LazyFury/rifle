@@ -5,7 +5,7 @@
 
 
 @section('content')
-    <div class="flex flex-row gap-2">
+    <div class="flex flex-row gap-2 items-start">
 
         <div class="flex-1">
             @foreach ($posts as $post)

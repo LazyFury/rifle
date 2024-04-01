@@ -81,6 +81,7 @@
 .flex-col{flex-direction:column;}
 .flex-wrap{flex-wrap:wrap;}
 .cursor-default{cursor:default;}
+.items-start{align-items:flex-start;}
 .items-end{align-items:flex-end;}
 .items-center{align-items:center;}
 .justify-between{justify-content:space-between;}

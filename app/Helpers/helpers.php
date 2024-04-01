@@ -176,3 +176,13 @@ if (! function_exists('split_text')) {
 
     }
 }
+
+/**
+ * all tags
+ */
+if (! function_exists('get_all_tags')) {
+    function get_all_tags()
+    {
+        return \App\Models\PostTag::all();
+    }
+}
